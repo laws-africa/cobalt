@@ -8,13 +8,16 @@ here = path.abspath(path.dirname(__file__))
 with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
+with open(path.join(here, 'VERSION')) as f:
+    version = f.read().strip()
+
 setup(
     name='cobalt',
 
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='0.2.0',
+    version=version,
 
     description='A lightweight library for working with Akoma Ntoso Act documents',
     long_description=long_description,

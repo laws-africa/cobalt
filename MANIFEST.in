@@ -1,2 +1,2 @@
-include LICENSE README.rst
+include LICENSE README.rst VERSION
 recursive-include cobalt *.py
