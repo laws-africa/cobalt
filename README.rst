@@ -53,4 +53,12 @@ Contributing
 Change Log
 ----------
 
-* 0.1.0 - first release
+0.1.3
+.....
+
+- Refactor TOC helpers into own file
+
+0.1.1
+.....
+
+- first release
