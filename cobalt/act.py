@@ -3,23 +3,15 @@ from collections import OrderedDict
 
 from lxml import objectify
 from lxml import etree
-from lxml.html import _collect_string_content
 import arrow
 
 from .uri import FrbrUri
+from .toc import TOCBuilder
 
-encoding_re = re.compile('encoding="[\w-]+"')
-# eg. schedule1
-component_id = re.compile('([^0-9]+)([0-9]+)')
+
+ENCODING_RE = re.compile('encoding="[\w-]+"')
 
 DATE_FORMAT = "%Y-%m-%d"
-
-# elements we include in the table of contents
-TOC_COMPONENTS = ['coverpage', 'preface', 'preamble', 'part', 'chapter', 'section', 'conclusions']
-
-# These TOC elements aren't numbered uniquely throughout the document
-# and will need their parent components for context
-TOC_NON_UNIQUE_COMPONENTS = ['chapter', 'part']
 
 
 def datestring(value):
@@ -33,7 +25,7 @@ def datestring(value):
 
 class Base(object):
     def __init__(self, xml=None):
-        encoding = encoding_re.search(xml, 0, 200)
+        encoding = ENCODING_RE.search(xml, 0, 200)
         if encoding:
             # lxml doesn't like unicode strings with an encoding element, so
             # change to bytes
@@ -347,33 +339,10 @@ class Act(Base):
 
         return components
 
-    def table_of_contents(self):
-        """ Get the table of contents of this document as a list of :class:`TOCElement` instances. """
-
-        interesting = set('{%s}%s' % (self.namespace, s) for s in TOC_COMPONENTS)
-
-        def generate_toc(component, elements, parent=None):
-            items = []
-            for e in elements:
-                if e.tag in interesting:
-                    item = TOCElement(e, component, parent=parent)
-                    item.children = generate_toc(component, e.iterchildren(), parent=item)
-                    items.append(item)
-                else:
-                    items += generate_toc(component, e.iterchildren())
-            return items
-
-        toc = []
-        for component, element in self.components().iteritems():
-            if component != "main":
-                # non-main components are items in their own right
-                item = TOCElement(element, component)
-                item.children = generate_toc(component, [element])
-                toc += [item]
-            else:
-                toc += generate_toc(component, [element])
-
-        return toc
+    def table_of_contents(self, builder=None):
+        """ Get the table of contents of this document as a list of :class:`cobalt.toc.TOCElement` instances. """
+        builder = builder or TOCBuilder()
+        return builder.table_of_contents(self)
 
     def get_subcomponent(self, component, subcomponent):
         """ Get the named subcomponent in this document, such as `chapter/2` or 'section/13A'.
@@ -423,92 +392,6 @@ class Act(Base):
             except AttributeError:
                 return None
         return node
-
-
-class TOCElement(object):
-    """
-    An element in the table of contents of a document, such as a chapter, part or section.
-
-    :ivar children: further TOC elements contained in this one, may be None or empty
-    :ivar element: :class:`lxml.objectify.ObjectifiedElement` the XML element of this TOC element
-    :ivar heading: heading for this element, excluding the number, may be None
-    :ivar id: XML id string of the node in the document, may be None
-    :ivar num: number of this element, as a string, may be None
-    :ivar component: number of the component that this item is a part of, as a string
-    :ivar subcomponent: name of this subcomponent, used by :meth:`Act.get_subcomponent`, may be None
-    :ivar type: node type, one of: ``chapter, part, section``
-    """
-
-    def __init__(self, node, component, parent=None, children=None):
-        self.element = node
-        self.type = node.tag.split('}', 1)[-1]
-        self.id = node.get('id')
-
-        if self.type == 'doc':
-            # component, get the title from the alias
-            heading = node.find('./{*}meta/{*}FRBRalias')
-            if heading:
-                self.heading = heading.get('value')
-            else:
-                # eg. schedule1 -> Schedule 1
-                m = component_id.match(component)
-                if m:
-                    self.heading = ' '.join(m.groups()).capitalize()
-                else:
-                    self.heading = component.capitalize()
-        else:
-            try:
-                self.heading = _collect_string_content(node.heading)
-            except AttributeError:
-                self.heading = None
-
-        try:
-            num = node.num
-        except AttributeError:
-            num = None
-
-        self.num = num.text if num else None
-        self.children = children
-
-        # eg. 'main'
-        self.component = component
-
-        if self.type == "doc":
-            self.subcomponent = None
-        else:
-            # if we have a chapter/part as a child of a chapter/part, we need to include
-            # the parent as context because they aren't unique, eg: part/1/chapter/2
-            if self.type in TOC_NON_UNIQUE_COMPONENTS and parent and parent.type in TOC_NON_UNIQUE_COMPONENTS:
-                self.subcomponent = parent.subcomponent + "/"
-            else:
-                self.subcomponent = ""
-
-            # eg. 'preamble' or 'chapter/2'
-            self.subcomponent += self.type
-
-            if self.num:
-                self.subcomponent += '/' + self.num.strip('.()')
-
-    def as_dict(self):
-        info = {
-            'type': self.type,
-            'component': self.component,
-            'subcomponent': self.subcomponent,
-        }
-
-        if self.heading:
-            info['heading'] = self.heading
-
-        if self.num:
-            info['num'] = self.num
-
-        if self.id:
-            info['id'] = self.id
-
-        if self.children:
-            info['children'] = [c.as_dict() for c in self.children]
-
-        return info
 
 
 class AmendmentEvent(object):

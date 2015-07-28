@@ -13,6 +13,13 @@
 
             .. automethod:: __init__
 
+    .. automodule:: cobalt.toc
+
+        .. autoclass:: TOCBuilder
+            :members:
+
+            .. automethod:: __init__
+
         .. autoclass:: TOCElement
             :members:
 
