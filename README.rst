@@ -30,9 +30,9 @@ Use it like this::
     >>> act.frbr_uri = "/za/act/1980/10"
     >>> act.year
     '1980'
-    >> act.number
+    >>> act.number
     '10'
-    >> print act.to_xml()
+    >>> print act.to_xml()
     [ lots of xml ]
 
 Contributing
