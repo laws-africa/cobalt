@@ -22,12 +22,12 @@ Use it like this::
     >>> from cobalt import Act
     >>> act = Act()
     >>> act.title = "Act 10 of 1980"
-    >>> act.frbr_uri = '/za/act/1980/10'
+    >>> act.frbr_uri = "/za/act/1980/10"
     >>> act.year
-    1980
+    '1980'
     >> act.number
-    10
-    >> act.to_xml
+    '10'
+    >> print act.to_xml()
     [ lots of xml ]
 
 Contributing
