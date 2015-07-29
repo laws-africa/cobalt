@@ -57,6 +57,7 @@ Change Log
 .....
 
 - Refactor TOC helpers into own file
+- Fix .format in FrbrUri
 
 0.1.1
 .....

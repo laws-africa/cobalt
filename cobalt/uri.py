@@ -27,6 +27,61 @@ class FrbrUri(object):
     An FRBR URI parser which understands Akoma Ntoso 3.0 FRBR URIs (IRIs) for works
     and expressions.
 
+    URIs can be parsed from a plain string using :meth:`parse` or they can be
+    constructed directly. URIs can be manipulated in-place once constructed,
+    which is useful for turning a work-level URI into an expression or
+    manifestation URI.
+
+    URIs can be transformed back to the string form of work, expression and
+    manifestation URIs using the :meth:`work_uri`, :meth:`expression_uri` and
+    :meth:`manifestation_uri` methods.
+
+    Example::
+
+        >>> uri = FrbrUri.parse('/za-jhb/act/by-law/2003/public-health/eng:2015-01-01/main/part/A.xml')
+        >>> uri.country
+        'za'
+        >>> uri.locality
+        'jhb'
+        >>> uri.doctype
+        'act'
+        >>> uri.subtype
+        'by-law'
+        >>> uri.date
+        '2003'
+        >>> uri.number
+        'public-health'
+        >>> uri.language
+        'eng'
+        >>> uri.expression_date
+        ':2015-01-01'
+        >>> uri.expression_component
+        'main'
+        >>> uri.expression_subcomponent
+        'part/A'
+        >>> uri.format
+        'xml'
+        >>> uri.work_uri()
+        '/za-jhb/act/by-law/2003/public-health'
+        >>> uri.expression_uri()
+        '/za-jhb/act/by-law/2003/public-health/eng:2015-01-01/main/part/A'
+        >>> uri.manifestation_uri()
+        '/za-jhb/act/by-law/2003/public-health/eng:2015-01-01/main/part/A.xml'
+
+    :ivar country: two letter country code
+    :ivar locality: locality within the country, may be None
+    :ivar doctype: type of document (eg. ``act``)
+    :ivar subtype: document subtype, may be None
+    :ivar actor: emenating actor, may be None
+    :ivar date: document data (str), YYYY[-MM[-DD]]
+    :ivar number: document number (str)
+    :ivar work_component: name of the work component, may be None
+    :ivar language: three-letter expression language code, may be None
+    :ivar expression_date: expression date (str), [@:]YYYY[-MM[-DD]], may be None
+    :ivar expression_component: name of the expression component, may be None
+    :ivar expression_subcomponent: name of the expression subcomponent, may be None
+    :ivar format: format extension, may be None
+
     .. seealso::
 
        http://akresolver.cs.unibo.it/admin/documentation.html
