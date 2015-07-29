@@ -4,7 +4,7 @@ import lxml.etree as ET
 
 class HTMLRenderer(object):
     """
-    Renders an Akoma Ntoso Act XML document into HTML using XLS transforms.
+    Renders an Akoma Ntoso Act XML document into HTML using XSL transforms.
 
     For the most part, the document tree is copied directly by converting
     Akoma Ntoso elements into **div** or **span** HTML elements. The class
