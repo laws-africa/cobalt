@@ -16,7 +16,7 @@ FRBR_URI_RE = re.compile(r"""^/(?P<country>[a-z]{2})       # country
                                     (?P<expression_component>[^/]+?)?       # expression component (eg. main or schedule1)
                                     (/(?P<expression_subcomponent>[^.]+))?  # expression subcomponent (eg. chapter/1 or section/20)
                                   )?                                        #
-                                  (\.(?P<format>[a-z]))?                    # format (eg. .xml, .akn, .html, .pdf)
+                                  (\.(?P<format>[a-z0-9]+))?                # format (eg. .xml, .akn, .html, .pdf)
                                 )|                                          #
                                 (?P<work_component>[^/]{4,})   # work component
                               ))?$""", re.X)

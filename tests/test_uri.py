@@ -128,6 +128,10 @@ class FrbrUriTestCase(TestCase):
         assert_equal("/za/act/1980/02", uri.work_uri())
         assert_equal("/za/act/1980/02/afr@2014-01-01", uri.expression_uri())
 
+        uri = FrbrUri.parse("/za/act/1980/02/afr.html")
+        assert_equal(uri.language, "afr")
+        assert_equal(uri.format, 'html')
+
     def test_parse_expression_component(self):
         uri = FrbrUri.parse("/za/act/1980/02/eng/main")
         assert_equal(uri.language, "eng")
