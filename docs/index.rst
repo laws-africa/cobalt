@@ -42,11 +42,6 @@ Contributing
 
 5. Send a pull request
 
-Change Log
-----------
-
-* 0.1.0 - first release
-
 Contents
 --------
 
