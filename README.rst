@@ -50,6 +50,17 @@ Contributing
 
 5. Send a pull request
 
+Releasing a New Version
+-----------------------
+
+1. Run the testes! `nosetests`
+2. Update VERSION appropriately
+3. Update the Change Log section in README.rst
+4. Commit and push to github
+5. Release to PyPI::
+
+    python setup.py sdist bdist_wheel upload
+
 Change Log
 ----------
 
