@@ -53,8 +53,13 @@ Contributing
 Change Log
 ----------
 
+0.1.5
+.....
+
+- FIX use schedule FRBRalias as heading
+
 0.1.4
------
+.....
 
 - Transforming XML to HTML now includes all attributes as data- attributes
 

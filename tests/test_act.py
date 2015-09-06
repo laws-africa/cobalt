@@ -203,7 +203,6 @@ class ActTestCase(TestCase):
             <FRBRWork>
               <FRBRthis value="/za/act/1980/01/schedule2"/>
               <FRBRuri value="/za/act/1980/01"/>
-              <FRBRalias value="Another Title"/>
               <FRBRdate date="1980-01-01" name="Generation"/>
               <FRBRauthor href="#council" as="#author"/>
               <FRBRcountry value="za"/>
@@ -239,12 +238,12 @@ class ActTestCase(TestCase):
         toc = a.table_of_contents()
         toc = [t.as_dict() for t in toc]
         self.maxDiff = None
-        self.assertEqual(toc, [
-            {'component': 'schedule1', 'type': 'doc', 'subcomponent': None, 'heading': 'Schedule 1', 'children': [
+        self.assertEqual([
+            {'component': 'schedule1', 'type': 'doc', 'subcomponent': None, 'heading': 'A Title', 'children': [
               {'component': 'schedule1', 'type': 'section', 'id': 'schedule-1.section-0', 'subcomponent': 'section'}]},
             {'component': 'schedule2', 'type': 'doc', 'subcomponent': None, 'heading': 'Schedule 2', 'children': [
               {'component': 'schedule2', 'type': 'section', 'id': 'schedule-2.section-0', 'subcomponent': 'section'}]},
-            ])
+            ], toc)
 
     def test_preamble_and_friends_in_table_of_contents(self):
         a = Act(act_fixture("""

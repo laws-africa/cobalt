@@ -66,8 +66,8 @@ class TOCBuilder(object):
 
         if type_ == 'doc':
             # component, get the title from the alias
-            heading = element.find('./{*}meta/{*}FRBRalias')
-            if heading:
+            heading = element.find('./{*}meta//{*}FRBRalias')
+            if heading is not None:
                 heading = heading.get('value')
             else:
                 # eg. schedule1 -> Schedule 1
