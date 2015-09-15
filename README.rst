@@ -64,6 +64,11 @@ Releasing a New Version
 Change Log
 ----------
 
+0.1.6
+.....
+
+- Use HTML5 semantic elements section and article when generating HTML for acts
+
 0.1.5
 .....
 
