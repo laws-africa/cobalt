@@ -64,6 +64,11 @@ Releasing a New Version
 Change Log
 ----------
 
+0.1.7
+.....
+
+- TOCElement items now include a best-effort title
+
 0.1.6
 .....
 

@@ -114,13 +114,13 @@ class ActTestCase(TestCase):
         self.maxDiff = None
         self.assertEqual(toc, [
             {'id': 'section-1', 'num': '1.', 'type': 'section', 'heading': 'Foo',
-              'component': 'main', 'subcomponent': 'section/1'},
+              'component': 'main', 'subcomponent': 'section/1', 'title': '1. Foo'},
             {'id': 'chapter-1', 'num': '1.', 'type': 'chapter', 'heading': 'The Chapter',
-              'component': 'main', 'subcomponent': 'chapter/1', 'children': [
+              'component': 'main', 'subcomponent': 'chapter/1', 'title': 'Chapter 1. - The Chapter', 'children': [
                 {'id': 'part-A', 'num': 'A', 'type': 'part', 'heading': 'The Part',
-                  'component': 'main', 'subcomponent': 'chapter/1/part/A', 'children': [
+                  'component': 'main', 'subcomponent': 'chapter/1/part/A', 'title': 'Part A - The Part', 'children': [
                     {'id': 'section-2', 'num': '2.', 'type': 'section', 'heading': 'Other',
-                      'component': 'main', 'subcomponent': 'section/2'},
+                      'component': 'main', 'subcomponent': 'section/2', 'title': '2. Other'},
                     ]
                 },
                 ]
@@ -239,11 +239,11 @@ class ActTestCase(TestCase):
         toc = [t.as_dict() for t in toc]
         self.maxDiff = None
         self.assertEqual([
-            {'component': 'schedule1', 'type': 'doc', 'subcomponent': None, 'heading': 'A Title', 'children': [
-              {'component': 'schedule1', 'type': 'section', 'id': 'schedule-1.section-0', 'subcomponent': 'section'}]},
-            {'component': 'schedule2', 'type': 'doc', 'subcomponent': None, 'heading': 'Schedule 2', 'children': [
-              {'component': 'schedule2', 'type': 'section', 'id': 'schedule-2.section-0', 'subcomponent': 'section'}]},
-            ], toc)
+          {'component': 'schedule1', 'type': 'doc', 'subcomponent': None, 'heading': 'A Title', 'title': 'A Title', 'children': [
+            {'component': 'schedule1', 'type': 'section', 'id': 'schedule-1.section-0', 'subcomponent': 'section', 'title': 'Section'}]},
+          {'component': 'schedule2', 'type': 'doc', 'subcomponent': None, 'heading': 'Schedule 2', 'title': 'Schedule 2', 'children': [
+            {'component': 'schedule2', 'type': 'section', 'id': 'schedule-2.section-0', 'subcomponent': 'section', 'title': 'Section'}]},
+        ], toc)
 
     def test_preamble_and_friends_in_table_of_contents(self):
         a = Act(act_fixture("""
@@ -268,10 +268,10 @@ class ActTestCase(TestCase):
         toc = [t.as_dict() for t in toc]
         self.maxDiff = None
         self.assertEqual(toc, [
-            {'type': 'coverpage', 'component': 'main', 'subcomponent': 'coverpage'},
-            {'type': 'preface', 'component': 'main', 'subcomponent': 'preface'},
-            {'type': 'preamble', 'component': 'main', 'subcomponent': 'preamble'},
-            {'type': 'conclusions', 'component': 'main', 'subcomponent': 'conclusions'},
+            {'type': 'coverpage', 'component': 'main', 'subcomponent': 'coverpage', 'title': 'Coverpage'},
+            {'type': 'preface', 'component': 'main', 'subcomponent': 'preface', 'title': 'Preface'},
+            {'type': 'preamble', 'component': 'main', 'subcomponent': 'preamble', 'title': 'Preamble'},
+            {'type': 'conclusions', 'component': 'main', 'subcomponent': 'conclusions', 'title': 'Conclusions'},
             ])
 
     def test_get_subcomponent(self):

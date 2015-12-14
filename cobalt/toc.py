@@ -132,12 +132,14 @@ class TOCElement(object):
         self.num = num
         self.children = children
         self.subcomponent = subcomponent
+        self.title = self.friendly_title()
 
     def as_dict(self):
         info = {
             'type': self.type,
             'component': self.component,
             'subcomponent': self.subcomponent,
+            'title': self.title,
         }
 
         if self.heading:
@@ -153,3 +155,33 @@ class TOCElement(object):
             info['children'] = [c.as_dict() for c in self.children]
 
         return info
+
+    def friendly_title(self):
+        """ Build a friendly title for this, based on heading names etc.
+        """
+        if self.type in ['chapter', 'part']:
+            title = self.type.capitalize()
+            if self.num:
+                title += ' ' + self.num
+            if self.heading:
+                title += ' - ' + self.heading
+
+        elif self.type == 'section':
+            if self.heading:
+                title = self.heading
+                if self.num:
+                    title = self.num + ' ' + title
+            else:
+                title = 'Section'
+                if self.num:
+                    title = title + ' ' + self.num
+
+        elif self.heading:
+            title = self.heading
+
+        else:
+            title = self.type.capitalize()
+            if self.num:
+                title += u' ' + self.num
+
+        return title
