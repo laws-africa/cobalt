@@ -53,7 +53,7 @@ Contributing
 Releasing a New Version
 -----------------------
 
-1. Run the tests! `nosetests`
+1. Run the tests!
 2. Update VERSION appropriately
 3. Update the Change Log section in README.rst
 4. Commit and push to github
