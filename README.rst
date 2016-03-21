@@ -64,6 +64,11 @@ Releasing a New Version
 Change Log
 ----------
 
+0.1.8
+.....
+
+- lifecycle and identification meta elements now have a configurable source attribute
+
 0.1.7
 .....
 

@@ -316,7 +316,7 @@ class ActTestCase(TestCase):
         assert_equal(a.to_xml(), """<akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.akomantoso.org/2.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd">
   <act contains="singleVersion">
     <meta>
-      <identification source="">
+      <identification source="#cobalt">
         <FRBRWork>
           <FRBRthis value="/za/act/1900/1/main"/>
           <FRBRuri value="/za/act/1900/1"/>
@@ -339,10 +339,11 @@ class ActTestCase(TestCase):
           <FRBRauthor href="#council" as="#author"/>
         </FRBRManifestation>
       </identification>
-      <lifecycle>
+      <lifecycle source="#cobalt">
         <eventRef id="amendment-2012-02-01" date="2012-02-01" type="amendment" source="#amendment-0-source"/>
       </lifecycle>
       <references>
+        <TLCOrganization id="cobalt" href="https://github.com/Code4SA/cobalt" showAs="cobalt"/>
         <passiveRef id="amendment-0-source" href="/za/act/1980/10" showAs="Foo"/>
       </references>
     </meta>
@@ -358,7 +359,7 @@ class ActTestCase(TestCase):
         assert_equals(a.to_xml(), """<akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.akomantoso.org/2.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd">
   <act contains="singleVersion">
     <meta>
-      <identification source="">
+      <identification source="#cobalt">
         <FRBRWork>
           <FRBRthis value="/za/act/1900/1/main"/>
           <FRBRuri value="/za/act/1900/1"/>
@@ -381,11 +382,12 @@ class ActTestCase(TestCase):
           <FRBRauthor href="#council" as="#author"/>
         </FRBRManifestation>
       </identification>
-      <lifecycle>
+      <lifecycle source="#cobalt">
         <eventRef id="amendment-2012-02-01" date="2012-02-01" type="amendment" source="#amendment-0-source"/>
         <eventRef id="amendment-2013-03-03" date="2013-03-03" type="amendment" source="#amendment-1-source"/>
       </lifecycle>
       <references>
+        <TLCOrganization id="cobalt" href="https://github.com/Code4SA/cobalt" showAs="cobalt"/>
         <passiveRef id="amendment-0-source" href="/za/act/1980/22" showAs="Corrected"/>
         <passiveRef id="amendment-1-source" href="/za/act/1990/5" showAs="Bar"/>
       </references>
@@ -416,7 +418,7 @@ class ActTestCase(TestCase):
         assert_equal(a.to_xml(), """<akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.akomantoso.org/2.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd">
   <act contains="originalVersion">
     <meta>
-      <identification source="">
+      <identification source="#cobalt">
         <FRBRWork>
           <FRBRthis value="/za/act/1900/1/main"/>
           <FRBRuri value="/za/act/1900/1"/>
@@ -439,10 +441,11 @@ class ActTestCase(TestCase):
           <FRBRauthor href="#council" as="#author"/>
         </FRBRManifestation>
       </identification>
-      <lifecycle>
+      <lifecycle source="#cobalt">
         <eventRef id="repeal-2012-02-01" date="2012-02-01" type="repeal" source="#repeal-source"/>
       </lifecycle>
       <references>
+        <TLCOrganization id="cobalt" href="https://github.com/Code4SA/cobalt" showAs="cobalt"/>
         <passiveRef id="repeal-source" href="/za/act/1980/10" showAs="Foo"/>
       </references>
     </meta>
