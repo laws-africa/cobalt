@@ -35,6 +35,9 @@ class Base(object):
         self.namespace = self.root.nsmap[None]
 
         self._maker = objectify.ElementMaker(annotate=False, namespace=self.namespace, nsmap=self.root.nsmap)
+        # the "source" attribute used on some elements where it is required.
+        # contains: name, id, url
+        self.source = ["cobalt", "cobalt", "https://github.com/Code4SA/cobalt"]
 
     def to_xml(self):
         return etree.tostring(self.root, encoding='utf-8', pretty_print=True)
@@ -377,7 +380,25 @@ class Act(Base):
             after = self.meta.publication
         except AttributeError:
             after = self.meta.identification
-        return self._ensure('meta.lifecycle', after=after)
+        node = self._ensure('meta.lifecycle', after=after)
+
+        if not node.get('source'):
+            node.set('source', '#' + self.source[1])
+            self._ensure_reference('TLCOrganization', self.source[0], self.source[1], self.source[2])
+
+        return node
+
+    def _ensure_reference(self, elem, name, id, href):
+        references = self._ensure('meta.references', after=self._ensure_lifecycle())
+
+        ref = references.find('./{*}%s[@id="%s"]' % (elem, id))
+        if ref is None:
+            ref = self._make(elem)
+            ref.set('id', id)
+            ref.set('href', href)
+            ref.set('showAs', name)
+            references.insert(0, ref)
+        return ref
 
     def _make(self, elem):
         return getattr(self._maker, elem)()
@@ -424,7 +445,7 @@ EMPTY_DOCUMENT = """<?xml version="1.0"?>
 <akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.akomantoso.org/2.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd">
   <act contains="originalVersion">
     <meta>
-      <identification source="">
+      <identification source="#cobalt">
         <FRBRWork>
           <FRBRthis value="/za/act/1900/1/main"/>
           <FRBRuri value="/za/act/1900/1"/>
@@ -447,6 +468,9 @@ EMPTY_DOCUMENT = """<?xml version="1.0"?>
           <FRBRauthor href="#council" as="#author"/>
         </FRBRManifestation>
       </identification>
+      <references>
+        <TLCOrganization id="cobalt" href="https://github.com/Code4SA/cobalt" showAs="cobalt"/>
+      </references>
     </meta>
     <body>
       <section id="section-1">
