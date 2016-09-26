@@ -64,6 +64,11 @@ Releasing a New Version
 Change Log
 ----------
 
+0.1.9
+.....
+
+- Support dates before 1900. Contributed by rkunal.
+
 0.1.8
 .....
 
