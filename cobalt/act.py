@@ -20,7 +20,7 @@ def datestring(value):
     elif isinstance(value, basestring):
         return value
     else:
-        return value.strftime(DATE_FORMAT)
+        return "%04d-%02d-%02d" % (value.year, value.month, value.day)
 
 
 class Base(object):
