@@ -64,6 +64,11 @@ Releasing a New Version
 Change Log
 ----------
 
+0.1.10
+......
+
+- Convert EOL elements to BR when changing XML to HTML
+
 0.1.9
 .....
 
