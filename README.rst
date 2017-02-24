@@ -60,6 +60,13 @@ Releasing a New Version
 5. Release to PyPI::
 
     python setup.py sdist bdist_wheel upload
+    
+License and Copyright
+---------------------
+
+Cobalt is licensed under the LPGL 3.0 license.
+
+Cobalt is Copyright 2015-2017 AfricanLII.
 
 Change Log
 ----------
