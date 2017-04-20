@@ -64,6 +64,12 @@ Releasing a New Version
 Change Log
 ----------
 
+0.1.11
+......
+
+- Render ref elements as HTML a elements
+- Optionally prepend a resolver URL before a elements
+
 0.1.10
 ......
 
