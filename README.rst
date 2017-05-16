@@ -4,8 +4,8 @@ Cobalt
 .. image:: https://badge.fury.io/py/cobalt.svg
     :target: http://badge.fury.io/py/cobalt
 
-.. image:: https://travis-ci.org/Code4SA/cobalt.svg
-    :target: http://travis-ci.org/Code4SA/cobalt
+.. image:: https://travis-ci.org/OpenUpSA/cobalt.svg
+    :target: http://travis-ci.org/OpenUpSA/cobalt
 
 Cobalt is a lightweight Python library for working with `Akoma Ntoso <http://www.akomantoso.org/>`_ Act documents.
 It makes it easy to work with Akoma Ntoso metadata, FRBR URIs and generate Tables of Contents for a document.
