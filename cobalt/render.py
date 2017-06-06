@@ -38,7 +38,11 @@ class HTMLRenderer(object):
 
     def render(self, node):
         """ Render an XML Tree or Element object into an HTML string """
-        return ET.tostring(self.xslt(node, resolverUrl=ET.XSLT.strparam(self.resolver_url)))
+        params = {
+            'resolverUrl': ET.XSLT.strparam(self.resolver_url),
+            'defaultIdScope': ET.XSLT.strparam(self.defaultIdScope(node) or ''),
+        }
+        return ET.tostring(self.xslt(node, **params))
 
     def render_xml(self, xml):
         """ Render an XML string into an HTML string """
@@ -79,3 +83,11 @@ class HTMLRenderer(object):
                 return fname
 
         raise ValueError("Couldn't find XSLT file, not even the default, in %s" % xslt_dir)
+
+    def defaultIdScope(self, node):
+        """ Default scope for ID attributes when rendering.
+        """
+        ns = node.nsmap[None]
+        scope = node.xpath('./ancestor::a:doc[@name][1]/@name', namespaces={'a': ns})
+        if scope:
+            return scope[0]
