@@ -71,6 +71,11 @@ Cobalt is Copyright 2015-2017 AfricanLII.
 Change Log
 ----------
 
+0.2.1
+.....
+
+- When rendering HTML, ensure primary container elements and schedules have appropriate ids
+
 0.2.0
 .....
 
