@@ -71,6 +71,13 @@ Cobalt is Copyright 2015-2017 AfricanLII.
 Change Log
 ----------
 
+0.3.0
+.....
+
+- Support for images
+- Change how XSLT params are passed to the renderer
+- Add expression_frbr_uri method to Act class
+
 0.2.1
 .....
 
