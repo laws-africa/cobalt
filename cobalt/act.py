@@ -195,6 +195,14 @@ class Act(Base):
             ident.FRBRManifestation.FRBRuri.set('value', uri.expression_uri(False))
             ident.FRBRManifestation.FRBRthis.set('value', uri.expression_uri())
 
+    def expression_frbr_uri(self):
+        """ The FRBR Expression URI as a :class:`FrbrUri` instance that uniquely identifies this document universally. """
+        uri = self.meta.identification.FRBRExpression.FRBRuri.get('value')
+        if uri:
+            return FrbrUri.parse(uri)
+        else:
+            return FrbrUri.empty()
+
     @property
     def year(self):
         """ The act year, derived from :data:`frbr_uri`. Read-only. """
