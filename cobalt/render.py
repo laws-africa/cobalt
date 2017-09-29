@@ -13,7 +13,7 @@ class HTMLRenderer(object):
     """
 
     def __init__(self, act=None, uri=None, country=None, language=None, subtype=None, xslt_filename=None, xslt_dir=None,
-                 resolver_url=None):
+                 xslt_params=None):
         """
         Create a new, re-usable render. The renderer must be able to find an appropriate
         XSL stylesheet based on the provided parameters.
@@ -25,7 +25,7 @@ class HTMLRenderer(object):
         :param subtype: document subtype (eg. 'bylaw'), or None
         :param xslt_dir: directory in which to look for files
         :param xslt_filename: specify filename directly, all other params ignored
-        :param resolver_url: URL for resolving act references (optional)
+        :param xslt_params: dict of parameters to pass to the XSLT (optional)
         """
         if xslt_filename is None:
             xslt_filename = self.find_xslt(act, uri, country, language, xslt_dir)
@@ -34,14 +34,14 @@ class HTMLRenderer(object):
             xslt_filename = os.path.join(os.path.dirname(__file__), 'xsl/act.xsl')
         self.xslt = ET.XSLT(ET.parse(xslt_filename))
 
-        self.resolver_url = resolver_url or ''
+        self.xslt_params = xslt_params or {}
 
     def render(self, node):
         """ Render an XML Tree or Element object into an HTML string """
         params = {
-            'resolverUrl': ET.XSLT.strparam(self.resolver_url),
             'defaultIdScope': ET.XSLT.strparam(self.defaultIdScope(node) or ''),
         }
+        params.update({k: ET.XSLT.strparam(v) for k, v in self.xslt_params.iteritems()})
         return ET.tostring(self.xslt(node, **params))
 
     def render_xml(self, xml):
