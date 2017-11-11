@@ -71,6 +71,11 @@ Cobalt is Copyright 2015-2017 AfricanLII.
 Change Log
 ----------
 
+0.3.1
+.....
+
+- Support for i18n in XSLT files, including all 11 South African languages from myconstitution.co.za
+
 0.3.0
 .....
 
