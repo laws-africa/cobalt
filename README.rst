@@ -71,6 +71,11 @@ Cobalt is Copyright 2015-2017 AfricanLII.
 Change Log
 ----------
 
+0.3.2
+.....
+
+- Inject original img src as data-src
+
 0.3.1
 .....
 
