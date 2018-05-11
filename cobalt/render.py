@@ -28,7 +28,7 @@ class HTMLRenderer(object):
         :param xslt_params: dict of parameters to pass to the XSLT (optional)
         """
         if xslt_filename is None:
-            xslt_filename = self.find_xslt(act, uri, country, language, xslt_dir)
+            xslt_filename = self.find_xslt(act, uri, country, language, subtype, xslt_dir)
 
         if not xslt_filename:
             xslt_filename = os.path.join(os.path.dirname(__file__), 'xsl/act.xsl')
