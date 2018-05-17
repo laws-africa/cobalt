@@ -6,7 +6,6 @@ from lxml import etree
 import arrow
 
 from .uri import FrbrUri
-from .toc import TOCBuilder
 
 
 ENCODING_RE = re.compile('encoding="[\w-]+"')
@@ -349,27 +348,6 @@ class Act(Base):
             components[name] = doc
 
         return components
-
-    def table_of_contents(self, builder=None):
-        """ Get the table of contents of this document as a list of :class:`cobalt.toc.TOCElement` instances. """
-        builder = builder or TOCBuilder()
-        return builder.table_of_contents(self)
-
-    def get_subcomponent(self, component, subcomponent):
-        """ Get the named subcomponent in this document, such as `chapter/2` or 'section/13A'.
-        :class:`lxml.objectify.ObjectifiedElement` or `None`.
-        """
-        def search_toc(items):
-            for item in items:
-                if item.component == component and item.subcomponent == subcomponent:
-                    return item.element
-
-                if item.children:
-                    found = search_toc(item.children)
-                    if found:
-                        return found
-
-        return search_toc(self.table_of_contents())
 
     def _ensure(self, name, after):
         """ Hack help to get an element if it exists, or create it if it doesn't.
