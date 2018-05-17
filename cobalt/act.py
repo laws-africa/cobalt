@@ -163,7 +163,7 @@ class Act(Base):
     @property
     def frbr_uri(self):
         """ The FRBR Work URI as a :class:`FrbrUri` instance that uniquely identifies this document universally. """
-        uri = self.meta.identification.FRBRWork.FRBRuri.get('value')
+        uri = self.meta.identification.FRBRExpression.FRBRuri.get('value')
         if uri:
             return FrbrUri.parse(uri)
         else:
