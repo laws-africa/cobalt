@@ -66,14 +66,14 @@ class HTMLRenderer(object):
 
         options = []
         if subtype:
-            options.append('_'.join(["act", subtype, language, country]))
-            options.append('_'.join(["act", subtype, language]))
-            options.append('_'.join(["act", subtype, country]))
-            options.append('_'.join(["act", subtype]))
+            options.append('-'.join(["act", subtype, language, country]))
+            options.append('-'.join(["act", subtype, language]))
+            options.append('-'.join(["act", subtype, country]))
+            options.append('-'.join(["act", subtype]))
 
-        options.append('_'.join(["act", language, country]))
-        options.append('_'.join(["act", language]))
-        options.append('_'.join(["act", country]))
+        options.append('-'.join(["act", language, country]))
+        options.append('-'.join(["act", language]))
+        options.append('-'.join(["act", country]))
         options.append('act')
 
         options = [os.path.join(xslt_dir, f + ".xsl") for f in options]
