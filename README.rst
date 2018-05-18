@@ -74,9 +74,8 @@ Change Log
 1.0.0
 .....
 
-- Move table of contents and other locale (legal tradition) specific functionality out of Cobalt.
+- Move table of contents, render and other locale (legal tradition) specific functionality out of Cobalt.
 - FIX bug that returned the incorrect language when extracting a document's expression URI.
-- Breaking change: locale-based XSL templates now use hyphens as separators, not underscores (eg. act-language-country.xsl, act-country.xsl, etc.)
 
 0.3.2
 .....
