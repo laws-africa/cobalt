@@ -71,6 +71,12 @@ Cobalt is Copyright 2015-2017 AfricanLII.
 Change Log
 ----------
 
+1.0.0
+.....
+
+- Move table of contents and other locale (legal tradition) specific functionality out of Cobalt.
+- FIX bug that returned the incorrect language when extracting a document's expression URI.
+
 0.3.2
 .....
 
