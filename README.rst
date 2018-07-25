@@ -71,6 +71,11 @@ Cobalt is Copyright 2015-2017 AfricanLII.
 Change Log
 ----------
 
+1.0.1
+.....
+
+- FIX FrbrUri clone bug when a URI had a language.
+
 1.0.0
 .....
 

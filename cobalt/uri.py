@@ -110,17 +110,19 @@ class FrbrUri(object):
 
     def clone(self):
         return FrbrUri(
-            self.country,
-            self.locality,
-            self.doctype,
-            self.subtype,
-            self.actor,
-            self.date,
-            self.number,
-            self.language,
-            self.expression_date,
-            self.expression_component,
-            self.format,
+            country=self.country,
+            locality=self.locality,
+            doctype=self.doctype,
+            subtype=self.subtype,
+            actor=self.actor,
+            date=self.date,
+            number=self.number,
+            work_component=self.work_component,
+            language=self.language,
+            expression_date=self.expression_date,
+            expression_component=self.expression_component,
+            expression_subcomponent=self.expression_subcomponent,
+            format=self.format,
         )
 
     def uri(self):
