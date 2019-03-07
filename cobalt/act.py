@@ -31,12 +31,12 @@ class Base(object):
             xml = xml.encode('utf-8')
 
         self.root = objectify.fromstring(xml)
-        self.namespace = self.root.nsmap[None]
+        self.namespace = self.root.nsmap.get(None)
 
         self._maker = objectify.ElementMaker(annotate=False, namespace=self.namespace, nsmap=self.root.nsmap)
         # the "source" attribute used on some elements where it is required.
         # contains: name, id, url
-        self.source = ["cobalt", "cobalt", "https://github.com/Code4SA/cobalt"]
+        self.source = ["cobalt", "cobalt", "https://github.com/laws-africa/cobalt"]
 
     def to_xml(self):
         return etree.tostring(self.root, encoding='utf-8', pretty_print=True)
