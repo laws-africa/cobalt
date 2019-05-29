@@ -6,6 +6,8 @@ import lxml.etree as etree
 from cobalt.act import Act, datestring, AmendmentEvent, RepealEvent
 
 class ActTestCase(TestCase):
+    maxDiff = None
+
     def test_empty_act(self):
         a = Act()
         assert_equal(a.title, "Untitled")
@@ -90,8 +92,7 @@ class ActTestCase(TestCase):
 
         a.amendments = [AmendmentEvent(date='2012-02-01', amending_uri='/za/act/1980/10', amending_title="Foo")]
 
-        assert_equal(
-            etree.tostring(a.root, encoding='utf-8', pretty_print=True),
+        self.assertMultiLineEqual(
             """<akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.akomantoso.org/2.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd">
   <act contains="singleVersion">
     <meta>
@@ -117,26 +118,21 @@ class ActTestCase(TestCase):
           <FRBRdate date="1900-01-01" name="Generation"/>
           <FRBRauthor href="#council" as="#author"/>
         </FRBRManifestation>
-      </identification>
-      <lifecycle source="#cobalt">
-        <eventRef id="amendment-2012-02-01" date="2012-02-01" type="amendment" source="#amendment-0-source"/>
-      </lifecycle>
+      </identification><lifecycle source="#cobalt"><eventRef id="amendment-2012-02-01" date="2012-02-01" type="amendment" source="#amendment-0-source"/></lifecycle>
       <references>
         <TLCOrganization id="cobalt" href="https://github.com/Code4SA/cobalt" showAs="cobalt"/>
-        <passiveRef id="amendment-0-source" href="/za/act/1980/10" showAs="Foo"/>
-      </references>
+      <passiveRef id="amendment-0-source" href="/za/act/1980/10" showAs="Foo"/></references>
     </meta>
-    <body/>
-  </act>
+    <body/></act>
 </akomaNtoso>
-""")
+""",
+            etree.tostring(a.root, encoding='utf-8', pretty_print=True))
 
         a.amendments = [
             AmendmentEvent(date='2012-02-01', amending_uri='/za/act/1980/22', amending_title="Corrected"),
             AmendmentEvent(date='2013-03-03', amending_uri='/za/act/1990/5', amending_title="Bar"),
         ]
-        assert_equals(
-            etree.tostring(a.root, encoding='utf-8', pretty_print=True),
+        self.assertMultiLineEqual(
             """<akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.akomantoso.org/2.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd">
   <act contains="singleVersion">
     <meta>
@@ -162,21 +158,15 @@ class ActTestCase(TestCase):
           <FRBRdate date="1900-01-01" name="Generation"/>
           <FRBRauthor href="#council" as="#author"/>
         </FRBRManifestation>
-      </identification>
-      <lifecycle source="#cobalt">
-        <eventRef id="amendment-2012-02-01" date="2012-02-01" type="amendment" source="#amendment-0-source"/>
-        <eventRef id="amendment-2013-03-03" date="2013-03-03" type="amendment" source="#amendment-1-source"/>
-      </lifecycle>
+      </identification><lifecycle source="#cobalt"><eventRef id="amendment-2012-02-01" date="2012-02-01" type="amendment" source="#amendment-0-source"/><eventRef id="amendment-2013-03-03" date="2013-03-03" type="amendment" source="#amendment-1-source"/></lifecycle>
       <references>
         <TLCOrganization id="cobalt" href="https://github.com/Code4SA/cobalt" showAs="cobalt"/>
-        <passiveRef id="amendment-0-source" href="/za/act/1980/22" showAs="Corrected"/>
-        <passiveRef id="amendment-1-source" href="/za/act/1990/5" showAs="Bar"/>
-      </references>
+      <passiveRef id="amendment-0-source" href="/za/act/1980/22" showAs="Corrected"/><passiveRef id="amendment-1-source" href="/za/act/1990/5" showAs="Bar"/></references>
     </meta>
-    <body/>
-  </act>
+    <body/></act>
 </akomaNtoso>
-""")
+""",
+            etree.tostring(a.root, encoding='utf-8', pretty_print=True))
 
         amendment = a.amendments[0]
         assert_equal(datestring(amendment.date), '2012-02-01')
@@ -196,8 +186,7 @@ class ActTestCase(TestCase):
 
         a.repeal = RepealEvent(date='2012-02-01', repealing_uri='/za/act/1980/10', repealing_title='Foo')
 
-        assert_equal(
-            etree.tostring(a.root, encoding='utf-8', pretty_print=True),
+        self.assertMultiLineEqual(
             """<akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.akomantoso.org/2.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd">
   <act contains="originalVersion">
     <meta>
@@ -223,19 +212,15 @@ class ActTestCase(TestCase):
           <FRBRdate date="1900-01-01" name="Generation"/>
           <FRBRauthor href="#council" as="#author"/>
         </FRBRManifestation>
-      </identification>
-      <lifecycle source="#cobalt">
-        <eventRef id="repeal-2012-02-01" date="2012-02-01" type="repeal" source="#repeal-source"/>
-      </lifecycle>
+      </identification><lifecycle source="#cobalt"><eventRef id="repeal-2012-02-01" date="2012-02-01" type="repeal" source="#repeal-source"/></lifecycle>
       <references>
         <TLCOrganization id="cobalt" href="https://github.com/Code4SA/cobalt" showAs="cobalt"/>
-        <passiveRef id="repeal-source" href="/za/act/1980/10" showAs="Foo"/>
-      </references>
+      <passiveRef id="repeal-source" href="/za/act/1980/10" showAs="Foo"/></references>
     </meta>
-    <body/>
-  </act>
+    <body/></act>
 </akomaNtoso>
-""")
+""",
+            etree.tostring(a.root, encoding='utf-8', pretty_print=True))
 
         assert_equal(a.repeal.repealing_uri, '/za/act/1980/10')
         assert_equal(a.repeal.repealing_title, 'Foo')

@@ -71,6 +71,11 @@ Cobalt is Copyright 2015-2017 AfricanLII.
 Change Log
 ----------
 
+2.1.0
+.....
+
+- FIX don't strip empty whitespace during objectify.fromstring
+
 2.0.0
 .....
 
