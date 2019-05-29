@@ -22,6 +22,11 @@ def datestring(value):
         return "%04d-%02d-%02d" % (value.year, value.month, value.day)
 
 
+# Create a new objectify parser that doesn't remove blank text nodes
+objectify_parser = etree.XMLParser()
+objectify_parser.set_element_class_lookup(objectify.ObjectifyElementClassLookup())
+
+
 class Base(object):
     def __init__(self, xml=None):
         encoding = ENCODING_RE.search(xml, 0, 200)
@@ -30,7 +35,7 @@ class Base(object):
             # change to bytes
             xml = xml.encode('utf-8')
 
-        self.root = objectify.fromstring(xml)
+        self.root = objectify.fromstring(xml, parser=objectify_parser)
         self.namespace = self.root.nsmap.get(None)
 
         self._maker = objectify.ElementMaker(annotate=False, namespace=self.namespace, nsmap=self.root.nsmap)
@@ -225,7 +230,7 @@ class Act(Base):
 
     @body_xml.setter
     def body_xml(self, xml):
-        new_body = objectify.fromstring(xml or EMPTY_BODY)
+        new_body = objectify.fromstring(xml or EMPTY_BODY, parser=objectify_parser)
         new_body.tag = 'body'
         self.body.getparent().replace(self.body, new_body)
         self.body = new_body
