@@ -8,7 +8,7 @@ import arrow
 from .uri import FrbrUri
 
 
-ENCODING_RE = re.compile('encoding="[\w-]+"')
+ENCODING_RE = re.compile(r'encoding="[\w-]+"')
 
 DATE_FORMAT = "%Y-%m-%d"
 
