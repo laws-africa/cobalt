@@ -71,6 +71,11 @@ Cobalt is Copyright 2015-2017 AfricanLII.
 Change Log
 ----------
 
+2.0.0
+.....
+
+- FIX don't pretty-print XML, it introduces meaningful whitespace
+
 1.0.1
 .....
 

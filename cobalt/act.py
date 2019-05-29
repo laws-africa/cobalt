@@ -39,7 +39,7 @@ class Base(object):
         self.source = ["cobalt", "cobalt", "https://github.com/laws-africa/cobalt"]
 
     def to_xml(self):
-        return etree.tostring(self.root, encoding='utf-8', pretty_print=True)
+        return etree.tostring(self.root, encoding='utf-8')
 
 
 class Fragment(Base):
@@ -221,7 +221,7 @@ class Act(Base):
     def body_xml(self):
         """ The raw XML string of the `body` element of the document. When
         setting this property, XML must be rooted at a `body` element. """
-        return etree.tostring(self.body, pretty_print=True)
+        return etree.tostring(self.body, encoding='utf-8')
 
     @body_xml.setter
     def body_xml(self, xml):

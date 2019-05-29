@@ -1,6 +1,7 @@
 from unittest import TestCase
 from nose.tools import *  # noqa
 from datetime import date
+import lxml.etree as etree
 
 from cobalt.act import Act, datestring, AmendmentEvent, RepealEvent
 
@@ -89,7 +90,9 @@ class ActTestCase(TestCase):
 
         a.amendments = [AmendmentEvent(date='2012-02-01', amending_uri='/za/act/1980/10', amending_title="Foo")]
 
-        assert_equal(a.to_xml(), """<akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.akomantoso.org/2.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd">
+        assert_equal(
+            etree.tostring(a.root, encoding='utf-8', pretty_print=True),
+            """<akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.akomantoso.org/2.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd">
   <act contains="singleVersion">
     <meta>
       <identification source="#cobalt">
@@ -132,7 +135,9 @@ class ActTestCase(TestCase):
             AmendmentEvent(date='2012-02-01', amending_uri='/za/act/1980/22', amending_title="Corrected"),
             AmendmentEvent(date='2013-03-03', amending_uri='/za/act/1990/5', amending_title="Bar"),
         ]
-        assert_equals(a.to_xml(), """<akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.akomantoso.org/2.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd">
+        assert_equals(
+            etree.tostring(a.root, encoding='utf-8', pretty_print=True),
+            """<akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.akomantoso.org/2.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd">
   <act contains="singleVersion">
     <meta>
       <identification source="#cobalt">
@@ -191,7 +196,9 @@ class ActTestCase(TestCase):
 
         a.repeal = RepealEvent(date='2012-02-01', repealing_uri='/za/act/1980/10', repealing_title='Foo')
 
-        assert_equal(a.to_xml(), """<akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.akomantoso.org/2.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd">
+        assert_equal(
+            etree.tostring(a.root, encoding='utf-8', pretty_print=True),
+            """<akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.akomantoso.org/2.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd">
   <act contains="originalVersion">
     <meta>
       <identification source="#cobalt">
