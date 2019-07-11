@@ -56,11 +56,19 @@ Releasing a New Version
 1. Run the tests!
 2. Update VERSION appropriately
 3. Update the Change Log section in README.rst
-4. Commit and push to github
-5. Release to PyPI::
+4. Commit and tag::
 
-    python setup.py sdist bdist_wheel upload
-    
+    git tag vX.X.X
+    git push -u origin --tags
+
+5. Build artefacts::
+
+    rm -rf build dist && python setup.py sdist bdist_wheel
+
+6. Upload to PyPI::
+
+    twine upload dist/*
+
 License and Copyright
 ---------------------
 
