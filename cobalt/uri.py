@@ -1,12 +1,12 @@
 import re
 
-FRBR_URI_RE = re.compile(r"""^/(?P<country>[a-z]{2})       # country
-                              (-(?P<locality>[^/]+))?      # locality code
-                              /(?P<doctype>[^/]+)          # document type
-                              /((?P<subtype>[^/]+)         # subtype (optional)
-                              /((?P<actor>[^/]+)/)?)?      # actor (optional)
+FRBR_URI_RE = re.compile(r"""^/(?P<country>[a-z]{2})         # country
+                              (-(?P<locality>[^/]+))?        # locality code
+                              /(?P<doctype>[^/]+)            # document type
+                              /((?P<subtype>[^/]+)           # subtype (optional)
+                              /((?P<actor>[^0-9][^/]*)/)?)?  # actor (optional), cannot start with a number
                               (?P<date>[0-9]{4}(-[0-9]{2}(-[0-9]{2})?)?)  # date
-                              /(?P<number>[^/]+)           # number
+                              /(?P<number>[^/]+)             # number
                               (/
                                (                           # either a work component or expression details
                                 (                                # optional expression details

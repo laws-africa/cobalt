@@ -207,6 +207,24 @@ class FrbrUriTestCase(TestCase):
         assert_equal(uri.language, "eng")
         assert_equal(uri.expression_date, ':2012-01-01')
 
+    def test_parse_subtype_numeric_number(self):
+        # A subtype with a numeric number should not be
+        # mistaken for an actor
+        uri = FrbrUri.parse("/za-jhb/act/notice/2007/5319/eng@2007-12-05")
+        assert_is_none(uri.actor)
+        assert_equal(uri.date, "2007")
+        assert_equal(uri.language, "eng")
+        assert_equal(uri.number, "5319")
+        assert_equal(uri.expression_date, "@2007-12-05")
+
+    def test_parse_subtype_and_actor(self):
+        uri = FrbrUri.parse("/za-jhb/act/notice/actor/2007/5319/eng@2007-12-05")
+        assert_equal(uri.actor, "actor")
+        assert_equal(uri.date, "2007")
+        assert_equal(uri.number, "5319")
+        assert_equal(uri.language, "eng")
+        assert_equal(uri.expression_date, "@2007-12-05")
+
     def test_expression_uri(self):
         uri = FrbrUri.parse("/za/act/1980/02/eng")
         uri.expression_date = '@2014-01-01'
