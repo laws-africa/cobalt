@@ -71,6 +71,13 @@ Cobalt is Copyright 2015-2017 AfricanLII.
 Change Log
 ----------
 
+2.2.0
+.....
+
+- FIX don't mistake numbers in uris with subtypes and numeric numbers as actors
+- FIX link to GitHub
+- Unicode literals when parsing FRBR URIs
+
 2.1.0
 .....
 

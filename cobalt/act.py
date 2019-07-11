@@ -460,7 +460,7 @@ EMPTY_DOCUMENT = """<?xml version="1.0"?>
         </FRBRManifestation>
       </identification>
       <references>
-        <TLCOrganization id="cobalt" href="https://github.com/Code4SA/cobalt" showAs="cobalt"/>
+        <TLCOrganization id="cobalt" href="https://github.com/laws-africa/cobalt" showAs="cobalt"/>
       </references>
     </meta>
     <body>
