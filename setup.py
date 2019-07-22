@@ -23,11 +23,11 @@ setup(
     long_description=long_description,
 
     # The project's main homepage.
-    url='https://github.com/Code4SA/cobalt',
+    url='https://github.com/laws-africa/cobalt',
 
     # Author details
-    author='Code for South Africa',
-    author_email='greg@code4sa.org',
+    author='Laws.Africa',
+    author_email='greg@laws.africa',
 
     # Choose your license
     license='GNU Lesser General Public License v3 (LGPLv3)',
