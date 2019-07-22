@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 import re
 
 FRBR_URI_RE = re.compile(r"""^/(?P<country>[a-z]{2})         # country

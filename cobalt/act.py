@@ -16,7 +16,7 @@ DATE_FORMAT = "%Y-%m-%d"
 def datestring(value):
     if value is None:
         return ""
-    elif isinstance(value, basestring):
+    elif isinstance(value, str):
         return value
     else:
         return "%04d-%02d-%02d" % (value.year, value.month, value.day)
@@ -185,7 +185,7 @@ class Act(Base):
             uri.work_component = 'main'
 
         # set URIs of the main document and components
-        for component, element in self.components().iteritems():
+        for component, element in self.components().items():
             uri.work_component = component
             ident = element.find('.//{*}meta/{*}identification')
 
