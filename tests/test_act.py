@@ -126,7 +126,7 @@ class ActTestCase(TestCase):
     <body/></act>
 </akomaNtoso>
 """,
-            etree.tostring(a.root, encoding='utf-8', pretty_print=True))
+            etree.tostring(a.root, encoding='utf-8', pretty_print=True).decode('utf-8'))
 
         a.amendments = [
             AmendmentEvent(date='2012-02-01', amending_uri='/za/act/1980/22', amending_title="Corrected"),
@@ -166,7 +166,7 @@ class ActTestCase(TestCase):
     <body/></act>
 </akomaNtoso>
 """,
-            etree.tostring(a.root, encoding='utf-8', pretty_print=True))
+            etree.tostring(a.root, encoding='utf-8', pretty_print=True).decode('utf-8'))
 
         amendment = a.amendments[0]
         assert_equal(datestring(amendment.date), '2012-02-01')
@@ -220,7 +220,7 @@ class ActTestCase(TestCase):
     <body/></act>
 </akomaNtoso>
 """,
-            etree.tostring(a.root, encoding='utf-8', pretty_print=True))
+            etree.tostring(a.root, encoding='utf-8', pretty_print=True).decode('utf-8'))
 
         assert_equal(a.repeal.repealing_uri, '/za/act/1980/10')
         assert_equal(a.repeal.repealing_title, 'Foo')

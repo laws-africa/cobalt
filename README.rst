@@ -79,6 +79,12 @@ Cobalt is Copyright 2015-2017 AfricanLII.
 Change Log
 ----------
 
+3.0.0
+.....
+
+- Python 3.6 and 3.7 support
+- Drop support for Python 2.x
+
 2.2.0
 .....
 
