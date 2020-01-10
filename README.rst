@@ -82,7 +82,7 @@ Change Log
 3.1.0
 -----
 
-- Replace arrow with iso8601, avoiding [arrow issue 612](https://github.com/crsmithdev/arrow/issues/612)
+- Replace arrow with iso8601, avoiding `arrow issue 612 <https://github.com/crsmithdev/arrow/issues/612>`_
 
 3.0.0
 .....
