@@ -3,7 +3,7 @@ from collections import OrderedDict
 
 from lxml import objectify
 from lxml import etree
-import arrow
+from iso8601 import parse_date
 
 from .uri import FrbrUri
 
@@ -90,7 +90,7 @@ class Act(Base):
     @property
     def work_date(self):
         """ Date from the FRBRWork element """
-        return arrow.get(self.meta.identification.FRBRWork.FRBRdate.get('date')).date()
+        return parse_date(self.meta.identification.FRBRWork.FRBRdate.get('date')).date()
 
     @work_date.setter
     def work_date(self, value):
@@ -99,7 +99,7 @@ class Act(Base):
     @property
     def expression_date(self):
         """ Date from the FRBRExpression element """
-        return arrow.get(self.meta.identification.FRBRExpression.FRBRdate.get('date')).date()
+        return parse_date(self.meta.identification.FRBRExpression.FRBRdate.get('date')).date()
 
     @expression_date.setter
     def expression_date(self, value):
@@ -110,7 +110,7 @@ class Act(Base):
     @property
     def manifestation_date(self):
         """ Date from the FRBRManifestation element """
-        return arrow.get(self.meta.identification.FRBRManifestation.FRBRdate.get('date')).date()
+        return parse_date(self.meta.identification.FRBRManifestation.FRBRdate.get('date')).date()
 
     @manifestation_date.setter
     def manifestation_date(self, value):
@@ -134,7 +134,7 @@ class Act(Base):
         """ Date of the publication """
         pub = self._get('meta.publication')
         if pub is not None and pub.get('date'):
-            return arrow.get(pub.get('date')).date()
+            return parse_date(pub.get('date')).date()
         return None
 
     @publication_date.setter
@@ -240,7 +240,7 @@ class Act(Base):
         amendments = []
 
         for e in self.meta.iterfind('.//{*}lifecycle/{*}eventRef[@type="amendment"]'):
-            date = arrow.get(e.get('date')).date()
+            date = parse_date(e.get('date')).date()
             event = AmendmentEvent(date=date)
             amendments.append(event)
 
@@ -296,7 +296,7 @@ class Act(Base):
     def repeal(self):
         e = self.meta.find('.//{*}lifecycle/{*}eventRef[@type="repeal"]')
         if e is not None:
-            date = arrow.get(e.get('date')).date()
+            date = parse_date(e.get('date')).date()
             event = RepealEvent(date=date)
 
             id = e.get('source')[1:]

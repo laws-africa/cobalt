@@ -65,7 +65,7 @@ setup(
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
     install_requires=[
-        'arrow >= 0.5.0',
+        'iso8601 >= 0.1',
         'lxml >= 3.4.1',
     ],
 
