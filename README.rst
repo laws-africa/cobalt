@@ -79,6 +79,11 @@ Cobalt is Copyright 2015-2017 AfricanLII.
 Change Log
 ----------
 
+3.1.0
+-----
+
+- Replace arrow with iso8601, avoiding [arrow issue 612](https://github.com/crsmithdev/arrow/issues/612)
+
 3.0.0
 .....
 
