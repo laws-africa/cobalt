@@ -96,7 +96,7 @@ class FrbrUri(object):
 
     def __init__(self, country, locality, doctype, subtype, actor, date, number,
                  work_component=None, language=None, expression_date=None, expression_component=None,
-                 expression_subcomponent=None, format=None, prefix=None):
+                 expression_subcomponent=None, format=None, prefix="akn"):
         self.prefix = prefix
         self.country = country
         self.locality = locality
