@@ -58,7 +58,7 @@ class Base(object):
             if ns in namespaces:
                 return ns
 
-        raise ValueError(f"The XML namespace isn't (but should be) one of the following: {', '.join(akn_namespaces.split())}")
+        raise ValueError(f"The XML namespace isn't (but should be) one of the following: {', '.join(akn_namespaces)}")
 
 
 class Fragment(Base):
