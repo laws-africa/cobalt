@@ -256,20 +256,15 @@ class ActTestCase(TestCase):
         assert_equal(a.namespace, 'http://www.akomantoso.org/2.0')
 
         # throw error if neither of AKN2 and AKN3 are listed as namespaces
-        # (can't use assert_raises because Act() with bad namespaces fails at init)
-        error = None
-        try:
+        with assert_raises(ValueError) as raised:
             Act(xml="""<?xml version="1.0"?>
-    <akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:foo="http://www.akomantoso.org/4.0" xmlns:bar="http://docs.oasis-open.org/legaldocml/ns/akn/5.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd">
-      <act>
-        <meta/>
-        <body/>
-      </act>
-    </akomaNtoso>""")
-        except ValueError as e:
-            error = e
-        assert_is_not_none(error)
-        assert_in("The XML namespace isn't (but should be) one of the following: http://docs.oasis-open.org/legaldocml/ns/akn/3.0, http://www.akomantoso.org/2.0", error.args)
+                <akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:foo="http://www.akomantoso.org/4.0" xmlns:bar="http://docs.oasis-open.org/legaldocml/ns/akn/5.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd">
+                  <act>
+                    <meta/>
+                    <body/>
+                  </act>
+                </akomaNtoso>""")
+        assert_in("The XML namespace isn't (but should be) one of the following: http://docs.oasis-open.org/legaldocml/ns/akn/3.0, http://www.akomantoso.org/2.0", raised.exception.args)
 
 
 def act_fixture(content):
