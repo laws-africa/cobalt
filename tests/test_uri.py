@@ -18,8 +18,24 @@ class FrbrUriTestCase(TestCase):
         assert_equal(uri.number, "01")
         assert_equal(uri.language, "eng")
         assert_equal(uri.expression_date, None)
+        assert_is_none(uri.prefix)
 
         assert_equal("/za/act/1980/01", uri.work_uri())
+
+    def test_simple_prefix(self):
+        uri = FrbrUri.parse("/akn/za/act/1980/01")
+        assert_equal(uri.prefix, "akn")
+        assert_equal(uri.country, "za")
+        assert_equal(uri.locality, None)
+        assert_equal(uri.doctype, "act")
+        assert_equal(uri.subtype, None)
+        assert_equal(uri.actor, None)
+        assert_equal(uri.date, "1980")
+        assert_equal(uri.number, "01")
+        assert_equal(uri.language, "eng")
+        assert_equal(uri.expression_date, None)
+
+        assert_equal("/akn/za/act/1980/01", uri.work_uri())
 
     def test_with_subtype(self):
         uri = FrbrUri.parse("/za/act/by-law/1980/01")
