@@ -52,12 +52,13 @@ class Base(object):
         return etree.tostring(self.root, encoding='utf-8')
 
     def get_namespace(self):
-        namespaces = sorted(list(AKN_NAMESPACES.values()), reverse=True)
-        possible_namespace = self.root.nsmap.get(None)
-        for ns in namespaces:
-            if ns == possible_namespace:
-                return possible_namespace
-        raise Exception(f"The XML namespace isn't (but should be) one of the following: {', '.join(namespaces.split())}")
+        akn_namespaces = [ns[1] for ns in sorted(list(AKN_NAMESPACES.items()), reverse=True)]
+        namespaces = list(self.root.nsmap.values())
+        for ns in akn_namespaces:
+            if ns in namespaces:
+                return ns
+
+        raise ValueError(f"The XML namespace isn't (but should be) one of the following: {', '.join(akn_namespaces.split())}")
 
 
 class Fragment(Base):
