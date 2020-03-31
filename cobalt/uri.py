@@ -1,6 +1,7 @@
 import re
 
-FRBR_URI_RE = re.compile(r"""^/(?P<country>[a-z]{2})         # country
+FRBR_URI_RE = re.compile(r"""^(/(?P<prefix>akn))?            # optional 'akn' prefix
+                              /(?P<country>[a-z]{2})         # country
                               (-(?P<locality>[^/]+))?        # locality code
                               /(?P<doctype>[^/]+)            # document type
                               /((?P<subtype>[^/]+)           # subtype (optional)
@@ -38,7 +39,9 @@ class FrbrUri(object):
 
     Example::
 
-        >>> uri = FrbrUri.parse('/za-jhb/act/by-law/2003/public-health/eng:2015-01-01/main/part/A.xml')
+        >>> uri = FrbrUri.parse('/akn/za-jhb/act/by-law/2003/public-health/eng:2015-01-01/main/part/A.xml')
+        >>> uri.prefix
+        'akn'
         >>> uri.country
         'za'
         >>> uri.locality
@@ -68,6 +71,7 @@ class FrbrUri(object):
         >>> uri.manifestation_uri()
         '/za-jhb/act/by-law/2003/public-health/eng:2015-01-01/main/part/A.xml'
 
+    :ivar prefix: optional `akn` prefix
     :ivar country: two letter country code
     :ivar locality: locality within the country, may be None
     :ivar doctype: type of document (eg. ``act``)
@@ -92,7 +96,8 @@ class FrbrUri(object):
 
     def __init__(self, country, locality, doctype, subtype, actor, date, number,
                  work_component=None, language=None, expression_date=None, expression_component=None,
-                 expression_subcomponent=None, format=None):
+                 expression_subcomponent=None, format=None, prefix=None):
+        self.prefix = prefix
         self.country = country
         self.locality = locality
         self.doctype = doctype
@@ -110,6 +115,7 @@ class FrbrUri(object):
 
     def clone(self):
         return FrbrUri(
+            prefix=self.prefix,
             country=self.country,
             locality=self.locality,
             doctype=self.doctype,
@@ -131,11 +137,16 @@ class FrbrUri(object):
 
     def work_uri(self, work_component=True):
         """ String form of the work URI. """
+        prefix = self.prefix
         country = self.country
+        parts = ['']
         if self.locality:
             country = country + "-" + self.locality
 
-        parts = ['', country, self.doctype]
+        if prefix:
+            parts.append(prefix)
+
+        parts += [country, self.doctype]
 
         if self.subtype:
             parts.append(self.subtype)
