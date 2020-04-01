@@ -12,6 +12,11 @@ ENCODING_RE = re.compile(r'encoding="[\w-]+"')
 
 DATE_FORMAT = "%Y-%m-%d"
 
+AKN_NAMESPACES = {
+    '2.0': 'http://www.akomantoso.org/2.0',
+    '3.0': 'http://docs.oasis-open.org/legaldocml/ns/akn/3.0',
+}
+
 
 def datestring(value):
     if value is None:
@@ -36,7 +41,7 @@ class Base(object):
             xml = xml.encode('utf-8')
 
         self.root = objectify.fromstring(xml, parser=objectify_parser)
-        self.namespace = self.root.nsmap.get(None)
+        self.namespace = self.get_namespace()
 
         self._maker = objectify.ElementMaker(annotate=False, namespace=self.namespace, nsmap=self.root.nsmap)
         # the "source" attribute used on some elements where it is required.
@@ -45,6 +50,15 @@ class Base(object):
 
     def to_xml(self):
         return etree.tostring(self.root, encoding='utf-8')
+
+    def get_namespace(self):
+        akn_namespaces = [ns[1] for ns in sorted(list(AKN_NAMESPACES.items()), reverse=True)]
+        namespaces = list(self.root.nsmap.values())
+        for ns in akn_namespaces:
+            if ns in namespaces:
+                return ns
+
+        raise ValueError(f"Expected to find one of the following Akoma Ntoso XML namespaces: {', '.join(akn_namespaces)}. Only these namespaces were found: {', '.join(namespaces)}")
 
 
 class Fragment(Base):

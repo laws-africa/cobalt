@@ -5,6 +5,7 @@ import lxml.etree as etree
 
 from cobalt.act import Act, datestring, AmendmentEvent, RepealEvent
 
+
 class ActTestCase(TestCase):
     maxDiff = None
 
@@ -32,7 +33,6 @@ class ActTestCase(TestCase):
         assert_equal(a.meta.identification.FRBRManifestation.FRBRthis.get('value'), '/zm/act/2007/01/eng@2012-01-01/main')
         assert_equal(a.meta.identification.FRBRManifestation.FRBRuri.get('value'), '/zm/act/2007/01/eng@2012-01-01')
         
-
     def test_empty_body(self):
         a = Act()
         assert_not_equal(a.body_xml, '')
@@ -229,6 +229,42 @@ class ActTestCase(TestCase):
         # check that clearing it works
         a.repeal = None
         assert_is_none(a.repeal)
+
+    def test_namespaces(self):
+        # default for the time being is still AKN2
+        a = Act()
+        assert_equal(a.namespace, 'http://www.akomantoso.org/2.0')
+
+        # prefer AKN3 when both 2 and 3 are listed as namespaces
+        a = Act(xml="""<?xml version="1.0"?>
+<akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:foo="http://www.akomantoso.org/2.0" xmlns:bar="http://docs.oasis-open.org/legaldocml/ns/akn/3.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd">
+  <act>
+    <meta/>
+    <body/>
+  </act>
+</akomaNtoso>""")
+        assert_equal(a.namespace, 'http://docs.oasis-open.org/legaldocml/ns/akn/3.0')
+
+        # prefer AKN2 when 2 and something else are listed as namespaces
+        a = Act(xml="""<?xml version="1.0"?>
+<akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:foo="http://www.akomantoso.org/2.0" xmlns:bar="http://docs.oasis-open.org/legaldocml/ns/akn/5.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd">
+  <act>
+    <meta/>
+    <body/>
+  </act>
+</akomaNtoso>""")
+        assert_equal(a.namespace, 'http://www.akomantoso.org/2.0')
+
+        # throw error if neither of AKN2 and AKN3 are listed as namespaces
+        with assert_raises(ValueError) as raised:
+            Act(xml="""<?xml version="1.0"?>
+                <akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:foo="http://www.akomantoso.org/4.0" xmlns:bar="http://docs.oasis-open.org/legaldocml/ns/akn/5.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd">
+                  <act>
+                    <meta/>
+                    <body/>
+                  </act>
+                </akomaNtoso>""")
+        assert_in("Expected to find one of the following Akoma Ntoso XML namespaces: http://docs.oasis-open.org/legaldocml/ns/akn/3.0, http://www.akomantoso.org/2.0. Only these namespaces were found: http://www.w3.org/2001/XMLSchema-instance, http://www.akomantoso.org/4.0, http://docs.oasis-open.org/legaldocml/ns/akn/5.0", raised.exception.args)
 
 
 def act_fixture(content):
