@@ -264,7 +264,7 @@ class ActTestCase(TestCase):
                     <body/>
                   </act>
                 </akomaNtoso>""")
-        assert_in("The XML namespace isn't (but should be) one of the following: http://docs.oasis-open.org/legaldocml/ns/akn/3.0, http://www.akomantoso.org/2.0", raised.exception.args)
+        assert_in("Expected to find one of the following Akoma Ntoso XML namespaces: http://docs.oasis-open.org/legaldocml/ns/akn/3.0, http://www.akomantoso.org/2.0. Only these namespaces were found: http://www.w3.org/2001/XMLSchema-instance, http://www.akomantoso.org/4.0, http://docs.oasis-open.org/legaldocml/ns/akn/5.0", raised.exception.args)
 
 
 def act_fixture(content):
