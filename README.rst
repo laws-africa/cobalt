@@ -79,8 +79,14 @@ Cobalt is Copyright 2015-2017 AfricanLII.
 Change Log
 ----------
 
+4.0.0
+.....
+
+- Support AKN2 and AKN3 namespaces
+- Produce URIs with `akn` prefix by default (backwards compatibility maintained)
+
 3.1.0
------
+.....
 
 - Replace arrow with iso8601, avoiding `arrow issue 612 <https://github.com/crsmithdev/arrow/issues/612>`_
 
