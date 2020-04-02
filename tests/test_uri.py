@@ -274,3 +274,16 @@ class FrbrUriTestCase(TestCase):
             actor=None
         )
         assert_equal(uri.prefix, "akn")
+
+        # doesn't use 'akn' prefix if explicitly told not to
+        uri = FrbrUri(
+            prefix=None,
+            country='za',
+            locality='ec',
+            doctype='act',
+            subtype='by-law',
+            date='2020',
+            number='31',
+            actor=None
+        )
+        assert_is_none(uri.prefix)
