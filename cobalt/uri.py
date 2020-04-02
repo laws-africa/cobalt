@@ -137,14 +137,13 @@ class FrbrUri(object):
 
     def work_uri(self, work_component=True):
         """ String form of the work URI. """
-        prefix = self.prefix
         country = self.country
         parts = ['']
         if self.locality:
             country = country + "-" + self.locality
 
-        if prefix:
-            parts.append(prefix)
+        if self.prefix:
+            parts.append(self.prefix)
 
         parts += [country, self.doctype]
 
