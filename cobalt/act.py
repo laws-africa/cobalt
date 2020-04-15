@@ -1,71 +1,14 @@
-import re
 from collections import OrderedDict
 
 from lxml import objectify
 from lxml import etree
 from iso8601 import parse_date
 
+from .akn import HierarchicalStructure, datestring, objectify_parser
 from .uri import FrbrUri
 
 
-ENCODING_RE = re.compile(r'encoding="[\w-]+"')
-
-DATE_FORMAT = "%Y-%m-%d"
-
-AKN_NAMESPACES = {
-    '2.0': 'http://www.akomantoso.org/2.0',
-    '3.0': 'http://docs.oasis-open.org/legaldocml/ns/akn/3.0',
-}
-
-
-def datestring(value):
-    if value is None:
-        return ""
-    elif isinstance(value, str):
-        return value
-    else:
-        return "%04d-%02d-%02d" % (value.year, value.month, value.day)
-
-
-# Create a new objectify parser that doesn't remove blank text nodes
-objectify_parser = etree.XMLParser()
-objectify_parser.set_element_class_lookup(objectify.ObjectifyElementClassLookup())
-
-
-class Base(object):
-    def __init__(self, xml=None):
-        encoding = ENCODING_RE.search(xml, 0, 200)
-        if encoding:
-            # lxml doesn't like unicode strings with an encoding element, so
-            # change to bytes
-            xml = xml.encode('utf-8')
-
-        self.root = objectify.fromstring(xml, parser=objectify_parser)
-        self.namespace = self.get_namespace()
-
-        self._maker = objectify.ElementMaker(annotate=False, namespace=self.namespace, nsmap=self.root.nsmap)
-        # the "source" attribute used on some elements where it is required.
-        # contains: name, id, url
-        self.source = ["cobalt", "cobalt", "https://github.com/laws-africa/cobalt"]
-
-    def to_xml(self):
-        return etree.tostring(self.root, encoding='utf-8')
-
-    def get_namespace(self):
-        akn_namespaces = [ns[1] for ns in sorted(list(AKN_NAMESPACES.items()), reverse=True)]
-        namespaces = list(self.root.nsmap.values())
-        for ns in akn_namespaces:
-            if ns in namespaces:
-                return ns
-
-        raise ValueError(f"Expected to find one of the following Akoma Ntoso XML namespaces: {', '.join(akn_namespaces)}. Only these namespaces were found: {', '.join(namespaces)}")
-
-
-class Fragment(Base):
-    pass
-
-
-class Act(Base):
+class Act(HierarchicalStructure):
     """
     An act is a lightweight wrapper around an `Akoma Ntoso 2.0 XML <http://www.akomantoso.org/>`_ act document.
     It provides methods to help access and manipulate the underlying XML directly, in particular
@@ -80,6 +23,8 @@ class Act(Base):
     .. seealso::
         http://www.akomantoso.org/docs/akoma-ntoso-user-documentation/metadata-describes-the-content
     """
+
+    document_type = "act"
 
     def __init__(self, xml=None):
         """ Setup a new instance with the string in `xml`. """
