@@ -296,6 +296,95 @@ class ActTestCase(TestCase):
 </akomaNtoso>""", a.document_type)
         assert_in("Expected act as first child of root element, but got somethingElse instead", raised.exception.args)
 
+    def test_main(self):
+        a = Act()
+        self.assertEqual(a.main, a.act)
+
+    def test_components(self):
+        a = Act(xml="""<?xml version="1.0" encoding="UTF-8"?>
+<akomaNtoso xmlns="http://www.akomantoso.org/2.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <act contains="singleVersion">
+    <meta>
+      <identification source="#slaw">
+        <FRBRWork>
+          <FRBRthis value="/na/act/1977/25/main"/>
+          <FRBRuri value="/na/act/1977/25"/>
+          <FRBRalias value="Livestock Improvement Act, 1977"/>
+          <FRBRdate date="1977-03-23" name="Generation"/>
+          <FRBRauthor href="#council"/>
+          <FRBRcountry value="na"/>
+        </FRBRWork>
+        <FRBRExpression>
+          <FRBRthis value="/na/act/1977/25/eng@1993-12-02/main"/>
+          <FRBRuri value="/na/act/1977/25/eng@1993-12-02"/>
+          <FRBRdate date="1993-12-02" name="Generation"/>
+          <FRBRauthor href="#council"/>
+          <FRBRlanguage language="eng"/>
+        </FRBRExpression>
+        <FRBRManifestation>
+          <FRBRthis value="/na/act/1977/25/eng@1993-12-02/main"/>
+          <FRBRuri value="/na/act/1977/25/eng@1993-12-02"/>
+          <FRBRdate date="2020-03-25" name="Generation"/>
+          <FRBRauthor href="#slaw"/>
+        </FRBRManifestation>
+      </identification>
+      <publication number="5462" name="South African Government Gazette" showAs="South African Government Gazette" date="1977-03-23"/>
+    </meta>
+    <body>
+      <section id="section-20">
+        <content>
+          <p></p>
+        </content>
+      </section>
+    </body>
+  </act>
+  <components>
+    <component id="component-schedule">
+      <doc name="schedule">
+        <meta>
+          <identification source="#slaw">
+            <FRBRWork>
+              <FRBRthis value="/na/act/1977/25/schedule-XXX"/>
+              <FRBRuri value="/na/act/1977/25"/>
+              <FRBRalias value="Schedule"/>
+              <FRBRdate date="1980-01-01" name="Generation"/>
+              <FRBRauthor href="#council"/>
+              <FRBRcountry value="na"/>
+            </FRBRWork>
+            <FRBRExpression>
+              <FRBRthis value="/na/act/1977/25/eng@1993-12-02/schedule"/>
+              <FRBRuri value="/na/act/1977/25/eng@1993-12-02"/>
+              <FRBRdate date="1980-01-01" name="Generation"/>
+              <FRBRauthor href="#council"/>
+              <FRBRlanguage language="eng"/>
+            </FRBRExpression>
+            <FRBRManifestation>
+              <FRBRthis value="/na/act/1977/25/eng@1993-12-02/schedule"/>
+              <FRBRuri value="/na/act/1977/25/eng@1993-12-02"/>
+              <FRBRdate date="2020-03-25" name="Generation"/>
+              <FRBRauthor href="#slaw"/>
+            </FRBRManifestation>
+          </identification>
+        </meta>
+        <mainBody>
+          <hcontainer id="schedule" name="schedule">
+            <heading>Schedule</heading>
+            <paragraph id="schedule.paragraph0">
+              <content>
+                <p>This is the content of the Schedule!</p>
+              </content>
+            </paragraph>
+          </hcontainer>
+        </mainBody>
+      </doc>
+    </component>
+  </components>
+</akomaNtoso>
+        """)
+        components = a.components()
+        self.assertIn('schedule-XXX', components.keys())
+        self.assertEqual('This is the content of the Schedule!',
+                         components['schedule-XXX'].mainBody.hcontainer.paragraph.content.p)
 
 def act_fixture(content):
     return """<?xml version="1.0"?>
