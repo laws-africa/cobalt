@@ -20,15 +20,49 @@ class Act(HierarchicalStructure):
     .. seealso::
         http://www.akomantoso.org/docs/akoma-ntoso-user-documentation/metadata-describes-the-content
     """
+    EMPTY_DOCUMENT = """<?xml version="1.0"?>
+<akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.akomantoso.org/2.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd">
+  <act contains="originalVersion">
+    <meta>
+      <identification source="#cobalt">
+        <FRBRWork>
+          <FRBRthis value="/za/act/1900/1/main"/>
+          <FRBRuri value="/za/act/1900/1"/>
+          <FRBRalias value="Untitled"/>
+          <FRBRdate date="1900-01-01" name="Generation"/>
+          <FRBRauthor href="#council" as="#author"/>
+          <FRBRcountry value="za"/>
+        </FRBRWork>
+        <FRBRExpression>
+          <FRBRthis value="/za/act/1900/1/eng@/main"/>
+          <FRBRuri value="/za/act/1900/1/eng@"/>
+          <FRBRdate date="1900-01-01" name="Generation"/>
+          <FRBRauthor href="#council" as="#author"/>
+          <FRBRlanguage language="eng"/>
+        </FRBRExpression>
+        <FRBRManifestation>
+          <FRBRthis value="/za/act/1900/1/eng@/main"/>
+          <FRBRuri value="/za/act/1900/1/eng@"/>
+          <FRBRdate date="1900-01-01" name="Generation"/>
+          <FRBRauthor href="#council" as="#author"/>
+        </FRBRManifestation>
+      </identification>
+      <references>
+        <TLCOrganization id="cobalt" href="https://github.com/laws-africa/cobalt" showAs="cobalt"/>
+      </references>
+    </meta>
+    <body>
+      <section id="section-1">
+        <content>
+          <p></p>
+        </content>
+      </section>
+    </body>
+  </act>
+</akomaNtoso>
+    """
 
     document_type = "act"
-
-    def __init__(self, xml=None):
-        """ Setup a new instance with the string in `xml`. """
-        if not xml:
-            # use an empty document
-            xml = EMPTY_DOCUMENT
-        super(Act, self).__init__(xml)
 
     @property
     def publication_name(self):
@@ -211,48 +245,6 @@ class RepealEvent(object):
         self.repealing_title = repealing_title
         self.repealing_uri = repealing_uri
 
-
-EMPTY_DOCUMENT = """<?xml version="1.0"?>
-<akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.akomantoso.org/2.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd">
-  <act contains="originalVersion">
-    <meta>
-      <identification source="#cobalt">
-        <FRBRWork>
-          <FRBRthis value="/za/act/1900/1/main"/>
-          <FRBRuri value="/za/act/1900/1"/>
-          <FRBRalias value="Untitled"/>
-          <FRBRdate date="1900-01-01" name="Generation"/>
-          <FRBRauthor href="#council" as="#author"/>
-          <FRBRcountry value="za"/>
-        </FRBRWork>
-        <FRBRExpression>
-          <FRBRthis value="/za/act/1900/1/eng@/main"/>
-          <FRBRuri value="/za/act/1900/1/eng@"/>
-          <FRBRdate date="1900-01-01" name="Generation"/>
-          <FRBRauthor href="#council" as="#author"/>
-          <FRBRlanguage language="eng"/>
-        </FRBRExpression>
-        <FRBRManifestation>
-          <FRBRthis value="/za/act/1900/1/eng@/main"/>
-          <FRBRuri value="/za/act/1900/1/eng@"/>
-          <FRBRdate date="1900-01-01" name="Generation"/>
-          <FRBRauthor href="#council" as="#author"/>
-        </FRBRManifestation>
-      </identification>
-      <references>
-        <TLCOrganization id="cobalt" href="https://github.com/laws-africa/cobalt" showAs="cobalt"/>
-      </references>
-    </meta>
-    <body>
-      <section id="section-1">
-        <content>
-          <p></p>
-        </content>
-      </section>
-    </body>
-  </act>
-</akomaNtoso>
-"""
 
 EMPTY_BODY = """
 <body>

@@ -106,7 +106,11 @@ class StructuredDocument(AkomaNtosoDocument):
     """ The name of the document type, corresponding to the primary document XML element.
     """
 
-    def __init__(self, xml):
+    def __init__(self, xml=None):
+        """ Setup a new instance with the string in `xml`. """
+        if not xml:
+            # use an empty document
+            xml = self.EMPTY_DOCUMENT
         super().__init__(xml)
 
         # make, eg. ".act" an alias for ".main"
@@ -144,7 +148,7 @@ class StructuredDocument(AkomaNtosoDocument):
 
     @property
     def meta(self):
-        """ Get the root document element.
+        """ Get the meta element of the document.
         """
         return self.main.meta
 
