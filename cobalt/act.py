@@ -30,10 +30,6 @@ class Act(HierarchicalStructure):
             xml = EMPTY_DOCUMENT
         super(Act, self).__init__(xml)
 
-        self.act = self.root.act
-        self.meta = self.act.meta
-        self.body = self.act.body
-
     @property
     def publication_name(self):
         """ Name of the publication in which this act was published """

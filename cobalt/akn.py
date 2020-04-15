@@ -106,6 +106,15 @@ class StructuredDocument(AkomaNtosoDocument):
     """ The name of the document type, corresponding to the primary document XML element.
     """
 
+    def __init__(self, xml):
+        super().__init__(xml)
+
+        # make, eg. ".act" an alias for ".main"
+        setattr(self, self.document_type, self.main)
+
+        # make, eg. ".body" an alias for ".main_content"
+        setattr(self, self.main_content_element, self.main_content)
+
     def parse(self, xml, document_type=None):
         """ Parse XML and ensure it's Akoma Ntoso.
         Raises ValueError on error. Returns the root element.
@@ -120,6 +129,24 @@ class StructuredDocument(AkomaNtosoDocument):
             raise ValueError(f"Expected {self.document_type} as first child of root element, but got {name} instead")
 
         return root
+
+    @property
+    def main(self):
+        """ Get the root document element.
+        """
+        return getattr(self.root, self.document_type)
+
+    @property
+    def main_content(self):
+        """ Get the main content element of the document.
+        """
+        return getattr(self.main, self.main_content_element)
+
+    @property
+    def meta(self):
+        """ Get the root document element.
+        """
+        return self.main.meta
 
     @property
     def title(self):
