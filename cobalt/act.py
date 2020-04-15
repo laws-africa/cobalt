@@ -1,11 +1,8 @@
-from collections import OrderedDict
-
 from lxml import objectify
 from lxml import etree
 from iso8601 import parse_date
 
 from .akn import HierarchicalStructure, datestring, objectify_parser
-from .uri import FrbrUri
 
 
 class Act(HierarchicalStructure):
@@ -36,44 +33,6 @@ class Act(HierarchicalStructure):
         self.act = self.root.act
         self.meta = self.act.meta
         self.body = self.act.body
-
-    @property
-    def title(self):
-        """ Short title """
-        return self.meta.identification.FRBRWork.FRBRalias.get('value')
-
-    @title.setter
-    def title(self, value):
-        self.meta.identification.FRBRWork.FRBRalias.set('value', value)
-
-    @property
-    def work_date(self):
-        """ Date from the FRBRWork element """
-        return parse_date(self.meta.identification.FRBRWork.FRBRdate.get('date')).date()
-
-    @work_date.setter
-    def work_date(self, value):
-        self.meta.identification.FRBRWork.FRBRdate.set('date', datestring(value))
-
-    @property
-    def expression_date(self):
-        """ Date from the FRBRExpression element """
-        return parse_date(self.meta.identification.FRBRExpression.FRBRdate.get('date')).date()
-
-    @expression_date.setter
-    def expression_date(self, value):
-        self.meta.identification.FRBRExpression.FRBRdate.set('date', datestring(value))
-        # update the URI
-        self.frbr_uri = self.frbr_uri
-
-    @property
-    def manifestation_date(self):
-        """ Date from the FRBRManifestation element """
-        return parse_date(self.meta.identification.FRBRManifestation.FRBRdate.get('date')).date()
-
-    @manifestation_date.setter
-    def manifestation_date(self, value):
-        self.meta.identification.FRBRManifestation.FRBRdate.set('date', datestring(value))
 
     @property
     def publication_name(self):
@@ -111,75 +70,6 @@ class Act(HierarchicalStructure):
     def publication_number(self, value):
         self._ensure('meta.publication', after=self.meta.identification)\
             .set('number', value or "")
-
-    @property
-    def language(self):
-        """ The 3-letter ISO-639-2 language code of this document """
-        return self.meta.identification.FRBRExpression.FRBRlanguage.get('language', 'eng')
-
-    @language.setter
-    def language(self, value):
-        self.meta.identification.FRBRExpression.FRBRlanguage.set('language', value)
-        # update the URI
-        self.frbr_uri = self.frbr_uri
-
-    @property
-    def frbr_uri(self):
-        """ The FRBR Work URI as a :class:`FrbrUri` instance that uniquely identifies this document universally. """
-        uri = self.meta.identification.FRBRExpression.FRBRuri.get('value')
-        if uri:
-            return FrbrUri.parse(uri)
-        else:
-            return FrbrUri.empty()
-
-    @frbr_uri.setter
-    def frbr_uri(self, uri):
-        if not isinstance(uri, FrbrUri):
-            uri = FrbrUri.parse(uri)
-
-        uri.language = self.meta.identification.FRBRExpression.FRBRlanguage.get('language', 'eng')
-        uri.expression_date = '@' + datestring(self.expression_date)
-
-        if uri.work_component is None:
-            uri.work_component = 'main'
-
-        # set URIs of the main document and components
-        for component, element in self.components().items():
-            uri.work_component = component
-            ident = element.find('.//{*}meta/{*}identification')
-
-            ident.FRBRWork.FRBRuri.set('value', uri.uri())
-            ident.FRBRWork.FRBRthis.set('value', uri.work_uri())
-            ident.FRBRWork.FRBRcountry.set('value', uri.country)
-
-            ident.FRBRExpression.FRBRuri.set('value', uri.expression_uri(False))
-            ident.FRBRExpression.FRBRthis.set('value', uri.expression_uri())
-
-            ident.FRBRManifestation.FRBRuri.set('value', uri.expression_uri(False))
-            ident.FRBRManifestation.FRBRthis.set('value', uri.expression_uri())
-
-    def expression_frbr_uri(self):
-        """ The FRBR Expression URI as a :class:`FrbrUri` instance that uniquely identifies this document universally. """
-        uri = self.meta.identification.FRBRExpression.FRBRuri.get('value')
-        if uri:
-            return FrbrUri.parse(uri)
-        else:
-            return FrbrUri.empty()
-
-    @property
-    def year(self):
-        """ The act year, derived from :data:`frbr_uri`. Read-only. """
-        return self.frbr_uri.date.split("-", 1)[0]
-
-    @property
-    def number(self):
-        """ The act number, derived from :data:`frbr_uri`. Read-only. """
-        return self.frbr_uri.number
-
-    @property
-    def nature(self):
-        """ The nature of the document, such as an act, derived from :data:`frbr_uri`. Read-only. """
-        return self.frbr_uri.doctype
 
     @property
     def body_xml(self):
@@ -298,71 +188,6 @@ class Act(HierarchicalStructure):
             node.set('href', value.repealing_uri)
             node.set('showAs', value.repealing_title)
             references.append(node)
-
-    def components(self):
-        """ Get an `OrderedDict` of component name to :class:`lxml.objectify.ObjectifiedElement`
-        objects.
-        """
-        components = OrderedDict()
-        components['main'] = self.act
-
-        # components/schedules
-        for doc in self.root.iterfind('./{*}components/{*}component/{*}doc'):
-            name = doc.meta.identification.FRBRWork.FRBRthis.get('value').split('/')[-1]
-            components[name] = doc
-
-        return components
-
-    def _ensure(self, name, after):
-        """ Hack help to get an element if it exists, or create it if it doesn't.
-        *name* is a dotted path from *self*, *after* is where to place the new
-        element if it doesn't exist. """
-        node = self._get(name)
-        if node is None:
-            # TODO: what if nodes in the path don't exist?
-            node = self._make(name.split('.')[-1])
-            after.addnext(node)
-
-        return node
-
-    def _ensure_lifecycle(self):
-        try:
-            after = self.meta.publication
-        except AttributeError:
-            after = self.meta.identification
-        node = self._ensure('meta.lifecycle', after=after)
-
-        if not node.get('source'):
-            node.set('source', '#' + self.source[1])
-            self._ensure_reference('TLCOrganization', self.source[0], self.source[1], self.source[2])
-
-        return node
-
-    def _ensure_reference(self, elem, name, id, href):
-        references = self._ensure('meta.references', after=self._ensure_lifecycle())
-
-        ref = references.find('./{*}%s[@id="%s"]' % (elem, id))
-        if ref is None:
-            ref = self._make(elem)
-            ref.set('id', id)
-            ref.set('href', href)
-            ref.set('showAs', name)
-            references.insert(0, ref)
-        return ref
-
-    def _make(self, elem):
-        return getattr(self._maker, elem)()
-
-    def _get(self, name, root=None):
-        parts = name.split('.')
-        node = root or self
-
-        for p in parts:
-            try:
-                node = getattr(node, p)
-            except AttributeError:
-                return None
-        return node
 
 
 class AmendmentEvent(object):
