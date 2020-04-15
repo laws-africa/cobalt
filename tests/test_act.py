@@ -3,7 +3,8 @@ from nose.tools import *  # noqa
 from datetime import date
 import lxml.etree as etree
 
-from cobalt.act import Act, datestring, AmendmentEvent, RepealEvent
+from cobalt.act import Act, AmendmentEvent, RepealEvent
+from cobalt.akn import datestring
 
 
 class ActTestCase(TestCase):
@@ -265,6 +266,35 @@ class ActTestCase(TestCase):
                   </act>
                 </akomaNtoso>""")
         assert_in("Expected to find one of the following Akoma Ntoso XML namespaces: http://docs.oasis-open.org/legaldocml/ns/akn/3.0, http://www.akomantoso.org/2.0. Only these namespaces were found: http://www.w3.org/2001/XMLSchema-instance, http://www.akomantoso.org/4.0, http://docs.oasis-open.org/legaldocml/ns/akn/5.0", raised.exception.args)
+
+    def test_parser(self):
+        a = Act()
+        # no errors raised by parsing default Act
+        a.parse(a.to_xml(), a.document_type)
+
+        # error if root isn't `akomaNtoso`
+        with assert_raises(ValueError) as raised:
+            a.parse("""<?xml version="1.0"?>
+<myBlog xmlns="http://www.akomantoso.org/2.0">
+  <p>Whaddup, fam!</p>
+</myBlog>""", a.document_type)
+        assert_in("XML root element must be akomaNtoso, but got myBlog instead", raised.exception.args)
+
+        # error if root as no children
+        with assert_raises(ValueError) as raised:
+            a.parse("""<?xml version="1.0"?>
+<akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.akomantoso.org/2.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd">
+</akomaNtoso>""", a.document_type)
+        assert_in("XML root element must have at least one child", raised.exception.args)
+
+        # error if `act` isn't first child
+        with assert_raises(ValueError) as raised:
+            a.parse("""<?xml version="1.0"?>
+<akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.akomantoso.org/2.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd">
+  <somethingElse>
+  </somethingElse>
+</akomaNtoso>""", a.document_type)
+        assert_in("Expected act as first child of root element, but got somethingElse instead", raised.exception.args)
 
 
 def act_fixture(content):
