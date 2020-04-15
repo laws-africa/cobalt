@@ -364,6 +364,7 @@ class PortionStructure(StructuredDocument):
 # Document type classes
 # the following have moved into their own files:
 # - act
+# - judgment
 
 
 class Amendment(AmendmentStructure):
@@ -392,10 +393,6 @@ class DebateReport(OpenStructure):
 
 class Document(OpenStructure):
     document_type = "document"
-
-
-class Judgment(JudgmentStructure):
-    document_type = "judgment"
 
 
 class Portion(PortionStructure):

@@ -1,5 +1,4 @@
-from lxml import objectify
-from lxml import etree
+from lxml import etree, objectify
 from iso8601 import parse_date
 
 from .akn import HierarchicalStructure, datestring, objectify_parser
