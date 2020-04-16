@@ -83,10 +83,6 @@ class AkomaNtosoDocument:
         raise ValueError(f"Expected to find one of the following Akoma Ntoso XML namespaces: {', '.join(akn_namespaces)}. Only these namespaces were found: {', '.join(namespaces)}")
 
 
-class Fragment(AkomaNtosoDocument):
-    pass
-
-
 # ----------------------------------------------------------------------------------
 # Document structure classes
 
