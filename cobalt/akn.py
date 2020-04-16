@@ -242,16 +242,6 @@ class StructuredDocument(AkomaNtosoDocument):
         """ The year, derived from :data:`frbr_uri`. Read-only. """
         return self.frbr_uri.date.split("-", 1)[0]
 
-    @property
-    def number(self):
-        """ The number, derived from :data:`frbr_uri`. Read-only. """
-        return self.frbr_uri.number
-
-    @property
-    def nature(self):
-        """ The nature of the document, such as an act, derived from :data:`frbr_uri`. Read-only. """
-        return self.frbr_uri.doctype
-
     def components(self):
         """ Get an `OrderedDict` of component name to :class:`lxml.objectify.ObjectifiedElement`
         objects.
