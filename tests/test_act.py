@@ -3,7 +3,7 @@ from nose.tools import *  # noqa
 from datetime import date
 import lxml.etree as etree
 
-from cobalt.act import Act, AmendmentEvent, RepealEvent
+from cobalt.hierarchical import Act, AmendmentEvent, RepealEvent
 from cobalt.akn import datestring
 
 

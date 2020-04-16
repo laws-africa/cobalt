@@ -83,9 +83,6 @@ class AkomaNtosoDocument:
         raise ValueError(f"Expected to find one of the following Akoma Ntoso XML namespaces: {', '.join(akn_namespaces)}. Only these namespaces were found: {', '.join(namespaces)}")
 
 
-# ----------------------------------------------------------------------------------
-# Document structure classes
-
 class StructuredDocument(AkomaNtosoDocument):
     """ Common base class for AKN documents with a known document structure.
     """
@@ -319,81 +316,3 @@ class StructuredDocument(AkomaNtosoDocument):
             except AttributeError:
                 return None
         return node
-
-
-class AmendmentStructure(StructuredDocument):
-    structure_type = "amendmentStructure"
-    main_content_tag = "amendmentBody"
-
-
-class CollectionStructure(StructuredDocument):
-    structure_type = "collectionStructure"
-    main_content_tag = "collectionBody"
-
-
-class DebateStructure(StructuredDocument):
-    structure_type = "debateStructure"
-    main_content_tag = "debateBody"
-
-
-class HierarchicalStructure(StructuredDocument):
-    structure_type = "hierarchicalStructure"
-    main_content_tag = "body"
-
-
-class JudgmentStructure(StructuredDocument):
-    structure_type = "judgmentStructure"
-    main_content_tag = "judgmentBody"
-
-
-class OpenStructure(StructuredDocument):
-    structure_type = "openStructure"
-    main_content_tag = "mainBody"
-
-
-class PortionStructure(StructuredDocument):
-    structure_type = "portionStructure"
-    main_content_tag = "portionBody"
-
-
-# ----------------------------------------------------------------------------------
-# Document type classes
-# the following have moved into their own files:
-# - act
-# - judgment
-
-
-class Amendment(AmendmentStructure):
-    document_type = "amendment"
-
-
-class AmendmentList(CollectionStructure):
-    document_type = "amendmentList"
-
-
-class Bill(HierarchicalStructure):
-    document_type = "bill"
-
-
-class Collection(CollectionStructure):
-    document_type = "collection"
-
-
-class DebateRecord(DebateStructure):
-    document_type = "debateRecord"
-
-
-class DebateReport(OpenStructure):
-    document_type = "debateReport"
-
-
-class Document(OpenStructure):
-    document_type = "document"
-
-
-class Portion(PortionStructure):
-    document_type = "portion"
-
-
-class Statement(OpenStructure):
-    document_type = "statement"

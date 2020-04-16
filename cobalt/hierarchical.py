@@ -1,6 +1,11 @@
 from iso8601 import parse_date
 
-from .akn import HierarchicalStructure, datestring
+from .akn import StructuredDocument, datestring
+
+
+class HierarchicalStructure(StructuredDocument):
+    structure_type = "hierarchicalStructure"
+    main_content_tag = "body"
 
 
 class Act(HierarchicalStructure):
@@ -229,3 +234,7 @@ class RepealEvent(object):
         self.date = date
         self.repealing_title = repealing_title
         self.repealing_uri = repealing_uri
+
+
+class Bill(HierarchicalStructure):
+    document_type = "bill"
