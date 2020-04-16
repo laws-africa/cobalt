@@ -70,38 +70,38 @@ class Act(HierarchicalStructure):
     @property
     def publication_name(self):
         """ Name of the publication in which this act was published """
-        pub = self._get('meta.publication')
+        pub = self.get_element('meta.publication')
         return pub.get('name') if pub is not None else None
 
     @publication_name.setter
     def publication_name(self, value):
         value = value or ""
-        pub = self._ensure('meta.publication', after=self.meta.identification)
+        pub = self.ensure_element('meta.publication', after=self.meta.identification)
         pub.set('name', value)
         pub.set('showAs', value)
 
     @property
     def publication_date(self):
         """ Date of the publication """
-        pub = self._get('meta.publication')
+        pub = self.get_element('meta.publication')
         if pub is not None and pub.get('date'):
             return parse_date(pub.get('date')).date()
         return None
 
     @publication_date.setter
     def publication_date(self, value):
-        self._ensure('meta.publication', after=self.meta.identification)\
+        self.ensure_element('meta.publication', after=self.meta.identification)\
             .set('date', datestring(value))
 
     @property
     def publication_number(self):
         """ Sequence number of the publication """
-        pub = self._get('meta.publication')
+        pub = self.get_element('meta.publication')
         return pub.get('number') if pub is not None else None
 
     @publication_number.setter
     def publication_number(self, value):
-        self._ensure('meta.publication', after=self.meta.identification)\
+        self.ensure_element('meta.publication', after=self.meta.identification)\
             .set('number', value or "")
 
     @property
@@ -140,14 +140,14 @@ class Act(HierarchicalStructure):
         else:
             self.act.set('contains', 'singleVersion')
             lifecycle = self._ensure_lifecycle()
-            references = self._ensure('meta.references', after=lifecycle)
+            references = self.ensure_element('meta.references', after=lifecycle)
 
             for i, event in enumerate(value):
                 date = datestring(event.date)
                 ref = 'amendment-%s-source' % i
 
                 # create the lifecycle element
-                node = self._make('eventRef')
+                node = self.make_element('eventRef')
                 node.set('id', 'amendment-' + date)
                 node.set('date', date)
                 node.set('type', 'amendment')
@@ -155,7 +155,7 @@ class Act(HierarchicalStructure):
                 lifecycle.append(node)
 
                 # create the passive ref
-                node = self._make('passiveRef')
+                node = self.make_element('passiveRef')
                 node.set('id', ref)
                 node.set('href', event.amending_uri)
                 node.set('showAs', event.amending_title)
@@ -189,13 +189,13 @@ class Act(HierarchicalStructure):
 
         if value:
             lifecycle = self._ensure_lifecycle()
-            references = self._ensure('meta.references', after=lifecycle)
+            references = self.ensure_element('meta.references', after=lifecycle)
 
             date = datestring(value.date)
             ref = 'repeal-source'
 
             # create the lifecycle element
-            node = self._make('eventRef')
+            node = self.make_element('eventRef')
             node.set('id', 'repeal-' + date)
             node.set('date', date)
             node.set('type', 'repeal')
@@ -203,7 +203,7 @@ class Act(HierarchicalStructure):
             lifecycle.append(node)
 
             # create the passive ref
-            node = self._make('passiveRef')
+            node = self.make_element('passiveRef')
             node.set('id', ref)
             node.set('href', value.repealing_uri)
             node.set('showAs', value.repealing_title)

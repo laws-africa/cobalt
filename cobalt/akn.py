@@ -53,7 +53,7 @@ class AkomaNtosoDocument:
         self.root = self.parse(xml)
         self.namespace = self.get_namespace()
 
-        self._maker = objectify.ElementMaker(annotate=False, namespace=self.namespace, nsmap=self.root.nsmap)
+        self.maker = objectify.ElementMaker(annotate=False, namespace=self.namespace, nsmap=self.root.nsmap)
         # the "source" attribute used on some elements where it is required.
         # contains: name, id, url
         self.source = ["cobalt", "cobalt", "https://github.com/laws-africa/cobalt"]
@@ -256,14 +256,14 @@ class StructuredDocument(AkomaNtosoDocument):
 
         return components
 
-    def _ensure(self, name, after):
+    def ensure_element(self, name, after):
         """ Hack help to get an element if it exists, or create it if it doesn't.
         *name* is a dotted path from *self*, *after* is where to place the new
         element if it doesn't exist. """
-        node = self._get(name)
+        node = self.get_element(name)
         if node is None:
             # TODO: what if nodes in the path don't exist?
-            node = self._make(name.split('.')[-1])
+            node = self.make_element(name.split('.')[-1])
             after.addnext(node)
 
         return node
@@ -273,7 +273,7 @@ class StructuredDocument(AkomaNtosoDocument):
             after = self.meta.publication
         except AttributeError:
             after = self.meta.identification
-        node = self._ensure('meta.lifecycle', after=after)
+        node = self.ensure_element('meta.lifecycle', after=after)
 
         if not node.get('source'):
             node.set('source', '#' + self.source[1])
@@ -282,21 +282,21 @@ class StructuredDocument(AkomaNtosoDocument):
         return node
 
     def _ensure_reference(self, elem, name, id, href):
-        references = self._ensure('meta.references', after=self._ensure_lifecycle())
+        references = self.ensure_element('meta.references', after=self._ensure_lifecycle())
 
         ref = references.find('./{*}%s[@id="%s"]' % (elem, id))
         if ref is None:
-            ref = self._make(elem)
+            ref = self.make_element(elem)
             ref.set('id', id)
             ref.set('href', href)
             ref.set('showAs', name)
             references.insert(0, ref)
         return ref
 
-    def _make(self, elem):
-        return getattr(self._maker, elem)()
+    def make_element(self, elem):
+        return getattr(self.maker, elem)()
 
-    def _get(self, name, root=None):
+    def get_element(self, name, root=None):
         parts = name.split('.')
         node = root or self
 
