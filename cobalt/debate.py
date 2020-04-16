@@ -1,5 +1,4 @@
 from .akn import StructuredDocument
-from .openstructure import OpenStructure
 
 
 class DebateStructure(StructuredDocument):
