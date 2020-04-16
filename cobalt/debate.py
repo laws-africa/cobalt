@@ -8,4 +8,4 @@ class DebateStructure(StructuredDocument):
 
 
 class DebateRecord(DebateStructure):
-    document_type = "debateRecord"
+    document_type = "debate"
