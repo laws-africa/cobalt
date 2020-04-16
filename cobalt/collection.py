@@ -6,3 +6,5 @@ class CollectionStructure(StructuredDocument):
     main_content_tag = "collectionBody"
 
 
+class Collection(CollectionStructure):
+    document_type = "collection"
