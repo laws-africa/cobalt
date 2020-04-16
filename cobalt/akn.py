@@ -70,8 +70,8 @@ class AkomaNtosoDocument:
 
         return root
 
-    def to_xml(self, encoding='utf-8'):
-        return etree.tostring(self.root, encoding=encoding)
+    def to_xml(self, *args, encoding='utf-8', **kwargs):
+        return etree.tostring(self.root, *args, encoding=encoding, **kwargs)
 
     def get_namespace(self):
         akn_namespaces = [ns[1] for ns in sorted(list(AKN_NAMESPACES.items()), reverse=True)]
