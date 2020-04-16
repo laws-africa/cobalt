@@ -1,5 +1,5 @@
 """
-Cobalt's class hierarchy mimics that of the Akoma Ntoso standard. There is a primary root class for
+Cobalt's class hierarchy mimics that of the Akoma Ntoso standard. There is a single root class for
 all Akoma Ntoso documents. There are subclasses for each of the Akoma Ntoso document structure types,
 such as hierarchicalStructure, debateStructure, etc. Finally, there is a class for each Akoma Ntoso
 document type (act, bill, judgment, etc.) that extends the corresponding structure type.
