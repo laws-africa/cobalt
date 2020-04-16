@@ -6,8 +6,12 @@ class OpenStructure(StructuredDocument):
     main_content_tag = "mainBody"
 
 
+class DebateReport(OpenStructure):
+    document_type = "debateReport"
+
+
 class Document(OpenStructure):
-    document_type = "document"
+    document_type = "doc"
 
 
 class Statement(OpenStructure):

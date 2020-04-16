@@ -9,10 +9,3 @@ class DebateStructure(StructuredDocument):
 
 class DebateRecord(DebateStructure):
     document_type = "debateRecord"
-
-
-# TODO: check that debateReport falls under OpenStructure
-#  (there might be two StructuredDocument classes that
-#  both use mainBody but have other differences)
-class DebateReport(OpenStructure):
-    document_type = "debateReport"

@@ -7,4 +7,8 @@ class CollectionStructure(StructuredDocument):
 
 
 class Collection(CollectionStructure):
-    document_type = "collection"
+    document_type = "documentCollection"
+
+
+class OfficialGazette(CollectionStructure):
+    document_type = "officialGazette"
