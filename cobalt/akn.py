@@ -91,10 +91,10 @@ class StructuredDocument(AkomaNtosoDocument):
     """
 
     structure_type = None
-    """ The name of the this document's structural type.
+    """ The name of this document's structural type.
     """
 
-    main_content_element = None
+    main_content_tag = None
     """ The name of the structural type's main content element.
     """
 
@@ -113,7 +113,7 @@ class StructuredDocument(AkomaNtosoDocument):
         setattr(self, self.document_type, self.main)
 
         # make, eg. ".body" an alias for ".main_content"
-        setattr(self, self.main_content_element, self.main_content)
+        setattr(self, self.main_content_tag, self.main_content)
 
     def parse(self, xml, document_type=None):
         """ Parse XML and ensure it's Akoma Ntoso.
@@ -140,7 +140,7 @@ class StructuredDocument(AkomaNtosoDocument):
     def main_content(self):
         """ Get the main content element of the document.
         """
-        return getattr(self.main, self.main_content_element)
+        return getattr(self.main, self.main_content_tag)
 
     @property
     def meta(self):
@@ -323,37 +323,37 @@ class StructuredDocument(AkomaNtosoDocument):
 
 class AmendmentStructure(StructuredDocument):
     structure_type = "amendmentStructure"
-    main_content_element = "amendmentBody"
+    main_content_tag = "amendmentBody"
 
 
 class CollectionStructure(StructuredDocument):
     structure_type = "collectionStructure"
-    main_content_element = "collectionBody"
+    main_content_tag = "collectionBody"
 
 
 class DebateStructure(StructuredDocument):
     structure_type = "debateStructure"
-    main_content_element = "debateBody"
+    main_content_tag = "debateBody"
 
 
 class HierarchicalStructure(StructuredDocument):
     structure_type = "hierarchicalStructure"
-    main_content_element = "body"
+    main_content_tag = "body"
 
 
 class JudgmentStructure(StructuredDocument):
     structure_type = "judgmentStructure"
-    main_content_element = "judgmentBody"
+    main_content_tag = "judgmentBody"
 
 
 class OpenStructure(StructuredDocument):
     structure_type = "openStructure"
-    main_content_element = "mainBody"
+    main_content_tag = "mainBody"
 
 
 class PortionStructure(StructuredDocument):
     structure_type = "portionStructure"
-    main_content_element = "portionBody"
+    main_content_tag = "portionBody"
 
 
 # ----------------------------------------------------------------------------------
