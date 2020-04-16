@@ -36,9 +36,7 @@ class ActTestCase(TestCase):
         
     def test_empty_body(self):
         a = Act()
-        assert_not_equal(a.body_xml, '')
-        a.body_xml = ''
-        assert_not_equal(a.body_xml, '')
+        assert_not_equal(a.body.text, '')
 
     def test_work_date(self):
         a = Act()
@@ -87,10 +85,6 @@ class ActTestCase(TestCase):
 
     def test_set_amendments(self):
         a = Act()
-        a.body_xml = """
-        <body xmlns="http://www.akomantoso.org/2.0"/>
-        """
-
         a.amendments = [AmendmentEvent(date='2012-02-01', amending_uri='/za/act/1980/10', amending_title="Foo")]
 
         self.assertMultiLineEqual(
@@ -124,7 +118,14 @@ class ActTestCase(TestCase):
         <TLCOrganization id="cobalt" href="https://github.com/laws-africa/cobalt" showAs="cobalt"/>
       <passiveRef id="amendment-0-source" href="/za/act/1980/10" showAs="Foo"/></references>
     </meta>
-    <body/></act>
+    <body>
+      <section id="section-1">
+        <content>
+          <p/>
+        </content>
+      </section>
+    </body>
+  </act>
 </akomaNtoso>
 """,
             etree.tostring(a.root, encoding='utf-8', pretty_print=True).decode('utf-8'))
@@ -133,6 +134,7 @@ class ActTestCase(TestCase):
             AmendmentEvent(date='2012-02-01', amending_uri='/za/act/1980/22', amending_title="Corrected"),
             AmendmentEvent(date='2013-03-03', amending_uri='/za/act/1990/5', amending_title="Bar"),
         ]
+
         self.assertMultiLineEqual(
             """<akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.akomantoso.org/2.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd">
   <act contains="singleVersion">
@@ -164,7 +166,14 @@ class ActTestCase(TestCase):
         <TLCOrganization id="cobalt" href="https://github.com/laws-africa/cobalt" showAs="cobalt"/>
       <passiveRef id="amendment-0-source" href="/za/act/1980/22" showAs="Corrected"/><passiveRef id="amendment-1-source" href="/za/act/1990/5" showAs="Bar"/></references>
     </meta>
-    <body/></act>
+    <body>
+      <section id="section-1">
+        <content>
+          <p/>
+        </content>
+      </section>
+    </body>
+  </act>
 </akomaNtoso>
 """,
             etree.tostring(a.root, encoding='utf-8', pretty_print=True).decode('utf-8'))
@@ -181,10 +190,6 @@ class ActTestCase(TestCase):
 
     def test_set_repeal(self):
         a = Act()
-        a.body_xml = """
-        <body xmlns="http://www.akomantoso.org/2.0"/>
-        """
-
         a.repeal = RepealEvent(date='2012-02-01', repealing_uri='/za/act/1980/10', repealing_title='Foo')
 
         self.assertMultiLineEqual(
@@ -218,7 +223,14 @@ class ActTestCase(TestCase):
         <TLCOrganization id="cobalt" href="https://github.com/laws-africa/cobalt" showAs="cobalt"/>
       <passiveRef id="repeal-source" href="/za/act/1980/10" showAs="Foo"/></references>
     </meta>
-    <body/></act>
+    <body>
+      <section id="section-1">
+        <content>
+          <p/>
+        </content>
+      </section>
+    </body>
+  </act>
 </akomaNtoso>
 """,
             etree.tostring(a.root, encoding='utf-8', pretty_print=True).decode('utf-8'))

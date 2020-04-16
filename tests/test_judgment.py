@@ -36,9 +36,7 @@ class JudgmentTestCase(TestCase):
 
     def test_empty_body(self):
         j = Judgment()
-        assert_not_equal(j.body_xml, '')
-        j.body_xml = ''
-        assert_not_equal(j.body_xml, '')
+        assert_not_equal(j.judgmentBody.text, '')
 
     def test_work_date(self):
         j = Judgment()

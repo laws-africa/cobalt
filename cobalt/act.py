@@ -1,7 +1,6 @@
-from lxml import etree, objectify
 from iso8601 import parse_date
 
-from .akn import HierarchicalStructure, datestring, objectify_parser
+from .akn import HierarchicalStructure, datestring
 
 
 class Act(HierarchicalStructure):
@@ -99,19 +98,6 @@ class Act(HierarchicalStructure):
     def publication_number(self, value):
         self._ensure('meta.publication', after=self.meta.identification)\
             .set('number', value or "")
-
-    @property
-    def body_xml(self):
-        """ The raw XML string of the `body` element of the document. When
-        setting this property, XML must be rooted at a `body` element. """
-        return etree.tostring(self.body, encoding='utf-8')
-
-    @body_xml.setter
-    def body_xml(self, xml):
-        new_body = objectify.fromstring(xml or EMPTY_BODY, parser=objectify_parser)
-        new_body.tag = 'body'
-        self.body.getparent().replace(self.body, new_body)
-        self.body = new_body
 
     @property
     def amendments(self):
@@ -243,14 +229,3 @@ class RepealEvent(object):
         self.date = date
         self.repealing_title = repealing_title
         self.repealing_uri = repealing_uri
-
-
-EMPTY_BODY = """
-<body>
-  <section id="section-1">
-    <content>
-      <p></p>
-    </content>
-  </section>
-</body>
-"""

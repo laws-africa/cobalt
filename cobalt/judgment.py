@@ -1,6 +1,4 @@
-from lxml import etree, objectify
-
-from .akn import JudgmentStructure, objectify_parser
+from .akn import JudgmentStructure
 
 
 class Judgment(JudgmentStructure):
@@ -54,21 +52,3 @@ class Judgment(JudgmentStructure):
     """
 
     document_type = "judgment"
-
-    @property
-    def body_xml(self):
-        """ The raw XML string of the `judgmentBody` element of the document. When
-        setting this property, XML must be rooted at a `judgmentBody` element. """
-        return etree.tostring(self.judgmentBody, encoding='utf-8')
-
-    @body_xml.setter
-    def body_xml(self, xml):
-        new_body = objectify.fromstring(xml or EMPTY_BODY, parser=objectify_parser)
-        new_body.tag = 'judgmentBody'
-        self.judgmentBody.getparent().replace(self.judgmentBody, new_body)
-        self.judgmentBody = new_body
-
-
-EMPTY_BODY = """
-<judgmentBody/>
-"""
