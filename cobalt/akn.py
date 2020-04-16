@@ -82,6 +82,32 @@ class AkomaNtosoDocument:
 
         raise ValueError(f"Expected to find one of the following Akoma Ntoso XML namespaces: {', '.join(akn_namespaces)}. Only these namespaces were found: {', '.join(namespaces)}")
 
+    def ensure_element(self, name, after):
+        """ Hack help to get an element if it exists, or create it if it doesn't.
+        *name* is a dotted path from *self*, *after* is where to place the new
+        element if it doesn't exist. """
+        node = self.get_element(name)
+        if node is None:
+            # TODO: what if nodes in the path don't exist?
+            node = self.make_element(name.split('.')[-1])
+            after.addnext(node)
+
+        return node
+
+    def get_element(self, name, root=None):
+        parts = name.split('.')
+        node = root or self
+
+        for p in parts:
+            try:
+                node = getattr(node, p)
+            except AttributeError:
+                return None
+        return node
+
+    def make_element(self, elem):
+        return getattr(self.maker, elem)()
+
 
 class StructuredDocument(AkomaNtosoDocument):
     """ Common base class for AKN documents with a known document structure.
@@ -256,18 +282,6 @@ class StructuredDocument(AkomaNtosoDocument):
 
         return components
 
-    def ensure_element(self, name, after):
-        """ Hack help to get an element if it exists, or create it if it doesn't.
-        *name* is a dotted path from *self*, *after* is where to place the new
-        element if it doesn't exist. """
-        node = self.get_element(name)
-        if node is None:
-            # TODO: what if nodes in the path don't exist?
-            node = self.make_element(name.split('.')[-1])
-            after.addnext(node)
-
-        return node
-
     def _ensure_lifecycle(self):
         try:
             after = self.meta.publication
@@ -292,17 +306,3 @@ class StructuredDocument(AkomaNtosoDocument):
             ref.set('showAs', name)
             references.insert(0, ref)
         return ref
-
-    def make_element(self, elem):
-        return getattr(self.maker, elem)()
-
-    def get_element(self, name, root=None):
-        parts = name.split('.')
-        node = root or self
-
-        for p in parts:
-            try:
-                node = getattr(node, p)
-            except AttributeError:
-                return None
-        return node
