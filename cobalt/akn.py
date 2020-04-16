@@ -50,7 +50,7 @@ class AkomaNtosoDocument:
             # change to bytes
             xml = xml.encode('utf-8')
 
-        self.root = objectify.fromstring(xml, parser=objectify_parser)
+        self.root = self.parse(xml)
         self.namespace = self.get_namespace()
 
         self._maker = objectify.ElementMaker(annotate=False, namespace=self.namespace, nsmap=self.root.nsmap)

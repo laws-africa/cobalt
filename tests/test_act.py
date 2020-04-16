@@ -238,33 +238,33 @@ class ActTestCase(TestCase):
 
         # prefer AKN3 when both 2 and 3 are listed as namespaces
         a = Act(xml="""<?xml version="1.0"?>
-<akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:foo="http://www.akomantoso.org/2.0" xmlns:bar="http://docs.oasis-open.org/legaldocml/ns/akn/3.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd">
-  <act>
+<foo:akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:foo="http://www.akomantoso.org/2.0" xmlns:bar="http://docs.oasis-open.org/legaldocml/ns/akn/3.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd">
+  <foo:act>
     <meta/>
-    <body/>
-  </act>
-</akomaNtoso>""")
+    <foo:body/>
+  </foo:act>
+</foo:akomaNtoso>""")
         assert_equal(a.namespace, 'http://docs.oasis-open.org/legaldocml/ns/akn/3.0')
 
         # prefer AKN2 when 2 and something else are listed as namespaces
         a = Act(xml="""<?xml version="1.0"?>
-<akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:foo="http://www.akomantoso.org/2.0" xmlns:bar="http://docs.oasis-open.org/legaldocml/ns/akn/5.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd">
-  <act>
+<foo:akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:foo="http://www.akomantoso.org/2.0" xmlns:bar="http://docs.oasis-open.org/legaldocml/ns/akn/5.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd">
+  <foo:act>
     <meta/>
-    <body/>
-  </act>
-</akomaNtoso>""")
+    <foo:body/>
+  </foo:act>
+</foo:akomaNtoso>""")
         assert_equal(a.namespace, 'http://www.akomantoso.org/2.0')
 
         # throw error if neither of AKN2 and AKN3 are listed as namespaces
         with assert_raises(ValueError) as raised:
             Act(xml="""<?xml version="1.0"?>
-                <akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:foo="http://www.akomantoso.org/4.0" xmlns:bar="http://docs.oasis-open.org/legaldocml/ns/akn/5.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd">
-                  <act>
-                    <meta/>
-                    <body/>
-                  </act>
-                </akomaNtoso>""")
+                <foo:akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:foo="http://www.akomantoso.org/4.0" xmlns:bar="http://docs.oasis-open.org/legaldocml/ns/akn/5.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd">
+  <foo:act>
+    <meta/>
+    <body/>
+  </foo:act>
+</foo:akomaNtoso>""")
         assert_in("Expected to find one of the following Akoma Ntoso XML namespaces: http://docs.oasis-open.org/legaldocml/ns/akn/3.0, http://www.akomantoso.org/2.0. Only these namespaces were found: http://www.w3.org/2001/XMLSchema-instance, http://www.akomantoso.org/4.0, http://docs.oasis-open.org/legaldocml/ns/akn/5.0", raised.exception.args)
 
     def test_parser(self):
