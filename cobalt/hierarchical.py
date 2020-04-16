@@ -108,13 +108,13 @@ class Act(HierarchicalStructure):
     def amendments(self):
         amendments = []
 
-        for e in self.meta.iterfind('.//{*}lifecycle/{*}eventRef[@type="amendment"]'):
+        for e in self.meta.iterfind(f'.//{{{self.namespace}}}lifecycle/{{{self.namespace}}}eventRef[@type="amendment"]'):
             date = parse_date(e.get('date')).date()
             event = AmendmentEvent(date=date)
             amendments.append(event)
 
             id = e.get('source')[1:]
-            source = self.meta.findall('.//{*}references/{*}passiveRef[@id="%s"]' % id)
+            source = self.meta.findall(f'.//{{{self.namespace}}}references/{{{self.namespace}}}passiveRef[@id="{id}"]')
             if source:
                 event.amending_title = source[0].get('showAs')
                 event.amending_uri = source[0].get('href')
@@ -125,10 +125,10 @@ class Act(HierarchicalStructure):
     @amendments.setter
     def amendments(self, value):
         # delete existing entries
-        for e in self.meta.iterfind('.//{*}lifecycle/{*}eventRef[@type="amendment"]'):
+        for e in self.meta.iterfind(f'.//{{{self.namespace}}}lifecycle/{{{self.namespace}}}eventRef[@type="amendment"]'):
             # delete the passive ref elements
             id = e.get('source')[1:]
-            for node in self.meta.iterfind('.//{*}references/{*}passiveRef[@id="%s"]' % id):
+            for node in self.meta.iterfind(f'.//{{{self.namespace}}}references/{{{self.namespace}}}passiveRef[@id="{id}"]'):
                 node.getparent().remove(node)
 
             # delete the event
@@ -144,7 +144,7 @@ class Act(HierarchicalStructure):
 
             for i, event in enumerate(value):
                 date = datestring(event.date)
-                ref = 'amendment-%s-source' % i
+                ref = f'amendment-{i}-source'
 
                 # create the lifecycle element
                 node = self.make_element('eventRef')
@@ -163,13 +163,13 @@ class Act(HierarchicalStructure):
 
     @property
     def repeal(self):
-        e = self.meta.find('.//{*}lifecycle/{*}eventRef[@type="repeal"]')
+        e = self.meta.find(f'.//{{{self.namespace}}}lifecycle/{{{self.namespace}}}eventRef[@type="repeal"]')
         if e is not None:
             date = parse_date(e.get('date')).date()
             event = RepealEvent(date=date)
 
             id = e.get('source')[1:]
-            source = self.meta.findall('.//{*}references/{*}passiveRef[@id="%s"]' % id)
+            source = self.meta.findall(f'.//{{{self.namespace}}}references/{{{self.namespace}}}passiveRef[@id="{id}"]')
             if source:
                 event.repealing_title = source[0].get('showAs')
                 event.repealing_uri = source[0].get('href')
@@ -178,10 +178,10 @@ class Act(HierarchicalStructure):
     @repeal.setter
     def repeal(self, value):
         # delete existing entries
-        for e in self.meta.iterfind('.//{*}lifecycle/{*}eventRef[@type="repeal"]'):
+        for e in self.meta.iterfind(f'.//{{{self.namespace}}}lifecycle/{{{self.namespace}}}eventRef[@type="repeal"]'):
             # delete the passive ref elements
             id = e.get('source')[1:]
-            for node in self.meta.iterfind('.//{*}references/{*}passiveRef[@id="%s"]' % id):
+            for node in self.meta.iterfind(f'.//{{{self.namespace}}}references/{{{self.namespace}}}passiveRef[@id="{id}"]'):
                 node.getparent().remove(node)
 
             # delete the event
