@@ -21,7 +21,7 @@ class JudgmentTestCase(TestCase):
         j.frbr_uri = '/zm/judgment/2007/01'
 
         assert_equal(j.frbr_uri.work_uri(), '/zm/judgment/2007/01')
-        assert_equal(j.number, '01')
+        assert_equal(j.frbr_uri.number, '01')
 
         assert_equal(j.meta.identification.FRBRWork.FRBRthis.get('value'), '/zm/judgment/2007/01/main')
         assert_equal(j.meta.identification.FRBRWork.FRBRuri.get('value'), '/zm/judgment/2007/01')

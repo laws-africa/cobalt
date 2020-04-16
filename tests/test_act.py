@@ -22,7 +22,7 @@ class ActTestCase(TestCase):
         a.frbr_uri = '/zm/act/2007/01'
 
         assert_equal(a.frbr_uri.work_uri(), '/zm/act/2007/01')
-        assert_equal(a.number, '01')
+        assert_equal(a.frbr_uri.number, '01')
 
         assert_equal(a.meta.identification.FRBRWork.FRBRthis.get('value'), '/zm/act/2007/01/main')
         assert_equal(a.meta.identification.FRBRWork.FRBRuri.get('value'), '/zm/act/2007/01')
