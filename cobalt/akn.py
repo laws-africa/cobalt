@@ -243,7 +243,7 @@ class StructuredDocument(AkomaNtosoDocument):
         # set URIs of the main document and components
         for component, element in self.components().items():
             uri.work_component = component
-            ident = element.find('.//{*}meta/{*}identification')
+            ident = element.find(f'.//{{{self.namespace}}}meta/{{{self.namespace}}}identification')
 
             ident.FRBRWork.FRBRuri.set('value', uri.uri())
             ident.FRBRWork.FRBRthis.set('value', uri.work_uri())
@@ -276,7 +276,7 @@ class StructuredDocument(AkomaNtosoDocument):
         components['main'] = self.main
 
         # components/schedules
-        for doc in self.root.iterfind('./{*}components/{*}component/{*}doc'):
+        for doc in self.root.iterfind(f'./{{{self.namespace}}}components/{{{self.namespace}}}component/{{{self.namespace}}}doc'):
             name = doc.meta.identification.FRBRWork.FRBRthis.get('value').split('/')[-1]
             components[name] = doc
 
@@ -298,7 +298,7 @@ class StructuredDocument(AkomaNtosoDocument):
     def _ensure_reference(self, elem, name, id, href):
         references = self.ensure_element('meta.references', after=self._ensure_lifecycle())
 
-        ref = references.find('./{*}%s[@id="%s"]' % (elem, id))
+        ref = references.find(f'./{{{self.namespace}}}{elem}[@id="{id}"]')
         if ref is None:
             ref = self.make_element(elem)
             ref.set('id', id)
