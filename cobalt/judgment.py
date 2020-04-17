@@ -7,7 +7,9 @@ class JudgmentStructure(StructuredDocument):
 
 
 class Judgment(JudgmentStructure):
-    EMPTY_DOCUMENT = """<?xml version="1.0"?>
+    document_type = "judgment"
+
+    empty_document = """<?xml version="1.0"?>
     <akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.akomantoso.org/2.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd">
       <judgment>
         <meta>
@@ -55,5 +57,3 @@ class Judgment(JudgmentStructure):
       </judgment>
     </akomaNtoso>
     """
-
-    document_type = "judgment"

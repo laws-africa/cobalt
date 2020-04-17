@@ -23,7 +23,9 @@ class Act(HierarchicalStructure):
     .. seealso::
         http://www.akomantoso.org/docs/akoma-ntoso-user-documentation/metadata-describes-the-content
     """
-    EMPTY_DOCUMENT = """<?xml version="1.0"?>
+    document_type = "act"
+
+    empty_document = """<?xml version="1.0"?>
 <akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.akomantoso.org/2.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd">
   <act contains="originalVersion">
     <meta>
@@ -64,8 +66,6 @@ class Act(HierarchicalStructure):
   </act>
 </akomaNtoso>
     """
-
-    document_type = "act"
 
     @property
     def publication_name(self):

@@ -125,11 +125,15 @@ class StructuredDocument(AkomaNtosoDocument):
     """ The name of the document type, corresponding to the primary document XML element.
     """
 
+    empty_document = None
+    """ The xml of an empty document of the type self.document
+    """
+
     def __init__(self, xml=None):
         """ Setup a new instance with the string in `xml`. """
         if not xml:
             # use an empty document
-            xml = self.EMPTY_DOCUMENT
+            xml = self.empty_document
         super().__init__(xml)
 
         # make, eg. ".act" an alias for ".main"
