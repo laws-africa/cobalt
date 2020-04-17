@@ -196,3 +196,8 @@ class FrbrUri(object):
             return cls(**match.groupdict())
         else:
             raise ValueError("Invalid FRBR URI: %s" % s)
+
+    @property
+    def year(self):
+        """ The year, derived from :data:`date`. Read-only. """
+        return self.date.split("-", 1)[0]

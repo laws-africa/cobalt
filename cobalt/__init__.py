@@ -1,4 +1,21 @@
-from .act import Act, AmendmentEvent, RepealEvent
+from .akn import AkomaNtosoDocument, StructuredDocument
+from .amendment import AmendmentStructure, Amendment, AmendmentList
+from .collection import CollectionStructure, Collection, OfficialGazette
+from .debate import DebateStructure, DebateRecord
+from .hierarchical import HierarchicalStructure, Act, AmendmentEvent, RepealEvent, Bill
+from .judgment import JudgmentStructure, Judgment
+from .openstructure import OpenStructure, DebateReport, Document, Statement
+from .portion import PortionStructure, Portion
 from .uri import FrbrUri
 
-__all__ = [Act, FrbrUri, AmendmentEvent, RepealEvent]
+__all__ = [Act, AkomaNtosoDocument, Amendment, AmendmentEvent, AmendmentList, AmendmentStructure,
+           Bill,
+           Collection, CollectionStructure,
+           DebateRecord, DebateReport, DebateStructure, Document,
+           FrbrUri,
+           HierarchicalStructure,
+           Judgment, JudgmentStructure,
+           OfficialGazette, OpenStructure,
+           Portion, PortionStructure,
+           RepealEvent,
+           Statement, StructuredDocument]

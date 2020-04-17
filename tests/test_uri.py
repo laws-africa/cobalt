@@ -71,6 +71,7 @@ class FrbrUriTestCase(TestCase):
         assert_equal(uri.subtype, None)
         assert_equal(uri.actor, None)
         assert_equal(uri.date, "1980-02-01")
+        assert_equal(uri.year, "1980")
         assert_equal(uri.number, "01")
         assert_equal(uri.language, "eng")
         assert_equal(uri.expression_date, None)
