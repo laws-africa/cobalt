@@ -3,18 +3,14 @@ from nose.tools import *  # noqa
 from datetime import date
 import lxml.etree as etree
 
-from cobalt.hierarchical import Act, AmendmentEvent, RepealEvent
+from cobalt import Act, AmendmentEvent, RepealEvent, Judgment
 from cobalt.akn import datestring
 
 
-class ActTestCase(TestCase):
+class StructuredDocumentTestCase(TestCase):
+    # using Act to test StructuredDocument functionality
+    # because we need a concrete document (with a default empty_document) to work with
     maxDiff = None
-
-    def test_empty_act(self):
-        a = Act()
-        assert_equal(a.title, "Untitled")
-        assert_is_not_none(a.meta)
-        assert_is_not_none(a.body)
 
     def test_frbr_uri(self):
         a = Act()
@@ -31,12 +27,9 @@ class ActTestCase(TestCase):
         assert_equal(a.meta.identification.FRBRExpression.FRBRthis.get('value'), '/zm/act/2007/01/eng@2012-01-01/main')
         assert_equal(a.meta.identification.FRBRExpression.FRBRuri.get('value'), '/zm/act/2007/01/eng@2012-01-01')
 
-        assert_equal(a.meta.identification.FRBRManifestation.FRBRthis.get('value'), '/zm/act/2007/01/eng@2012-01-01/main')
+        assert_equal(a.meta.identification.FRBRManifestation.FRBRthis.get('value'),
+                     '/zm/act/2007/01/eng@2012-01-01/main')
         assert_equal(a.meta.identification.FRBRManifestation.FRBRuri.get('value'), '/zm/act/2007/01/eng@2012-01-01')
-        
-    def test_empty_body(self):
-        a = Act()
-        assert_not_equal(a.body.text, '')
 
     def test_work_date(self):
         a = Act()
@@ -55,6 +48,179 @@ class ActTestCase(TestCase):
         a.manifestation_date = '2012-01-02'
         assert_equal(datestring(a.manifestation_date), '2012-01-02')
         assert_is_instance(a.manifestation_date, date)
+
+    def test_language(self):
+        a = Act()
+        a.language = 'fre'
+        assert_equal(a.language, 'fre')
+
+    def test_namespaces(self):
+        # default for the time being is still AKN2
+        a = Act()
+        assert_equal(a.namespace, 'http://www.akomantoso.org/2.0')
+
+        # prefer AKN3 when both 2 and 3 are listed as namespaces
+        a = Act(xml="""<?xml version="1.0"?>
+<foo:akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:foo="http://www.akomantoso.org/2.0" xmlns:bar="http://docs.oasis-open.org/legaldocml/ns/akn/3.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd">
+  <foo:act>
+    <meta/>
+    <foo:body/>
+  </foo:act>
+</foo:akomaNtoso>""")
+        assert_equal(a.namespace, 'http://docs.oasis-open.org/legaldocml/ns/akn/3.0')
+
+        # prefer AKN2 when 2 and something else are listed as namespaces
+        a = Act(xml="""<?xml version="1.0"?>
+<foo:akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:foo="http://www.akomantoso.org/2.0" xmlns:bar="http://docs.oasis-open.org/legaldocml/ns/akn/5.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd">
+  <foo:act>
+    <meta/>
+    <foo:body/>
+  </foo:act>
+</foo:akomaNtoso>""")
+        assert_equal(a.namespace, 'http://www.akomantoso.org/2.0')
+
+        # throw error if neither of AKN2 and AKN3 are listed as namespaces
+        with assert_raises(ValueError) as raised:
+            Act(xml="""<?xml version="1.0"?>
+                <foo:akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:foo="http://www.akomantoso.org/4.0" xmlns:bar="http://docs.oasis-open.org/legaldocml/ns/akn/5.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd">
+  <foo:act>
+    <meta/>
+    <body/>
+  </foo:act>
+</foo:akomaNtoso>""")
+        assert_in(
+            "Expected to find one of the following Akoma Ntoso XML namespaces: http://docs.oasis-open.org/legaldocml/ns/akn/3.0, http://www.akomantoso.org/2.0. Only these namespaces were found: http://www.w3.org/2001/XMLSchema-instance, http://www.akomantoso.org/4.0, http://docs.oasis-open.org/legaldocml/ns/akn/5.0",
+            raised.exception.args)
+
+    def test_parser(self):
+        a = Act()
+        # no errors raised by parsing default Act
+        a.parse(a.to_xml(), a.document_type)
+
+        # error if root isn't `akomaNtoso`
+        with assert_raises(ValueError) as raised:
+            a.parse("""<?xml version="1.0"?>
+<myBlog xmlns="http://www.akomantoso.org/2.0">
+  <p>Whaddup, fam!</p>
+</myBlog>""", a.document_type)
+        assert_in("XML root element must be akomaNtoso, but got myBlog instead", raised.exception.args)
+
+        # error if root as no children
+        with assert_raises(ValueError) as raised:
+            a.parse("""<?xml version="1.0"?>
+<akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.akomantoso.org/2.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd">
+</akomaNtoso>""", a.document_type)
+        assert_in("XML root element must have at least one child", raised.exception.args)
+
+        # error if `act` isn't first child
+        with assert_raises(ValueError) as raised:
+            a.parse("""<?xml version="1.0"?>
+<akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.akomantoso.org/2.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd">
+  <somethingElse>
+  </somethingElse>
+</akomaNtoso>""", a.document_type)
+        assert_in("Expected act as first child of root element, but got somethingElse instead",
+                  raised.exception.args)
+
+    def test_components(self):
+        a = Act(xml="""<?xml version="1.0" encoding="UTF-8"?>
+<akomaNtoso xmlns="http://www.akomantoso.org/2.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <act contains="singleVersion">
+    <meta>
+      <identification source="#slaw">
+        <FRBRWork>
+          <FRBRthis value="/na/act/1977/25/main"/>
+          <FRBRuri value="/na/act/1977/25"/>
+          <FRBRalias value="Livestock Improvement Act, 1977"/>
+          <FRBRdate date="1977-03-23" name="Generation"/>
+          <FRBRauthor href="#council"/>
+          <FRBRcountry value="na"/>
+        </FRBRWork>
+        <FRBRExpression>
+          <FRBRthis value="/na/act/1977/25/eng@1993-12-02/main"/>
+          <FRBRuri value="/na/act/1977/25/eng@1993-12-02"/>
+          <FRBRdate date="1993-12-02" name="Generation"/>
+          <FRBRauthor href="#council"/>
+          <FRBRlanguage language="eng"/>
+        </FRBRExpression>
+        <FRBRManifestation>
+          <FRBRthis value="/na/act/1977/25/eng@1993-12-02/main"/>
+          <FRBRuri value="/na/act/1977/25/eng@1993-12-02"/>
+          <FRBRdate date="2020-03-25" name="Generation"/>
+          <FRBRauthor href="#slaw"/>
+        </FRBRManifestation>
+      </identification>
+      <publication number="5462" name="South African Government Gazette" showAs="South African Government Gazette" date="1977-03-23"/>
+    </meta>
+    <body>
+      <section id="section-20">
+        <content>
+          <p></p>
+        </content>
+      </section>
+    </body>
+  </act>
+  <components>
+    <component id="component-schedule">
+      <doc name="schedule">
+        <meta>
+          <identification source="#slaw">
+            <FRBRWork>
+              <FRBRthis value="/na/act/1977/25/schedule-XXX"/>
+              <FRBRuri value="/na/act/1977/25"/>
+              <FRBRalias value="Schedule"/>
+              <FRBRdate date="1980-01-01" name="Generation"/>
+              <FRBRauthor href="#council"/>
+              <FRBRcountry value="na"/>
+            </FRBRWork>
+            <FRBRExpression>
+              <FRBRthis value="/na/act/1977/25/eng@1993-12-02/schedule"/>
+              <FRBRuri value="/na/act/1977/25/eng@1993-12-02"/>
+              <FRBRdate date="1980-01-01" name="Generation"/>
+              <FRBRauthor href="#council"/>
+              <FRBRlanguage language="eng"/>
+            </FRBRExpression>
+            <FRBRManifestation>
+              <FRBRthis value="/na/act/1977/25/eng@1993-12-02/schedule"/>
+              <FRBRuri value="/na/act/1977/25/eng@1993-12-02"/>
+              <FRBRdate date="2020-03-25" name="Generation"/>
+              <FRBRauthor href="#slaw"/>
+            </FRBRManifestation>
+          </identification>
+        </meta>
+        <mainBody>
+          <hcontainer id="schedule" name="schedule">
+            <heading>Schedule</heading>
+            <paragraph id="schedule.paragraph0">
+              <content>
+                <p>This is the content of the Schedule!</p>
+              </content>
+            </paragraph>
+          </hcontainer>
+        </mainBody>
+      </doc>
+    </component>
+  </components>
+</akomaNtoso>
+        """)
+        components = a.components()
+        self.assertIn('schedule-XXX', components.keys())
+        self.assertEqual('This is the content of the Schedule!',
+                         components['schedule-XXX'].mainBody.hcontainer.paragraph.content.p)
+
+
+class ActTestCase(TestCase):
+    maxDiff = None
+
+    def test_empty_act(self):
+        a = Act()
+        assert_equal(a.title, "Untitled")
+        assert_is_not_none(a.meta)
+        assert_is_not_none(a.body)
+
+    def test_empty_body(self):
+        a = Act()
+        assert_not_equal(a.body.text, '')
 
     def test_publication_date(self):
         a = Act()
@@ -77,11 +243,6 @@ class ActTestCase(TestCase):
 
         a.publication_name = 'Publication'
         assert_equal(a.publication_name, 'Publication')
-
-    def test_language(self):
-        a = Act()
-        a.language = 'fre'
-        assert_equal(a.language, 'fre')
 
     def test_set_amendments(self):
         a = Act()
@@ -243,190 +404,24 @@ class ActTestCase(TestCase):
         a.repeal = None
         assert_is_none(a.repeal)
 
-    def test_namespaces(self):
-        # default for the time being is still AKN2
-        a = Act()
-        assert_equal(a.namespace, 'http://www.akomantoso.org/2.0')
-
-        # prefer AKN3 when both 2 and 3 are listed as namespaces
-        a = Act(xml="""<?xml version="1.0"?>
-<foo:akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:foo="http://www.akomantoso.org/2.0" xmlns:bar="http://docs.oasis-open.org/legaldocml/ns/akn/3.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd">
-  <foo:act>
-    <meta/>
-    <foo:body/>
-  </foo:act>
-</foo:akomaNtoso>""")
-        assert_equal(a.namespace, 'http://docs.oasis-open.org/legaldocml/ns/akn/3.0')
-
-        # prefer AKN2 when 2 and something else are listed as namespaces
-        a = Act(xml="""<?xml version="1.0"?>
-<foo:akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:foo="http://www.akomantoso.org/2.0" xmlns:bar="http://docs.oasis-open.org/legaldocml/ns/akn/5.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd">
-  <foo:act>
-    <meta/>
-    <foo:body/>
-  </foo:act>
-</foo:akomaNtoso>""")
-        assert_equal(a.namespace, 'http://www.akomantoso.org/2.0')
-
-        # throw error if neither of AKN2 and AKN3 are listed as namespaces
-        with assert_raises(ValueError) as raised:
-            Act(xml="""<?xml version="1.0"?>
-                <foo:akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:foo="http://www.akomantoso.org/4.0" xmlns:bar="http://docs.oasis-open.org/legaldocml/ns/akn/5.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd">
-  <foo:act>
-    <meta/>
-    <body/>
-  </foo:act>
-</foo:akomaNtoso>""")
-        assert_in("Expected to find one of the following Akoma Ntoso XML namespaces: http://docs.oasis-open.org/legaldocml/ns/akn/3.0, http://www.akomantoso.org/2.0. Only these namespaces were found: http://www.w3.org/2001/XMLSchema-instance, http://www.akomantoso.org/4.0, http://docs.oasis-open.org/legaldocml/ns/akn/5.0", raised.exception.args)
-
-    def test_parser(self):
-        a = Act()
-        # no errors raised by parsing default Act
-        a.parse(a.to_xml(), a.document_type)
-
-        # error if root isn't `akomaNtoso`
-        with assert_raises(ValueError) as raised:
-            a.parse("""<?xml version="1.0"?>
-<myBlog xmlns="http://www.akomantoso.org/2.0">
-  <p>Whaddup, fam!</p>
-</myBlog>""", a.document_type)
-        assert_in("XML root element must be akomaNtoso, but got myBlog instead", raised.exception.args)
-
-        # error if root as no children
-        with assert_raises(ValueError) as raised:
-            a.parse("""<?xml version="1.0"?>
-<akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.akomantoso.org/2.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd">
-</akomaNtoso>""", a.document_type)
-        assert_in("XML root element must have at least one child", raised.exception.args)
-
-        # error if `act` isn't first child
-        with assert_raises(ValueError) as raised:
-            a.parse("""<?xml version="1.0"?>
-<akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.akomantoso.org/2.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd">
-  <somethingElse>
-  </somethingElse>
-</akomaNtoso>""", a.document_type)
-        assert_in("Expected act as first child of root element, but got somethingElse instead", raised.exception.args)
-
     def test_main(self):
         a = Act()
         self.assertEqual(a.main, a.act)
 
-    def test_components(self):
-        a = Act(xml="""<?xml version="1.0" encoding="UTF-8"?>
-<akomaNtoso xmlns="http://www.akomantoso.org/2.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <act contains="singleVersion">
-    <meta>
-      <identification source="#slaw">
-        <FRBRWork>
-          <FRBRthis value="/na/act/1977/25/main"/>
-          <FRBRuri value="/na/act/1977/25"/>
-          <FRBRalias value="Livestock Improvement Act, 1977"/>
-          <FRBRdate date="1977-03-23" name="Generation"/>
-          <FRBRauthor href="#council"/>
-          <FRBRcountry value="na"/>
-        </FRBRWork>
-        <FRBRExpression>
-          <FRBRthis value="/na/act/1977/25/eng@1993-12-02/main"/>
-          <FRBRuri value="/na/act/1977/25/eng@1993-12-02"/>
-          <FRBRdate date="1993-12-02" name="Generation"/>
-          <FRBRauthor href="#council"/>
-          <FRBRlanguage language="eng"/>
-        </FRBRExpression>
-        <FRBRManifestation>
-          <FRBRthis value="/na/act/1977/25/eng@1993-12-02/main"/>
-          <FRBRuri value="/na/act/1977/25/eng@1993-12-02"/>
-          <FRBRdate date="2020-03-25" name="Generation"/>
-          <FRBRauthor href="#slaw"/>
-        </FRBRManifestation>
-      </identification>
-      <publication number="5462" name="South African Government Gazette" showAs="South African Government Gazette" date="1977-03-23"/>
-    </meta>
-    <body>
-      <section id="section-20">
-        <content>
-          <p></p>
-        </content>
-      </section>
-    </body>
-  </act>
-  <components>
-    <component id="component-schedule">
-      <doc name="schedule">
-        <meta>
-          <identification source="#slaw">
-            <FRBRWork>
-              <FRBRthis value="/na/act/1977/25/schedule-XXX"/>
-              <FRBRuri value="/na/act/1977/25"/>
-              <FRBRalias value="Schedule"/>
-              <FRBRdate date="1980-01-01" name="Generation"/>
-              <FRBRauthor href="#council"/>
-              <FRBRcountry value="na"/>
-            </FRBRWork>
-            <FRBRExpression>
-              <FRBRthis value="/na/act/1977/25/eng@1993-12-02/schedule"/>
-              <FRBRuri value="/na/act/1977/25/eng@1993-12-02"/>
-              <FRBRdate date="1980-01-01" name="Generation"/>
-              <FRBRauthor href="#council"/>
-              <FRBRlanguage language="eng"/>
-            </FRBRExpression>
-            <FRBRManifestation>
-              <FRBRthis value="/na/act/1977/25/eng@1993-12-02/schedule"/>
-              <FRBRuri value="/na/act/1977/25/eng@1993-12-02"/>
-              <FRBRdate date="2020-03-25" name="Generation"/>
-              <FRBRauthor href="#slaw"/>
-            </FRBRManifestation>
-          </identification>
-        </meta>
-        <mainBody>
-          <hcontainer id="schedule" name="schedule">
-            <heading>Schedule</heading>
-            <paragraph id="schedule.paragraph0">
-              <content>
-                <p>This is the content of the Schedule!</p>
-              </content>
-            </paragraph>
-          </hcontainer>
-        </mainBody>
-      </doc>
-    </component>
-  </components>
-</akomaNtoso>
-        """)
-        components = a.components()
-        self.assertIn('schedule-XXX', components.keys())
-        self.assertEqual('This is the content of the Schedule!',
-                         components['schedule-XXX'].mainBody.hcontainer.paragraph.content.p)
 
-def act_fixture(content):
-    return """<?xml version="1.0"?>
-<akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.akomantoso.org/2.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd">
-  <act contains="originalVersion">
-    <meta>
-      <identification source="">
-        <FRBRWork>
-          <FRBRthis value="/za/act/1900/1/main"/>
-          <FRBRuri value="/za/act/1900/1"/>
-          <FRBRalias value="Untitled"/>
-          <FRBRdate date="1900-01-01" name="Generation"/>
-          <FRBRauthor href="#council" as="#author"/>
-          <FRBRcountry value="za"/>
-        </FRBRWork>
-        <FRBRExpression>
-          <FRBRthis value="/za/act/1900/1/eng@/main"/>
-          <FRBRuri value="/za/act/1900/1/eng@"/>
-          <FRBRdate date="1900-01-01" name="Generation"/>
-          <FRBRauthor href="#council" as="#author"/>
-          <FRBRlanguage language="eng"/>
-        </FRBRExpression>
-        <FRBRManifestation>
-          <FRBRthis value="/za/act/1900/1/eng@/main"/>
-          <FRBRuri value="/za/act/1900/1/eng@"/>
-          <FRBRdate date="1900-01-01" name="Generation"/>
-          <FRBRauthor href="#council" as="#author"/>
-        </FRBRManifestation>
-      </identification>
-    </meta>
-    %s
-  </act>
-</akomaNtoso>""" % content
+class JudgmentTestCase(TestCase):
+    maxDiff = None
+
+    def test_empty_judgment(self):
+        j = Judgment()
+        assert_equal(j.title, "Untitled Judgment")
+        assert_is_not_none(j.meta)
+        assert_is_not_none(j.judgmentBody)
+
+    def test_empty_body(self):
+        j = Judgment()
+        assert_not_equal(j.judgmentBody.text, '')
+
+    def test_main(self):
+        j = Judgment()
+        self.assertEqual(j.main, j.judgment)
