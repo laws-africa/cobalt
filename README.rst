@@ -28,7 +28,7 @@ Use it like this::
     >>> act = Act()
     >>> act.title = "Act 10 of 1980"
     >>> act.frbr_uri = "/za/act/1980-05-03/10"
-    >>> act.year
+    >>> act.frbr_uri.year
     '1980'
     >>> act.frbr_uri.date
     '1980-05-03'

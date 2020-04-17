@@ -267,11 +267,6 @@ class StructuredDocument(AkomaNtosoDocument):
         else:
             return FrbrUri.empty()
 
-    @property
-    def year(self):
-        """ The year, derived from :data:`frbr_uri`. Read-only. """
-        return self.frbr_uri.date.split("-", 1)[0]
-
     def components(self):
         """ Get an `OrderedDict` of component name to :class:`lxml.objectify.ObjectifiedElement`
         objects.
