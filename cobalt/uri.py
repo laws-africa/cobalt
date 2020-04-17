@@ -199,5 +199,5 @@ class FrbrUri(object):
 
     @property
     def year(self):
-        """ The year, derived from :data:`frbr_uri`. Read-only. """
+        """ The year, derived from :data:`date`. Read-only. """
         return self.date.split("-", 1)[0]
