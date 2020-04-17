@@ -83,7 +83,7 @@ Cobalt is Copyright 2015-2017 AfricanLII.
 Change Log
 ----------
 
-4.0.0
+4.0.1
 .....
 
 - Support AKN2 and AKN3 namespaces
