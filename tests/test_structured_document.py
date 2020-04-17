@@ -3,8 +3,7 @@ from nose.tools import *  # noqa
 from datetime import date
 import lxml.etree as etree
 
-from cobalt import Act, AmendmentEvent, RepealEvent, Judgment
-from cobalt.akn import datestring
+from cobalt import Act, AmendmentEvent, RepealEvent, Judgment, datestring
 
 
 class StructuredDocumentTestCase(TestCase):

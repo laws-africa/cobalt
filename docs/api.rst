@@ -6,7 +6,7 @@
     Acts
     ----
 
-    .. automodule:: cobalt.act
+    .. automodule:: cobalt
 
         .. autoclass:: Act
             :members:
