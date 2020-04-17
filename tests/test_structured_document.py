@@ -92,6 +92,32 @@ class StructuredDocumentTestCase(TestCase):
             "Expected to find one of the following Akoma Ntoso XML namespaces: http://docs.oasis-open.org/legaldocml/ns/akn/3.0, http://www.akomantoso.org/2.0. Only these namespaces were found: http://www.w3.org/2001/XMLSchema-instance, http://www.akomantoso.org/4.0, http://docs.oasis-open.org/legaldocml/ns/akn/5.0",
             raised.exception.args)
 
+        # ignore content that isn't in the chosen namespace
+        a = Act(xml="""<?xml version="1.0"?>
+<bar:akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:foo="http://www.akomantoso.org/2.0" xmlns:bar="http://docs.oasis-open.org/legaldocml/ns/akn/3.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd">
+  <bar:act>
+    <bar:meta/>
+    <foo:body>
+      <section id="section-1">
+        <content>
+          <p>This content should be ignored as it's using the AKN2 namespace.</p>
+        </content>
+      </section>
+    </foo:body>
+    <bar:body>
+      <bar:section id="section-1">
+        <bar:content>
+          <bar:p>This content should NOT be ignored as it's using the AKN3 namespace.</bar:p>
+        </bar:content>
+      </bar:section>
+    </bar:body>
+  </bar:act>
+</bar:akomaNtoso>""")
+        assert_equal(a.namespace, 'http://docs.oasis-open.org/legaldocml/ns/akn/3.0')
+        self.assertEqual("This content should NOT be ignored as it's using the AKN3 namespace.", a.body.section.content.p)
+        self.assertNotIn("This content should be ignored as it's using the AKN2 namespace.", a.body.section.content.p)
+
+
     def test_parser(self):
         a = Act()
         # no errors raised by parsing default Act
