@@ -1,4 +1,4 @@
-from .akn import AkomaNtosoDocument, StructuredDocument
+from .akn import AkomaNtosoDocument, StructuredDocument, datestring
 from .amendment import AmendmentStructure, Amendment, AmendmentList
 from .collection import CollectionStructure, Collection, OfficialGazette
 from .debate import DebateStructure, DebateRecord
@@ -11,7 +11,7 @@ from .uri import FrbrUri
 __all__ = [Act, AkomaNtosoDocument, Amendment, AmendmentEvent, AmendmentList, AmendmentStructure,
            Bill,
            Collection, CollectionStructure,
-           DebateRecord, DebateReport, DebateStructure, Document,
+           DebateRecord, DebateReport, DebateStructure, Document, datestring,
            FrbrUri,
            HierarchicalStructure,
            Judgment, JudgmentStructure,

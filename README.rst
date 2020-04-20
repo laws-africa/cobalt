@@ -88,6 +88,7 @@ Change Log
 
 - Support AKN2 and AKN3 namespaces
 - Produce URIs with `akn` prefix by default (backwards compatibility maintained)
+- Support all Akoma Ntoso document types
 
 3.1.0
 .....
