@@ -201,3 +201,9 @@ class FrbrUri(object):
     def year(self):
         """ The year, derived from :data:`date`. Read-only. """
         return self.date.split("-", 1)[0]
+
+    @property
+    def place(self):
+        if self.locality:
+            return self.country + "-" + self.locality
+        return self.country
