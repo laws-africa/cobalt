@@ -54,9 +54,9 @@ class StructuredDocumentTestCase(TestCase):
         assert_equal(a.language, 'fre')
 
     def test_namespaces(self):
-        # default for the time being is still AKN2
+        # default is now AKN3
         a = Act()
-        assert_equal(a.namespace, 'http://www.akomantoso.org/2.0')
+        assert_equal(a.namespace, 'http://docs.oasis-open.org/legaldocml/ns/akn/3.0')
 
         # prefer AKN3 when both 2 and 3 are listed as namespaces
         a = Act(xml="""<?xml version="1.0"?>
@@ -128,14 +128,14 @@ class StructuredDocumentTestCase(TestCase):
         # error if root as no children
         with assert_raises(ValueError) as raised:
             a.parse("""<?xml version="1.0"?>
-<akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.akomantoso.org/2.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd">
+<akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://docs.oasis-open.org/legaldocml/ns/akn/3.0" xsi:schemaLocation="http://docs.oasis-open.org/legaldocml/akn-core/v1.0/os/part2-specs/schemas/akomantoso30.xsd">
 </akomaNtoso>""", a.document_type)
         assert_in("XML root element must have at least one child", raised.exception.args)
 
         # error if `act` isn't first child
         with assert_raises(ValueError) as raised:
             a.parse("""<?xml version="1.0"?>
-<akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.akomantoso.org/2.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd">
+<akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://docs.oasis-open.org/legaldocml/ns/akn/3.0" xsi:schemaLocation="http://docs.oasis-open.org/legaldocml/akn-core/v1.0/os/part2-specs/schemas/akomantoso30.xsd">
   <somethingElse>
   </somethingElse>
 </akomaNtoso>""", a.document_type)
@@ -144,7 +144,7 @@ class StructuredDocumentTestCase(TestCase):
 
     def test_components(self):
         a = Act(xml="""<?xml version="1.0" encoding="UTF-8"?>
-<akomaNtoso xmlns="http://www.akomantoso.org/2.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<akomaNtoso xmlns="http://docs.oasis-open.org/legaldocml/ns/akn/3.0" xsi:schemaLocation="http://docs.oasis-open.org/legaldocml/akn-core/v1.0/os/part2-specs/schemas/akomantoso30.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <act contains="singleVersion">
     <meta>
       <identification source="#slaw">
@@ -269,7 +269,7 @@ class ActTestCase(TestCase):
         a.amendments = [AmendmentEvent(date='2012-02-01', amending_uri='/za/act/1980/10', amending_title="Foo")]
 
         self.assertMultiLineEqual(
-            """<akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.akomantoso.org/2.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd">
+            """<akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://docs.oasis-open.org/legaldocml/ns/akn/3.0" xsi:schemaLocation="http://docs.oasis-open.org/legaldocml/akn-core/v1.0/os/part2-specs/schemas/akomantoso30.xsd">
   <act contains="singleVersion">
     <meta>
       <identification source="#cobalt">
@@ -317,7 +317,7 @@ class ActTestCase(TestCase):
         ]
 
         self.assertMultiLineEqual(
-            """<akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.akomantoso.org/2.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd">
+            """<akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://docs.oasis-open.org/legaldocml/ns/akn/3.0" xsi:schemaLocation="http://docs.oasis-open.org/legaldocml/akn-core/v1.0/os/part2-specs/schemas/akomantoso30.xsd">
   <act contains="singleVersion">
     <meta>
       <identification source="#cobalt">
@@ -374,7 +374,7 @@ class ActTestCase(TestCase):
         a.repeal = RepealEvent(date='2012-02-01', repealing_uri='/za/act/1980/10', repealing_title='Foo')
 
         self.assertMultiLineEqual(
-            """<akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.akomantoso.org/2.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd">
+            """<akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://docs.oasis-open.org/legaldocml/ns/akn/3.0" xsi:schemaLocation="http://docs.oasis-open.org/legaldocml/akn-core/v1.0/os/part2-specs/schemas/akomantoso30.xsd">
   <act contains="originalVersion">
     <meta>
       <identification source="#cobalt">
