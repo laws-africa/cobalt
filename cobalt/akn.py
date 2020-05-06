@@ -133,6 +133,22 @@ class StructuredDocument(AkomaNtosoDocument):
     """
 
     @classmethod
+    def for_document_type(cls, document_type):
+        """ Return the subclass for this document type.
+        """
+        def check_subclasses(klass):
+            for k in klass.__subclasses__():
+                if k.document_type and k.document_type.lower() == document_type:
+                    return k
+                # recurse
+                x = check_subclasses(k)
+                if x:
+                    return x
+
+        document_type = document_type.lower()
+        return check_subclasses(cls)
+
+    @classmethod
     def empty_document(cls, version=DEFAULT_VERSION):
         """ Return XML for an empty document of this type, using the given AKN version.
         """
@@ -149,6 +165,8 @@ class StructuredDocument(AkomaNtosoDocument):
             actor=None,
         )
 
+        # TODO: sanity check these elements and values for correctness to AKN3 schema
+
         E = ElementMaker(nsmap={None: AKN_NAMESPACES[version]})
         doc = E.akomaNtoso(
             E(cls.document_type,
@@ -157,22 +175,22 @@ class StructuredDocument(AkomaNtosoDocument):
                         E.FRBRWork(
                             E.FRBRuri(value=frbr_uri.work_uri(work_component=False)),
                             E.FRBRthis(value=frbr_uri.work_uri()),
-                            E.FRBRdate(value=today),
-                            E.FRBRauthor(value=""),
+                            E.FRBRdate(date=today, name="Generation"),
+                            E.FRBRauthor(href=""),
                             E.FRBRcountry(value=frbr_uri.country),
                         ),
                         E.FRBRExpression(
                             E.FRBRuri(value=frbr_uri.expression_uri(work_component=False)),
                             E.FRBRthis(value=frbr_uri.expression_uri()),
-                            E.FRBRdate(value=today),
-                            E.FRBRauthor(value=""),
+                            E.FRBRdate(date=today, name="Generation"),
+                            E.FRBRauthor(href=""),
                             E.FRBRlanguage(value=frbr_uri.language),
                         ),
                         E.FRBRManifestation(
                             E.FRBRuri(value=frbr_uri.manifestation_uri(work_component=False)),
                             E.FRBRthis(value=frbr_uri.manifestation_uri()),
-                            E.FRBRdate(value=today),
-                            E.FRBRauthor(value=""),
+                            E.FRBRdate(date=today, name="Generation"),
+                            E.FRBRauthor(href=""),
                         ),
                         source="#cobalt"
                     ),
@@ -236,11 +254,13 @@ class StructuredDocument(AkomaNtosoDocument):
     @property
     def title(self):
         """ Short title """
-        return self.meta.identification.FRBRWork.FRBRalias.get('value')
+        alias = self.ensure_element('meta.identification.FRBRWork.FRBRalias', self.meta.identification.FRBRWork.FRBRuri)
+        return alias.get('value')
 
     @title.setter
     def title(self, value):
-        self.meta.identification.FRBRWork.FRBRalias.set('value', value)
+        alias = self.ensure_element('meta.identification.FRBRWork.FRBRalias', self.meta.identification.FRBRWork.FRBRuri)
+        alias.set('value', value)
 
     @property
     def work_date(self):
