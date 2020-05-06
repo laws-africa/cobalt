@@ -5,10 +5,11 @@ such as hierarchicalStructure, debateStructure, etc. Finally, there is a class f
 document type (act, bill, judgment, etc.) that extends the corresponding structure type.
 """
 from collections import OrderedDict
-
 import re
-from lxml import etree
-from lxml import objectify
+from datetime import date
+
+from lxml import etree, objectify
+from lxml.builder import ElementMaker
 from iso8601 import parse_date
 
 from .uri import FrbrUri
@@ -22,6 +23,7 @@ AKN_NAMESPACES = {
     '2.0': 'http://www.akomantoso.org/2.0',
     '3.0': 'http://docs.oasis-open.org/legaldocml/ns/akn/3.0',
 }
+DEFAULT_VERSION = '3.0'
 
 
 def datestring(value):
@@ -44,6 +46,7 @@ class AkomaNtosoDocument:
     _parser = objectify_parser
 
     def __init__(self, xml=None):
+        # TODO: we can do this better
         encoding = ENCODING_RE.search(xml, 0, 200)
         if encoding:
             # lxml doesn't like unicode strings with an encoding element, so
@@ -129,11 +132,66 @@ class StructuredDocument(AkomaNtosoDocument):
     """ The xml of an empty document of the type self.document
     """
 
+    @classmethod
+    def empty_document(cls, version=DEFAULT_VERSION):
+        """ Return XML for an empty document of this type, using the given AKN version.
+        """
+        today = datestring(date.today())
+        frbr_uri = FrbrUri(
+            country='za',
+            locality=None,
+            doctype=cls.document_type,
+            subtype=None,
+            date=today,
+            number='1',
+            work_component='main',
+            language='eng',
+            actor=None,
+        )
+
+        E = ElementMaker(nsmap={None: AKN_NAMESPACES[version]})
+        doc = E.akomaNtoso(
+            E(cls.document_type,
+                E.meta(
+                    E.identification(
+                        E.FRBRWork(
+                            E.FRBRuri(value=frbr_uri.work_uri(work_component=False)),
+                            E.FRBRthis(value=frbr_uri.work_uri()),
+                            E.FRBRdate(value=today),
+                            E.FRBRauthor(value=""),
+                            E.FRBRcountry(value=frbr_uri.country),
+                        ),
+                        E.FRBRExpression(
+                            E.FRBRuri(value=frbr_uri.expression_uri(work_component=False)),
+                            E.FRBRthis(value=frbr_uri.expression_uri()),
+                            E.FRBRdate(value=today),
+                            E.FRBRauthor(value=""),
+                            E.FRBRlanguage(value=frbr_uri.language),
+                        ),
+                        E.FRBRManifestation(
+                            E.FRBRuri(value=frbr_uri.manifestation_uri(work_component=False)),
+                            E.FRBRthis(value=frbr_uri.manifestation_uri()),
+                            E.FRBRdate(value=today),
+                            E.FRBRauthor(value=""),
+                        ),
+                        source="#cobalt"
+                    ),
+                    E.references(
+                        E.TLCOrganization(id="cobalt", href="https://github.com/laws-africa/cobalt", showAs="cobalt"),
+                    )
+                ),
+                E(cls.main_content_tag),
+                contains='originalVersion'
+            )
+        )
+        return etree.tostring(doc, encoding='unicode')
+
     def __init__(self, xml=None):
-        """ Setup a new instance with the string in `xml`. """
+        """ Setup a new instance with the string in `xml`, or an empty document if the XML is not given.
+        """
         if not xml:
             # use an empty document
-            xml = self.empty_document
+            xml = self.empty_document()
         super().__init__(xml)
 
         # make, eg. ".act" an alias for ".main"

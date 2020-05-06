@@ -25,48 +25,6 @@ class Act(HierarchicalStructure):
     """
     document_type = "act"
 
-    empty_document = """<?xml version="1.0"?>
-<akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://docs.oasis-open.org/legaldocml/ns/akn/3.0" xsi:schemaLocation="http://docs.oasis-open.org/legaldocml/akn-core/v1.0/os/part2-specs/schemas/akomantoso30.xsd">
-  <act contains="originalVersion">
-    <meta>
-      <identification source="#cobalt">
-        <FRBRWork>
-          <FRBRthis value="/za/act/1900/1/main"/>
-          <FRBRuri value="/za/act/1900/1"/>
-          <FRBRalias value="Untitled"/>
-          <FRBRdate date="1900-01-01" name="Generation"/>
-          <FRBRauthor href="#council" as="#author"/>
-          <FRBRcountry value="za"/>
-        </FRBRWork>
-        <FRBRExpression>
-          <FRBRthis value="/za/act/1900/1/eng@/main"/>
-          <FRBRuri value="/za/act/1900/1/eng@"/>
-          <FRBRdate date="1900-01-01" name="Generation"/>
-          <FRBRauthor href="#council" as="#author"/>
-          <FRBRlanguage language="eng"/>
-        </FRBRExpression>
-        <FRBRManifestation>
-          <FRBRthis value="/za/act/1900/1/eng@/main"/>
-          <FRBRuri value="/za/act/1900/1/eng@"/>
-          <FRBRdate date="1900-01-01" name="Generation"/>
-          <FRBRauthor href="#council" as="#author"/>
-        </FRBRManifestation>
-      </identification>
-      <references>
-        <TLCOrganization id="cobalt" href="https://github.com/laws-africa/cobalt" showAs="cobalt"/>
-      </references>
-    </meta>
-    <body>
-      <section id="section-1">
-        <content>
-          <p></p>
-        </content>
-      </section>
-    </body>
-  </act>
-</akomaNtoso>
-    """
-
     @property
     def publication_name(self):
         """ Name of the publication in which this act was published """
