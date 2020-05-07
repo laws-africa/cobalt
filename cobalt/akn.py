@@ -90,6 +90,7 @@ class AkomaNtosoDocument:
 
         :param name: dotted path from `self` or `at`
         :param after: element after which to place the new element if it doesn't exist
+        :param at: element at which to start looking, (defaults to self if None)
         """
         node = self.get_element(name, root=at)
         if node is None:
