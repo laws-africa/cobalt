@@ -175,8 +175,6 @@ class StructuredDocument(AkomaNtosoDocument):
             prefix=('' if version == '2.0' else 'akn'),
         )
 
-        # TODO: sanity check these elements and values for correctness to AKN3 schema
-
         E = ElementMaker(nsmap={None: AKN_NAMESPACES[version]})
         doc = E.akomaNtoso(
             E(cls.document_type,
