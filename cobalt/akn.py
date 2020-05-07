@@ -85,11 +85,13 @@ class AkomaNtosoDocument:
 
         raise ValueError(f"Expected to find one of the following Akoma Ntoso XML namespaces: {', '.join(akn_namespaces)}. Only these namespaces were found: {', '.join(namespaces)}")
 
-    def ensure_element(self, name, after):
-        """ Hack help to get an element if it exists, or create it if it doesn't.
-        *name* is a dotted path from *self*, *after* is where to place the new
-        element if it doesn't exist. """
-        node = self.get_element(name)
+    def ensure_element(self, name, after, at=None):
+        """ Helper to get an element if it exists, or create it if it doesn't.
+
+        :param name: dotted path from `self` or `at`
+        :param after: element after which to place the new element if it doesn't exist
+        """
+        node = self.get_element(name, root=at)
         if node is None:
             # TODO: what if nodes in the path don't exist?
             node = self.make_element(name.split('.')[-1])
@@ -98,8 +100,14 @@ class AkomaNtosoDocument:
         return node
 
     def get_element(self, name, root=None):
+        """ Lookup a dotted-path element, start at root (or self if root is None). Returns None if the element doesn't exist.
+        """
         parts = name.split('.')
-        node = root or self
+        # this avoids an lxml warning about testing against None
+        if root is not None:
+            node = root
+        else:
+            node = self
 
         for p in parts:
             try:
@@ -317,12 +325,10 @@ class StructuredDocument(AkomaNtosoDocument):
 
     @property
     def frbr_uri(self):
-        """ The FRBR Work URI as a :class:`FrbrUri` instance that uniquely identifies this document universally. """
-        uri = self.meta.identification.FRBRExpression.FRBRuri.get('value')
+        """ The FRBR Manifestation URI as a :class:`FrbrUri` instance that uniquely identifies this document universally. """
+        uri = self.meta.identification.FRBRManifestation.FRBRuri.get('value')
         if uri:
             return FrbrUri.parse(uri)
-        else:
-            return FrbrUri.empty()
 
     @frbr_uri.setter
     def frbr_uri(self, uri):
@@ -343,6 +349,15 @@ class StructuredDocument(AkomaNtosoDocument):
             ident.FRBRWork.FRBRuri.set('value', uri.uri())
             ident.FRBRWork.FRBRthis.set('value', uri.work_uri())
             ident.FRBRWork.FRBRcountry.set('value', uri.country)
+            if uri.subtype:
+                self.ensure_element('FRBRsubtype', at=ident.FRBRWork, after=ident.FRBRWork.FRBRcountry).set('value', uri.subtype)
+            else:
+                try:
+                    # remove existing subtype
+                    ident.FRBRWork.remove(ident.FRBRWork.FRBRsubtype)
+                except AttributeError:
+                    pass
+
 
             ident.FRBRExpression.FRBRuri.set('value', uri.expression_uri(False))
             ident.FRBRExpression.FRBRthis.set('value', uri.expression_uri())

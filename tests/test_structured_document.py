@@ -35,6 +35,15 @@ class StructuredDocumentTestCase(TestCase):
         a.title = "a title"
         self.assertEqual(a.title, "a title")
 
+    def test_subtype(self):
+        a = Act()
+        a.frbr_uri = '/akn/za/act/by-law/2009/1'
+        self.assertEqual(a.meta.identification.FRBRWork.FRBRsubtype.get('value'), 'by-law')
+
+        a.frbr_uri = '/akn/za/act/2009/1'
+        with self.assertRaises(AttributeError):
+            a.meta.identification.FRBRWork.FRBRsubtype
+
     def test_work_date(self):
         a = Act()
         a.work_date = '2012-01-02'
