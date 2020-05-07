@@ -209,8 +209,7 @@ class StructuredDocument(AkomaNtosoDocument):
                 ),
                 E(cls.main_content_tag),
                 name=cls.document_type.lower(),
-                contains='originalVersion'
-            )
+                contains='originalVersion')
         )
         return etree.tostring(doc, encoding='unicode')
 
@@ -356,7 +355,6 @@ class StructuredDocument(AkomaNtosoDocument):
                     ident.FRBRWork.remove(ident.FRBRWork.FRBRsubtype)
                 except AttributeError:
                     pass
-
 
             ident.FRBRExpression.FRBRuri.set('value', uri.expression_uri(False))
             ident.FRBRExpression.FRBRthis.set('value', uri.expression_uri())
