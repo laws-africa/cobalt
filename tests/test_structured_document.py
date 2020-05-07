@@ -30,6 +30,11 @@ class StructuredDocumentTestCase(TestCase):
                      '/zm/act/2007/01/eng@2012-01-01/main')
         assert_equal(a.meta.identification.FRBRManifestation.FRBRuri.get('value'), '/zm/act/2007/01/eng@2012-01-01')
 
+    def test_title(self):
+        a = Act()
+        a.title = "a title"
+        self.assertEqual(a.title, "a title")
+
     def test_work_date(self):
         a = Act()
         a.work_date = '2012-01-02'
@@ -266,98 +271,101 @@ class ActTestCase(TestCase):
 
     def test_set_amendments(self):
         a = Act()
+        a.frbr_uri = "/akn/za/act/1900/1"
         a.amendments = [AmendmentEvent(date='2012-02-01', amending_uri='/za/act/1980/10', amending_title="Foo")]
 
+        xml = a.to_xml(encoding='unicode', pretty_print=True)
+        xml = xml.replace(datestring(date.today()), 'TODAY')
+
         self.assertMultiLineEqual(
-            """<akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://docs.oasis-open.org/legaldocml/ns/akn/3.0" xsi:schemaLocation="http://docs.oasis-open.org/legaldocml/akn-core/v1.0/os/part2-specs/schemas/akomantoso30.xsd">
-  <act contains="singleVersion">
+            """<akomaNtoso xmlns="http://docs.oasis-open.org/legaldocml/ns/akn/3.0">
+  <act name="act" contains="singleVersion">
     <meta>
       <identification source="#cobalt">
         <FRBRWork>
-          <FRBRthis value="/za/act/1900/1/main"/>
-          <FRBRuri value="/za/act/1900/1"/>
-          <FRBRalias value="Untitled"/>
-          <FRBRdate date="1900-01-01" name="Generation"/>
-          <FRBRauthor href="#council" as="#author"/>
+          <FRBRuri value="/akn/za/act/1900/1"/>
+          <FRBRalias value="Untitled" name="title"/>
+          <FRBRthis value="/akn/za/act/1900/1/main"/>
+          <FRBRdate date="TODAY" name="Generation"/>
+          <FRBRauthor href=""/>
           <FRBRcountry value="za"/>
         </FRBRWork>
         <FRBRExpression>
-          <FRBRthis value="/za/act/1900/1/eng@/main"/>
-          <FRBRuri value="/za/act/1900/1/eng@"/>
-          <FRBRdate date="1900-01-01" name="Generation"/>
-          <FRBRauthor href="#council" as="#author"/>
+          <FRBRuri value="/akn/za/act/1900/1/eng@TODAY"/>
+          <FRBRthis value="/akn/za/act/1900/1/eng@TODAY/main"/>
+          <FRBRdate date="TODAY" name="Generation"/>
+          <FRBRauthor href=""/>
           <FRBRlanguage language="eng"/>
         </FRBRExpression>
         <FRBRManifestation>
-          <FRBRthis value="/za/act/1900/1/eng@/main"/>
-          <FRBRuri value="/za/act/1900/1/eng@"/>
-          <FRBRdate date="1900-01-01" name="Generation"/>
-          <FRBRauthor href="#council" as="#author"/>
+          <FRBRuri value="/akn/za/act/1900/1/eng@TODAY"/>
+          <FRBRthis value="/akn/za/act/1900/1/eng@TODAY/main"/>
+          <FRBRdate date="TODAY" name="Generation"/>
+          <FRBRauthor href=""/>
         </FRBRManifestation>
-      </identification><lifecycle source="#cobalt"><eventRef id="amendment-2012-02-01" date="2012-02-01" type="amendment" source="#amendment-0-source"/></lifecycle>
+      </identification>
+      <lifecycle source="#cobalt">
+        <eventRef id="amendment-2012-02-01" date="2012-02-01" type="amendment" source="#amendment-0-source"/>
+      </lifecycle>
       <references>
         <TLCOrganization id="cobalt" href="https://github.com/laws-africa/cobalt" showAs="cobalt"/>
-      <passiveRef id="amendment-0-source" href="/za/act/1980/10" showAs="Foo"/></references>
+        <passiveRef id="amendment-0-source" href="/za/act/1980/10" showAs="Foo"/>
+      </references>
     </meta>
-    <body>
-      <section id="section-1">
-        <content>
-          <p/>
-        </content>
-      </section>
-    </body>
+    <body/>
   </act>
 </akomaNtoso>
-""",
-            etree.tostring(a.root, encoding='utf-8', pretty_print=True).decode('utf-8'))
+""", xml)
 
         a.amendments = [
             AmendmentEvent(date='2012-02-01', amending_uri='/za/act/1980/22', amending_title="Corrected"),
             AmendmentEvent(date='2013-03-03', amending_uri='/za/act/1990/5', amending_title="Bar"),
         ]
 
+        xml = a.to_xml(encoding='unicode', pretty_print=True)
+        xml = xml.replace(datestring(date.today()), 'TODAY')
+
         self.assertMultiLineEqual(
-            """<akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://docs.oasis-open.org/legaldocml/ns/akn/3.0" xsi:schemaLocation="http://docs.oasis-open.org/legaldocml/akn-core/v1.0/os/part2-specs/schemas/akomantoso30.xsd">
-  <act contains="singleVersion">
+            """<akomaNtoso xmlns="http://docs.oasis-open.org/legaldocml/ns/akn/3.0">
+  <act name="act" contains="singleVersion">
     <meta>
       <identification source="#cobalt">
         <FRBRWork>
-          <FRBRthis value="/za/act/1900/1/main"/>
-          <FRBRuri value="/za/act/1900/1"/>
-          <FRBRalias value="Untitled"/>
-          <FRBRdate date="1900-01-01" name="Generation"/>
-          <FRBRauthor href="#council" as="#author"/>
+          <FRBRuri value="/akn/za/act/1900/1"/>
+          <FRBRalias value="Untitled" name="title"/>
+          <FRBRthis value="/akn/za/act/1900/1/main"/>
+          <FRBRdate date="TODAY" name="Generation"/>
+          <FRBRauthor href=""/>
           <FRBRcountry value="za"/>
         </FRBRWork>
         <FRBRExpression>
-          <FRBRthis value="/za/act/1900/1/eng@/main"/>
-          <FRBRuri value="/za/act/1900/1/eng@"/>
-          <FRBRdate date="1900-01-01" name="Generation"/>
-          <FRBRauthor href="#council" as="#author"/>
+          <FRBRuri value="/akn/za/act/1900/1/eng@TODAY"/>
+          <FRBRthis value="/akn/za/act/1900/1/eng@TODAY/main"/>
+          <FRBRdate date="TODAY" name="Generation"/>
+          <FRBRauthor href=""/>
           <FRBRlanguage language="eng"/>
         </FRBRExpression>
         <FRBRManifestation>
-          <FRBRthis value="/za/act/1900/1/eng@/main"/>
-          <FRBRuri value="/za/act/1900/1/eng@"/>
-          <FRBRdate date="1900-01-01" name="Generation"/>
-          <FRBRauthor href="#council" as="#author"/>
+          <FRBRuri value="/akn/za/act/1900/1/eng@TODAY"/>
+          <FRBRthis value="/akn/za/act/1900/1/eng@TODAY/main"/>
+          <FRBRdate date="TODAY" name="Generation"/>
+          <FRBRauthor href=""/>
         </FRBRManifestation>
-      </identification><lifecycle source="#cobalt"><eventRef id="amendment-2012-02-01" date="2012-02-01" type="amendment" source="#amendment-0-source"/><eventRef id="amendment-2013-03-03" date="2013-03-03" type="amendment" source="#amendment-1-source"/></lifecycle>
+      </identification>
+      <lifecycle source="#cobalt">
+        <eventRef id="amendment-2012-02-01" date="2012-02-01" type="amendment" source="#amendment-0-source"/>
+        <eventRef id="amendment-2013-03-03" date="2013-03-03" type="amendment" source="#amendment-1-source"/>
+      </lifecycle>
       <references>
         <TLCOrganization id="cobalt" href="https://github.com/laws-africa/cobalt" showAs="cobalt"/>
-      <passiveRef id="amendment-0-source" href="/za/act/1980/22" showAs="Corrected"/><passiveRef id="amendment-1-source" href="/za/act/1990/5" showAs="Bar"/></references>
+        <passiveRef id="amendment-0-source" href="/za/act/1980/22" showAs="Corrected"/>
+        <passiveRef id="amendment-1-source" href="/za/act/1990/5" showAs="Bar"/>
+      </references>
     </meta>
-    <body>
-      <section id="section-1">
-        <content>
-          <p/>
-        </content>
-      </section>
-    </body>
+    <body/>
   </act>
 </akomaNtoso>
-""",
-            etree.tostring(a.root, encoding='utf-8', pretty_print=True).decode('utf-8'))
+""", xml)
 
         amendment = a.amendments[0]
         assert_equal(datestring(amendment.date), '2012-02-01')
@@ -371,50 +379,50 @@ class ActTestCase(TestCase):
 
     def test_set_repeal(self):
         a = Act()
+        a.frbr_uri = "/akn/za/act/1900/1"
         a.repeal = RepealEvent(date='2012-02-01', repealing_uri='/za/act/1980/10', repealing_title='Foo')
+        xml = a.to_xml(encoding='unicode', pretty_print=True)
+        xml = xml.replace(datestring(date.today()), 'TODAY')
 
         self.assertMultiLineEqual(
-            """<akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://docs.oasis-open.org/legaldocml/ns/akn/3.0" xsi:schemaLocation="http://docs.oasis-open.org/legaldocml/akn-core/v1.0/os/part2-specs/schemas/akomantoso30.xsd">
-  <act contains="originalVersion">
+            """<akomaNtoso xmlns="http://docs.oasis-open.org/legaldocml/ns/akn/3.0">
+  <act name="act" contains="originalVersion">
     <meta>
       <identification source="#cobalt">
         <FRBRWork>
-          <FRBRthis value="/za/act/1900/1/main"/>
-          <FRBRuri value="/za/act/1900/1"/>
-          <FRBRalias value="Untitled"/>
-          <FRBRdate date="1900-01-01" name="Generation"/>
-          <FRBRauthor href="#council" as="#author"/>
+          <FRBRuri value="/akn/za/act/1900/1"/>
+          <FRBRalias value="Untitled" name="title"/>
+          <FRBRthis value="/akn/za/act/1900/1/main"/>
+          <FRBRdate date="TODAY" name="Generation"/>
+          <FRBRauthor href=""/>
           <FRBRcountry value="za"/>
         </FRBRWork>
         <FRBRExpression>
-          <FRBRthis value="/za/act/1900/1/eng@/main"/>
-          <FRBRuri value="/za/act/1900/1/eng@"/>
-          <FRBRdate date="1900-01-01" name="Generation"/>
-          <FRBRauthor href="#council" as="#author"/>
+          <FRBRuri value="/akn/za/act/1900/1/eng@TODAY"/>
+          <FRBRthis value="/akn/za/act/1900/1/eng@TODAY/main"/>
+          <FRBRdate date="TODAY" name="Generation"/>
+          <FRBRauthor href=""/>
           <FRBRlanguage language="eng"/>
         </FRBRExpression>
         <FRBRManifestation>
-          <FRBRthis value="/za/act/1900/1/eng@/main"/>
-          <FRBRuri value="/za/act/1900/1/eng@"/>
-          <FRBRdate date="1900-01-01" name="Generation"/>
-          <FRBRauthor href="#council" as="#author"/>
+          <FRBRuri value="/akn/za/act/1900/1/eng@TODAY"/>
+          <FRBRthis value="/akn/za/act/1900/1/eng@TODAY/main"/>
+          <FRBRdate date="TODAY" name="Generation"/>
+          <FRBRauthor href=""/>
         </FRBRManifestation>
-      </identification><lifecycle source="#cobalt"><eventRef id="repeal-2012-02-01" date="2012-02-01" type="repeal" source="#repeal-source"/></lifecycle>
+      </identification>
+      <lifecycle source="#cobalt">
+        <eventRef id="repeal-2012-02-01" date="2012-02-01" type="repeal" source="#repeal-source"/>
+      </lifecycle>
       <references>
         <TLCOrganization id="cobalt" href="https://github.com/laws-africa/cobalt" showAs="cobalt"/>
-      <passiveRef id="repeal-source" href="/za/act/1980/10" showAs="Foo"/></references>
+        <passiveRef id="repeal-source" href="/za/act/1980/10" showAs="Foo"/>
+      </references>
     </meta>
-    <body>
-      <section id="section-1">
-        <content>
-          <p/>
-        </content>
-      </section>
-    </body>
+    <body/>
   </act>
 </akomaNtoso>
-""",
-            etree.tostring(a.root, encoding='utf-8', pretty_print=True).decode('utf-8'))
+""", xml)
 
         assert_equal(a.repeal.repealing_uri, '/za/act/1980/10')
         assert_equal(a.repeal.repealing_title, 'Foo')
@@ -434,7 +442,7 @@ class JudgmentTestCase(TestCase):
 
     def test_empty_judgment(self):
         j = Judgment()
-        assert_equal(j.title, "Untitled Judgment")
+        assert_equal(j.title, "Untitled")
         assert_is_not_none(j.meta)
         assert_is_not_none(j.judgmentBody)
 

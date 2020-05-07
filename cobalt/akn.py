@@ -163,6 +163,7 @@ class StructuredDocument(AkomaNtosoDocument):
             work_component='main',
             language='eng',
             actor=None,
+            prefix=('' if version == '2.0' else 'akn'),
         )
 
         # TODO: sanity check these elements and values for correctness to AKN3 schema
@@ -174,6 +175,7 @@ class StructuredDocument(AkomaNtosoDocument):
                     E.identification(
                         E.FRBRWork(
                             E.FRBRuri(value=frbr_uri.work_uri(work_component=False)),
+                            E.FRBRalias(value="Untitled", name="title"),
                             E.FRBRthis(value=frbr_uri.work_uri()),
                             E.FRBRdate(date=today, name="Generation"),
                             E.FRBRauthor(href=""),
@@ -184,7 +186,7 @@ class StructuredDocument(AkomaNtosoDocument):
                             E.FRBRthis(value=frbr_uri.expression_uri()),
                             E.FRBRdate(date=today, name="Generation"),
                             E.FRBRauthor(href=""),
-                            E.FRBRlanguage(value=frbr_uri.language),
+                            E.FRBRlanguage(language=frbr_uri.language),
                         ),
                         E.FRBRManifestation(
                             E.FRBRuri(value=frbr_uri.manifestation_uri(work_component=False)),
@@ -199,6 +201,7 @@ class StructuredDocument(AkomaNtosoDocument):
                     )
                 ),
                 E(cls.main_content_tag),
+                name=cls.document_type.lower(),
                 contains='originalVersion'
             )
         )
@@ -254,13 +257,23 @@ class StructuredDocument(AkomaNtosoDocument):
     @property
     def title(self):
         """ Short title """
-        alias = self.ensure_element('meta.identification.FRBRWork.FRBRalias', self.meta.identification.FRBRWork.FRBRuri)
-        return alias.get('value')
+        # look for the FRBRalias element with name="title", falling back to any alias
+        title = None
+        for alias in self.meta.identification.FRBRWork.iterchildren(f'{{{self.namespace}}}FRBRalias'):
+            if alias.get('name') == 'title':
+                return alias.get('value')
+            title = alias.get('value')
+        return title
 
     @title.setter
     def title(self, value):
-        alias = self.ensure_element('meta.identification.FRBRWork.FRBRalias', self.meta.identification.FRBRWork.FRBRuri)
-        alias.set('value', value)
+        # set the title on an alias attribute with name="title"
+        aliases = self.meta.identification.FRBRWork.xpath('a:FRBRalias[@name="title"]', namespaces={'a': self.namespace})
+        if not aliases:
+            alias = self.ensure_element('meta.identification.FRBRWork.FRBRalias', self.meta.identification.FRBRWork.FRBRuri)
+            alias.set('name', 'title')
+            aliases = [alias]
+        aliases[0].set('value', value)
 
     @property
     def work_date(self):
