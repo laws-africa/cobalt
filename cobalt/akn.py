@@ -5,10 +5,11 @@ such as hierarchicalStructure, debateStructure, etc. Finally, there is a class f
 document type (act, bill, judgment, etc.) that extends the corresponding structure type.
 """
 from collections import OrderedDict
-
 import re
-from lxml import etree
-from lxml import objectify
+from datetime import date
+
+from lxml import etree, objectify
+from lxml.builder import ElementMaker
 from iso8601 import parse_date
 
 from .uri import FrbrUri
@@ -22,6 +23,7 @@ AKN_NAMESPACES = {
     '2.0': 'http://www.akomantoso.org/2.0',
     '3.0': 'http://docs.oasis-open.org/legaldocml/ns/akn/3.0',
 }
+DEFAULT_VERSION = '3.0'
 
 
 def datestring(value):
@@ -44,6 +46,7 @@ class AkomaNtosoDocument:
     _parser = objectify_parser
 
     def __init__(self, xml=None):
+        # TODO: we can do this better
         encoding = ENCODING_RE.search(xml, 0, 200)
         if encoding:
             # lxml doesn't like unicode strings with an encoding element, so
@@ -82,11 +85,14 @@ class AkomaNtosoDocument:
 
         raise ValueError(f"Expected to find one of the following Akoma Ntoso XML namespaces: {', '.join(akn_namespaces)}. Only these namespaces were found: {', '.join(namespaces)}")
 
-    def ensure_element(self, name, after):
-        """ Hack help to get an element if it exists, or create it if it doesn't.
-        *name* is a dotted path from *self*, *after* is where to place the new
-        element if it doesn't exist. """
-        node = self.get_element(name)
+    def ensure_element(self, name, after, at=None):
+        """ Helper to get an element if it exists, or create it if it doesn't.
+
+        :param name: dotted path from `self` or `at`
+        :param after: element after which to place the new element if it doesn't exist
+        :param at: element at which to start looking, (defaults to self if None)
+        """
+        node = self.get_element(name, root=at)
         if node is None:
             # TODO: what if nodes in the path don't exist?
             node = self.make_element(name.split('.')[-1])
@@ -95,8 +101,14 @@ class AkomaNtosoDocument:
         return node
 
     def get_element(self, name, root=None):
+        """ Lookup a dotted-path element, start at root (or self if root is None). Returns None if the element doesn't exist.
+        """
         parts = name.split('.')
-        node = root or self
+        # this avoids an lxml warning about testing against None
+        if root is not None:
+            node = root
+        else:
+            node = self
 
         for p in parts:
             try:
@@ -129,11 +141,84 @@ class StructuredDocument(AkomaNtosoDocument):
     """ The xml of an empty document of the type self.document
     """
 
+    @classmethod
+    def for_document_type(cls, document_type):
+        """ Return the subclass for this document type.
+        """
+        def check_subclasses(klass):
+            for k in klass.__subclasses__():
+                if k.document_type and k.document_type.lower() == document_type:
+                    return k
+                # recurse
+                x = check_subclasses(k)
+                if x:
+                    return x
+
+        document_type = document_type.lower()
+        return check_subclasses(cls)
+
+    @classmethod
+    def empty_document(cls, version=DEFAULT_VERSION):
+        """ Return XML for an empty document of this type, using the given AKN version.
+        """
+        today = datestring(date.today())
+        frbr_uri = FrbrUri(
+            country='za',
+            locality=None,
+            doctype=cls.document_type,
+            subtype=None,
+            date=today,
+            number='1',
+            work_component='main',
+            language='eng',
+            actor=None,
+            prefix=('' if version == '2.0' else 'akn'),
+        )
+
+        E = ElementMaker(nsmap={None: AKN_NAMESPACES[version]})
+        doc = E.akomaNtoso(
+            E(cls.document_type,
+                E.meta(
+                    E.identification(
+                        E.FRBRWork(
+                            E.FRBRuri(value=frbr_uri.work_uri(work_component=False)),
+                            E.FRBRalias(value="Untitled", name="title"),
+                            E.FRBRthis(value=frbr_uri.work_uri()),
+                            E.FRBRdate(date=today, name="Generation"),
+                            E.FRBRauthor(href=""),
+                            E.FRBRcountry(value=frbr_uri.country),
+                        ),
+                        E.FRBRExpression(
+                            E.FRBRuri(value=frbr_uri.expression_uri(work_component=False)),
+                            E.FRBRthis(value=frbr_uri.expression_uri()),
+                            E.FRBRdate(date=today, name="Generation"),
+                            E.FRBRauthor(href=""),
+                            E.FRBRlanguage(language=frbr_uri.language),
+                        ),
+                        E.FRBRManifestation(
+                            E.FRBRuri(value=frbr_uri.manifestation_uri(work_component=False)),
+                            E.FRBRthis(value=frbr_uri.manifestation_uri()),
+                            E.FRBRdate(date=today, name="Generation"),
+                            E.FRBRauthor(href=""),
+                        ),
+                        source="#cobalt"
+                    ),
+                    E.references(
+                        E.TLCOrganization(id="cobalt", href="https://github.com/laws-africa/cobalt", showAs="cobalt"),
+                    )
+                ),
+                E(cls.main_content_tag),
+                name=cls.document_type.lower(),
+                contains='originalVersion')
+        )
+        return etree.tostring(doc, encoding='unicode')
+
     def __init__(self, xml=None):
-        """ Setup a new instance with the string in `xml`. """
+        """ Setup a new instance with the string in `xml`, or an empty document if the XML is not given.
+        """
         if not xml:
             # use an empty document
-            xml = self.empty_document
+            xml = self.empty_document()
         super().__init__(xml)
 
         # make, eg. ".act" an alias for ".main"
@@ -178,11 +263,23 @@ class StructuredDocument(AkomaNtosoDocument):
     @property
     def title(self):
         """ Short title """
-        return self.meta.identification.FRBRWork.FRBRalias.get('value')
+        # look for the FRBRalias element with name="title", falling back to any alias
+        title = None
+        for alias in self.meta.identification.FRBRWork.iterchildren(f'{{{self.namespace}}}FRBRalias'):
+            if alias.get('name') == 'title':
+                return alias.get('value')
+            title = alias.get('value')
+        return title
 
     @title.setter
     def title(self, value):
-        self.meta.identification.FRBRWork.FRBRalias.set('value', value)
+        # set the title on an alias attribute with name="title"
+        aliases = self.meta.identification.FRBRWork.xpath('a:FRBRalias[@name="title"]', namespaces={'a': self.namespace})
+        if not aliases:
+            alias = self.ensure_element('meta.identification.FRBRWork.FRBRalias', self.meta.identification.FRBRWork.FRBRuri)
+            alias.set('name', 'title')
+            aliases = [alias]
+        aliases[0].set('value', value)
 
     @property
     def work_date(self):
@@ -226,12 +323,10 @@ class StructuredDocument(AkomaNtosoDocument):
 
     @property
     def frbr_uri(self):
-        """ The FRBR Work URI as a :class:`FrbrUri` instance that uniquely identifies this document universally. """
-        uri = self.meta.identification.FRBRExpression.FRBRuri.get('value')
+        """ The FRBR Manifestation URI as a :class:`FrbrUri` instance that uniquely identifies this document universally. """
+        uri = self.meta.identification.FRBRManifestation.FRBRuri.get('value')
         if uri:
             return FrbrUri.parse(uri)
-        else:
-            return FrbrUri.empty()
 
     @frbr_uri.setter
     def frbr_uri(self, uri):
@@ -252,6 +347,14 @@ class StructuredDocument(AkomaNtosoDocument):
             ident.FRBRWork.FRBRuri.set('value', uri.uri())
             ident.FRBRWork.FRBRthis.set('value', uri.work_uri())
             ident.FRBRWork.FRBRcountry.set('value', uri.country)
+            if uri.subtype:
+                self.ensure_element('FRBRsubtype', at=ident.FRBRWork, after=ident.FRBRWork.FRBRcountry).set('value', uri.subtype)
+            else:
+                try:
+                    # remove existing subtype
+                    ident.FRBRWork.remove(ident.FRBRWork.FRBRsubtype)
+                except AttributeError:
+                    pass
 
             ident.FRBRExpression.FRBRuri.set('value', uri.expression_uri(False))
             ident.FRBRExpression.FRBRthis.set('value', uri.expression_uri())

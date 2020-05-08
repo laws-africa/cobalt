@@ -87,8 +87,9 @@ Change Log
 .....
 
 - Support AKN2 and AKN3 namespaces
-- Produce URIs with `akn` prefix by default (backwards compatibility maintained)
+- Produce URIs with ``akn`` prefix by default (backwards compatibility maintained)
 - Support all Akoma Ntoso document types
+- Start FRBR URI work component with ``!`` (eg. ``!main``)
 
 3.1.0
 .....
