@@ -168,7 +168,7 @@ class FrbrUri(object):
 
         # expression component is preferred over a work component
         if self.expression_component:
-            uri = uri + "/" + self.expression_component
+            uri = uri + "/!" + self.expression_component
             if self.expression_subcomponent:
                 uri = uri + "/" + self.expression_subcomponent
 

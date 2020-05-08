@@ -105,8 +105,8 @@ class FrbrUriTestCase(TestCase):
         assert_equal(uri.expression_component, None)
 
         assert_equal("/za/act/1980/2", uri.uri())
-        assert_equal("/za/act/1980/2/schedule1", uri.work_uri())
-        assert_equal("/za/act/1980/2/eng/schedule1", uri.expression_uri())
+        assert_equal("/za/act/1980/2/!schedule1", uri.work_uri())
+        assert_equal("/za/act/1980/2/eng/!schedule1", uri.expression_uri())
 
     def test_with_work_and_expression_component(self):
         uri = FrbrUri.parse("/za/act/1980/2")
@@ -115,8 +115,8 @@ class FrbrUriTestCase(TestCase):
         uri.expression_subcomponent = "chapter/2"
 
         assert_equal("/za/act/1980/2", uri.uri())
-        assert_equal("/za/act/1980/2/main", uri.work_uri())
-        assert_equal("/za/act/1980/2/eng/schedule1/chapter/2", uri.expression_uri())
+        assert_equal("/za/act/1980/2/!main", uri.work_uri())
+        assert_equal("/za/act/1980/2/eng/!schedule1/chapter/2", uri.expression_uri())
 
     def test_parse_expression(self):
         uri = FrbrUri.parse("/za/act/1980/02/afr@")
@@ -234,10 +234,10 @@ class FrbrUriTestCase(TestCase):
         uri.expression_component = 'main'
         uri.format = 'html'
 
-        assert_equal("/za/act/1980/02/eng@2014-01-01/main", uri.expression_uri())
+        assert_equal("/za/act/1980/02/eng@2014-01-01/!main", uri.expression_uri())
 
         uri.expression_subcomponent = "chapter/2"
-        assert_equal("/za/act/1980/02/eng@2014-01-01/main/chapter/2", uri.expression_uri())
+        assert_equal("/za/act/1980/02/eng@2014-01-01/!main/chapter/2", uri.expression_uri())
 
     def test_manifestation_uri(self):
         uri = FrbrUri.parse("/za/act/1980/02/eng")
@@ -245,7 +245,7 @@ class FrbrUriTestCase(TestCase):
         uri.expression_component = 'main'
         uri.format = 'html'
 
-        assert_equal("/za/act/1980/02/eng@2014-01-01/main.html", uri.manifestation_uri())
+        assert_equal("/za/act/1980/02/eng@2014-01-01/!main.html", uri.manifestation_uri())
 
     def test_simple_prefix(self):
         # also recognises akn prefix
