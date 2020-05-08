@@ -19,15 +19,15 @@ class StructuredDocumentTestCase(TestCase):
         assert_equal(a.frbr_uri.work_uri(), '/zm/act/2007/01')
         assert_equal(a.frbr_uri.number, '01')
 
-        assert_equal(a.meta.identification.FRBRWork.FRBRthis.get('value'), '/zm/act/2007/01/main')
+        assert_equal(a.meta.identification.FRBRWork.FRBRthis.get('value'), '/zm/act/2007/01/!main')
         assert_equal(a.meta.identification.FRBRWork.FRBRuri.get('value'), '/zm/act/2007/01')
         assert_equal(a.meta.identification.FRBRWork.FRBRcountry.get('value'), 'zm')
 
-        assert_equal(a.meta.identification.FRBRExpression.FRBRthis.get('value'), '/zm/act/2007/01/eng@2012-01-01/main')
+        assert_equal(a.meta.identification.FRBRExpression.FRBRthis.get('value'), '/zm/act/2007/01/eng@2012-01-01/!main')
         assert_equal(a.meta.identification.FRBRExpression.FRBRuri.get('value'), '/zm/act/2007/01/eng@2012-01-01')
 
         assert_equal(a.meta.identification.FRBRManifestation.FRBRthis.get('value'),
-                     '/zm/act/2007/01/eng@2012-01-01/main')
+                     '/zm/act/2007/01/eng@2012-01-01/!main')
         assert_equal(a.meta.identification.FRBRManifestation.FRBRuri.get('value'), '/zm/act/2007/01/eng@2012-01-01')
 
     def test_title(self):
@@ -163,7 +163,7 @@ class StructuredDocumentTestCase(TestCase):
     <meta>
       <identification source="#slaw">
         <FRBRWork>
-          <FRBRthis value="/na/act/1977/25/main"/>
+          <FRBRthis value="/na/act/1977/25/!main"/>
           <FRBRuri value="/na/act/1977/25"/>
           <FRBRalias value="Livestock Improvement Act, 1977"/>
           <FRBRdate date="1977-03-23" name="Generation"/>
@@ -171,14 +171,14 @@ class StructuredDocumentTestCase(TestCase):
           <FRBRcountry value="na"/>
         </FRBRWork>
         <FRBRExpression>
-          <FRBRthis value="/na/act/1977/25/eng@1993-12-02/main"/>
+          <FRBRthis value="/na/act/1977/25/eng@1993-12-02/!main"/>
           <FRBRuri value="/na/act/1977/25/eng@1993-12-02"/>
           <FRBRdate date="1993-12-02" name="Generation"/>
           <FRBRauthor href="#council"/>
           <FRBRlanguage language="eng"/>
         </FRBRExpression>
         <FRBRManifestation>
-          <FRBRthis value="/na/act/1977/25/eng@1993-12-02/main"/>
+          <FRBRthis value="/na/act/1977/25/eng@1993-12-02/!main"/>
           <FRBRuri value="/na/act/1977/25/eng@1993-12-02"/>
           <FRBRdate date="2020-03-25" name="Generation"/>
           <FRBRauthor href="#slaw"/>
@@ -294,21 +294,21 @@ class ActTestCase(TestCase):
         <FRBRWork>
           <FRBRuri value="/akn/za/act/1900/1"/>
           <FRBRalias value="Untitled" name="title"/>
-          <FRBRthis value="/akn/za/act/1900/1/main"/>
+          <FRBRthis value="/akn/za/act/1900/1/!main"/>
           <FRBRdate date="TODAY" name="Generation"/>
           <FRBRauthor href=""/>
           <FRBRcountry value="za"/>
         </FRBRWork>
         <FRBRExpression>
           <FRBRuri value="/akn/za/act/1900/1/eng@TODAY"/>
-          <FRBRthis value="/akn/za/act/1900/1/eng@TODAY/main"/>
+          <FRBRthis value="/akn/za/act/1900/1/eng@TODAY/!main"/>
           <FRBRdate date="TODAY" name="Generation"/>
           <FRBRauthor href=""/>
           <FRBRlanguage language="eng"/>
         </FRBRExpression>
         <FRBRManifestation>
           <FRBRuri value="/akn/za/act/1900/1/eng@TODAY"/>
-          <FRBRthis value="/akn/za/act/1900/1/eng@TODAY/main"/>
+          <FRBRthis value="/akn/za/act/1900/1/eng@TODAY/!main"/>
           <FRBRdate date="TODAY" name="Generation"/>
           <FRBRauthor href=""/>
         </FRBRManifestation>
@@ -342,21 +342,21 @@ class ActTestCase(TestCase):
         <FRBRWork>
           <FRBRuri value="/akn/za/act/1900/1"/>
           <FRBRalias value="Untitled" name="title"/>
-          <FRBRthis value="/akn/za/act/1900/1/main"/>
+          <FRBRthis value="/akn/za/act/1900/1/!main"/>
           <FRBRdate date="TODAY" name="Generation"/>
           <FRBRauthor href=""/>
           <FRBRcountry value="za"/>
         </FRBRWork>
         <FRBRExpression>
           <FRBRuri value="/akn/za/act/1900/1/eng@TODAY"/>
-          <FRBRthis value="/akn/za/act/1900/1/eng@TODAY/main"/>
+          <FRBRthis value="/akn/za/act/1900/1/eng@TODAY/!main"/>
           <FRBRdate date="TODAY" name="Generation"/>
           <FRBRauthor href=""/>
           <FRBRlanguage language="eng"/>
         </FRBRExpression>
         <FRBRManifestation>
           <FRBRuri value="/akn/za/act/1900/1/eng@TODAY"/>
-          <FRBRthis value="/akn/za/act/1900/1/eng@TODAY/main"/>
+          <FRBRthis value="/akn/za/act/1900/1/eng@TODAY/!main"/>
           <FRBRdate date="TODAY" name="Generation"/>
           <FRBRauthor href=""/>
         </FRBRManifestation>
@@ -401,21 +401,21 @@ class ActTestCase(TestCase):
         <FRBRWork>
           <FRBRuri value="/akn/za/act/1900/1"/>
           <FRBRalias value="Untitled" name="title"/>
-          <FRBRthis value="/akn/za/act/1900/1/main"/>
+          <FRBRthis value="/akn/za/act/1900/1/!main"/>
           <FRBRdate date="TODAY" name="Generation"/>
           <FRBRauthor href=""/>
           <FRBRcountry value="za"/>
         </FRBRWork>
         <FRBRExpression>
           <FRBRuri value="/akn/za/act/1900/1/eng@TODAY"/>
-          <FRBRthis value="/akn/za/act/1900/1/eng@TODAY/main"/>
+          <FRBRthis value="/akn/za/act/1900/1/eng@TODAY/!main"/>
           <FRBRdate date="TODAY" name="Generation"/>
           <FRBRauthor href=""/>
           <FRBRlanguage language="eng"/>
         </FRBRExpression>
         <FRBRManifestation>
           <FRBRuri value="/akn/za/act/1900/1/eng@TODAY"/>
-          <FRBRthis value="/akn/za/act/1900/1/eng@TODAY/main"/>
+          <FRBRthis value="/akn/za/act/1900/1/eng@TODAY/!main"/>
           <FRBRdate date="TODAY" name="Generation"/>
           <FRBRauthor href=""/>
         </FRBRManifestation>

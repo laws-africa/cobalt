@@ -155,7 +155,7 @@ class FrbrUri(object):
         parts += [self.date, self.number]
 
         if work_component and self.work_component:
-            parts += [self.work_component]
+            parts += ['!' + self.work_component]
 
         return '/'.join(parts)
 
@@ -174,7 +174,7 @@ class FrbrUri(object):
 
         # if we have a work component, use it
         elif work_component and self.work_component:
-            uri = uri + "/" + self.work_component
+            uri = uri + "/!" + self.work_component
 
         return uri
 
