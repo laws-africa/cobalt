@@ -13,13 +13,15 @@ FRBR_URI_RE = re.compile(r"""^(/(?P<prefix>akn))?            # optional 'akn' pr
                                 (                                # optional expression details
                                   (?P<language>[a-z]{3})                    # language (eg. eng)
                                   (?P<expression_date>[@:][^/]*)?           # expression date (eg. @ or @2012-12-22 or :2012-12-22)
-                                  (/                                        # optional expression component
-                                    (?P<expression_component>[^/]+?)?       # expression component (eg. main or schedule1)
+                                  (/!?                                      # optional expression component
+                                                                            # the ! is optional for backwards compatibility and will be removed
+                                                                            # in a future version
+                                    (?P<expression_component>[^/]+?)?       # expression component (eg. !main or !schedule1)
                                     (/(?P<expression_subcomponent>[^.]+))?  # expression subcomponent (eg. chapter/1 or section/20)
                                   )?                                        #
                                   (\.(?P<format>[a-z0-9]+))?                # format (eg. .xml, .akn, .html, .pdf)
                                 )|                                          #
-                                (?P<work_component>[^/]{4,})   # work component
+                                !?(?P<work_component>[^/]{4,})   # work component
                               ))?$""", re.X)
 
 
@@ -39,7 +41,7 @@ class FrbrUri(object):
 
     Example::
 
-        >>> uri = FrbrUri.parse('/akn/za-jhb/act/by-law/2003/public-health/eng:2015-01-01/main/part/A.xml')
+        >>> uri = FrbrUri.parse('/akn/za-jhb/act/by-law/2003/public-health/eng:2015-01-01/!main/part/A.xml')
         >>> uri.prefix
         'akn'
         >>> uri.country
