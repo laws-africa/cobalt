@@ -14,7 +14,7 @@ FRBR_URI_RE = re.compile(r"""^(/(?P<prefix>akn))?            # optional 'akn' pr
                                   (?P<language>[a-z]{3})                    # language (eg. eng)
                                   (?P<expression_date>[@:][^/]*)?           # expression date (eg. @ or @2012-12-22 or :2012-12-22)
                                   (/!?                                      # optional expression component
-                                                                            # the ! is optional for backwards compatibility and will be removed
+                                                                            # the ! is optional for backwards compatibility but won't be optional
                                                                             # in a future version
                                     (?P<expression_component>[^/]+?)?       # expression component (eg. !main or !schedule1)
                                     (/(?P<expression_subcomponent>[^.]+))?  # expression subcomponent (eg. chapter/1 or section/20)
