@@ -91,6 +91,11 @@ Change Log
 - Support all Akoma Ntoso document types
 - Start FRBR URI work component with ``!`` (eg. ``!main``)
 
+3.1.1
+.....
+
+- FIX issue where a four-digit number in an FRBR URI confuses the parser
+
 3.1.0
 .....
 

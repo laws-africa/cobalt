@@ -4,7 +4,7 @@ FRBR_URI_RE = re.compile(r"""^(/(?P<prefix>akn))?            # optional 'akn' pr
                               /(?P<country>[a-z]{2})         # country
                               (-(?P<locality>[^/]+))?        # locality code
                               /(?P<doctype>[^/]+)            # document type
-                              /((?P<subtype>[^/]+)           # subtype (optional)
+                              /((?P<subtype>[^0-9][^/]*)     # subtype (optional, cannot start with a number)
                               /((?P<actor>[^0-9][^/]*)/)?)?  # actor (optional), cannot start with a number
                               (?P<date>[0-9]{4}(-[0-9]{2}(-[0-9]{2})?)?)  # date
                               /(?P<number>[^/]+)             # number
