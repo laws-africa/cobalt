@@ -193,52 +193,93 @@ class StructuredDocumentTestCase(TestCase):
         </content>
       </section>
     </body>
+    <attachments>
+      <attachment id="att_1">
+        <doc name="schedule">
+          <meta>
+            <identification source="#slaw">
+              <FRBRWork>
+                <FRBRthis value="/na/act/1977/25/!schedule-A"/>
+                <FRBRuri value="/na/act/1977/25"/>
+                <FRBRalias value="Schedule"/>
+                <FRBRdate date="1980-01-01" name="Generation"/>
+                <FRBRauthor href="#council"/>
+                <FRBRcountry value="na"/>
+              </FRBRWork>
+              <FRBRExpression>
+                <FRBRthis value="/na/act/1977/25/eng@1993-12-02/!schedule-A"/>
+                <FRBRuri value="/na/act/1977/25/eng@1993-12-02"/>
+                <FRBRdate date="1980-01-01" name="Generation"/>
+                <FRBRauthor href="#council"/>
+                <FRBRlanguage language="eng"/>
+              </FRBRExpression>
+              <FRBRManifestation>
+                <FRBRthis value="/na/act/1977/25/eng@1993-12-02/!schedule-A"/>
+                <FRBRuri value="/na/act/1977/25/eng@1993-12-02"/>
+                <FRBRdate date="2020-03-25" name="Generation"/>
+                <FRBRauthor href="#slaw"/>
+              </FRBRManifestation>
+            </identification>
+          </meta>
+          <mainBody>
+            <hcontainer id="schedule" name="schedule">
+              <heading>Schedule</heading>
+              <paragraph id="schedule.paragraph0">
+                <content>
+                  <p>This is the content of the Schedule!</p>
+                </content>
+              </paragraph>
+            </hcontainer>
+          </mainBody>
+        </doc>
+      </attachment>
+    </attachments>
+    <components>
+      <component id="comp_1">
+        <doc name="schedule">
+          <meta>
+            <identification source="#slaw">
+              <FRBRWork>
+                <FRBRthis value="/na/act/1977/25/!schedule-XXX"/>
+                <FRBRuri value="/na/act/1977/25"/>
+                <FRBRalias value="Schedule"/>
+                <FRBRdate date="1980-01-01" name="Generation"/>
+                <FRBRauthor href="#council"/>
+                <FRBRcountry value="na"/>
+              </FRBRWork>
+              <FRBRExpression>
+                <FRBRthis value="/na/act/1977/25/eng@1993-12-02/!schedule-XXX"/>
+                <FRBRuri value="/na/act/1977/25/eng@1993-12-02"/>
+                <FRBRdate date="1980-01-01" name="Generation"/>
+                <FRBRauthor href="#council"/>
+                <FRBRlanguage language="eng"/>
+              </FRBRExpression>
+              <FRBRManifestation>
+                <FRBRthis value="/na/act/1977/25/eng@1993-12-02/!schedule-XXX"/>
+                <FRBRuri value="/na/act/1977/25/eng@1993-12-02"/>
+                <FRBRdate date="2020-03-25" name="Generation"/>
+                <FRBRauthor href="#slaw"/>
+              </FRBRManifestation>
+            </identification>
+           </meta>
+          <mainBody>
+            <hcontainer id="schedule" name="schedule">
+              <heading>Schedule</heading>
+              <paragraph id="schedule.paragraph0">
+                <content>
+                  <p>This is the content of the Schedule!</p>
+                </content>
+              </paragraph>
+            </hcontainer>
+          </mainBody>
+        </doc>
+      </component>
+    </components>
   </act>
-  <components>
-    <component id="component-schedule">
-      <doc name="schedule">
-        <meta>
-          <identification source="#slaw">
-            <FRBRWork>
-              <FRBRthis value="/na/act/1977/25/schedule-XXX"/>
-              <FRBRuri value="/na/act/1977/25"/>
-              <FRBRalias value="Schedule"/>
-              <FRBRdate date="1980-01-01" name="Generation"/>
-              <FRBRauthor href="#council"/>
-              <FRBRcountry value="na"/>
-            </FRBRWork>
-            <FRBRExpression>
-              <FRBRthis value="/na/act/1977/25/eng@1993-12-02/schedule"/>
-              <FRBRuri value="/na/act/1977/25/eng@1993-12-02"/>
-              <FRBRdate date="1980-01-01" name="Generation"/>
-              <FRBRauthor href="#council"/>
-              <FRBRlanguage language="eng"/>
-            </FRBRExpression>
-            <FRBRManifestation>
-              <FRBRthis value="/na/act/1977/25/eng@1993-12-02/schedule"/>
-              <FRBRuri value="/na/act/1977/25/eng@1993-12-02"/>
-              <FRBRdate date="2020-03-25" name="Generation"/>
-              <FRBRauthor href="#slaw"/>
-            </FRBRManifestation>
-          </identification>
-        </meta>
-        <mainBody>
-          <hcontainer id="schedule" name="schedule">
-            <heading>Schedule</heading>
-            <paragraph id="schedule.paragraph0">
-              <content>
-                <p>This is the content of the Schedule!</p>
-              </content>
-            </paragraph>
-          </hcontainer>
-        </mainBody>
-      </doc>
-    </component>
-  </components>
 </akomaNtoso>
         """)
         components = a.components()
-        self.assertIn('schedule-XXX', components.keys())
+        self.assertEqual(['main', 'schedule-A', 'schedule-XXX'], sorted(components.keys()))
         self.assertEqual('This is the content of the Schedule!',
                          components['schedule-XXX'].mainBody.hcontainer.paragraph.content.p)
 

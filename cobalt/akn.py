@@ -372,15 +372,17 @@ class StructuredDocument(AkomaNtosoDocument):
 
     def components(self):
         """ Get an `OrderedDict` of component name to :class:`lxml.objectify.ObjectifiedElement`
-        objects.
+        objects. Components are this document, and `<component>` and `<attachment>` elements inside this document.
         """
         components = OrderedDict()
-        components['main'] = self.main
+        frbr_uri = FrbrUri.parse(self.meta.identification.FRBRWork.FRBRthis.get('value'))
+        components[frbr_uri.work_component] = self.main
 
-        # components/schedules
-        for doc in self.root.iterfind(f'./{{{self.namespace}}}components/{{{self.namespace}}}component/{{{self.namespace}}}doc'):
-            name = doc.meta.identification.FRBRWork.FRBRthis.get('value').split('/')[-1]
-            components[name] = doc
+        xpath = './a:attachments/a:attachment/a:*/a:meta | ./a:components/a:component/a:*/a:meta'
+        for meta in self.main.xpath(xpath, namespaces={'a': self.namespace}):
+            frbr_uri = FrbrUri.parse(meta.identification.FRBRWork.FRBRthis.get('value'))
+            name = frbr_uri.work_component
+            components[name] = meta.getparent()
 
         return components
 
