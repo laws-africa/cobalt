@@ -4,13 +4,13 @@ FRBR_URI_RE = re.compile(r"""^(/(?P<prefix>akn))?            # optional 'akn' pr
                               /(?P<country>[a-z]{2})         # country
                               (-(?P<locality>[^/]+))?        # locality code
                               /(?P<doctype>[^/]+)            # document type
-                              /((?P<subtype>[^0-9][^/]*)     # subtype (optional, cannot start with a number)
-                              /((?P<actor>[^0-9][^/]*)/)?)?  # actor (optional), cannot start with a number
-                              (?P<date>[0-9]{4}(-[0-9]{2}(-[0-9]{2})?)?)  # date
+                              (/(?P<subtype>[^0-9][^/]*))?   # subtype (optional, cannot start with a number)
+                              (/(?P<actor>[^0-9][^/]*))?     # actor (optional), cannot start with a number
+                              /(?P<date>[0-9]{4}(-[0-9]{2}(-[0-9]{2})?)?)  # date
                               /(?P<number>[^/]+)             # number
                               (/
-                               (                           # either a work component or expression details
-                                (                                # optional expression details
+                               (                             # either a work component or expression details
+                                (                              # optional expression details
                                   (?P<language>[a-z]{3})                    # language (eg. eng)
                                   (?P<expression_date>[@:][^/]*)?           # expression date (eg. @ or @2012-12-22 or :2012-12-22)
                                   (/!?                                      # optional expression component
@@ -21,7 +21,7 @@ FRBR_URI_RE = re.compile(r"""^(/(?P<prefix>akn))?            # optional 'akn' pr
                                   )?                                        #
                                   (\.(?P<format>[a-z0-9]+))?                # format (eg. .xml, .akn, .html, .pdf)
                                 )|                                          #
-                                !?(?P<work_component>[^/]{4,})   # work component
+                                !?(?P<work_component>[^/]+)     # work component
                               ))?$""", re.X)
 
 
