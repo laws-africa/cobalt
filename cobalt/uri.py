@@ -1,24 +1,27 @@
 import re
 
-FRBR_URI_RE = re.compile(r"""^/(?P<country>[a-z]{2})         # country
+FRBR_URI_RE = re.compile(r"""^(/(?P<prefix>akn))?            # optional 'akn' prefix
+                              /(?P<country>[a-z]{2})         # country
                               (-(?P<locality>[^/]+))?        # locality code
                               /(?P<doctype>[^/]+)            # document type
-                              /((?P<subtype>[^0-9][^/]*)     # subtype (optional, cannot start with a number)
-                              /((?P<actor>[^0-9][^/]*)/)?)?  # actor (optional), cannot start with a number
-                              (?P<date>[0-9]{4}(-[0-9]{2}(-[0-9]{2})?)?)  # date
+                              (/(?P<subtype>[^0-9][^/]*))?   # subtype (optional, cannot start with a number)
+                              (/(?P<actor>[^0-9][^/]*))?     # actor (optional), cannot start with a number
+                              /(?P<date>[0-9]{4}(-[0-9]{2}(-[0-9]{2})?)?)  # date
                               /(?P<number>[^/]+)             # number
                               (/
-                               (                           # either a work component or expression details
-                                (                                # optional expression details
+                               (                             # either a work component or expression details
+                                (                              # optional expression details
                                   (?P<language>[a-z]{3})                    # language (eg. eng)
                                   (?P<expression_date>[@:][^/]*)?           # expression date (eg. @ or @2012-12-22 or :2012-12-22)
-                                  (/                                        # optional expression component
-                                    (?P<expression_component>[^/]+?)?       # expression component (eg. main or schedule1)
+                                  (/!?                                      # optional expression component
+                                                                            # the ! is optional for backwards compatibility but won't be optional
+                                                                            # in a future version
+                                    (?P<expression_component>[^/]+?)?       # expression component (eg. !main or !schedule1)
                                     (/(?P<expression_subcomponent>[^.]+))?  # expression subcomponent (eg. chapter/1 or section/20)
                                   )?                                        #
                                   (\.(?P<format>[a-z0-9]+))?                # format (eg. .xml, .akn, .html, .pdf)
                                 )|                                          #
-                                (?P<work_component>[^/]{4,})   # work component
+                                !?(?P<work_component>[^/]+)     # work component
                               ))?$""", re.X)
 
 
@@ -38,7 +41,9 @@ class FrbrUri(object):
 
     Example::
 
-        >>> uri = FrbrUri.parse('/za-jhb/act/by-law/2003/public-health/eng:2015-01-01/main/part/A.xml')
+        >>> uri = FrbrUri.parse('/akn/za-jhb/act/by-law/2003/public-health/eng:2015-01-01/!main/part/A.xml')
+        >>> uri.prefix
+        'akn'
         >>> uri.country
         'za'
         >>> uri.locality
@@ -68,6 +73,7 @@ class FrbrUri(object):
         >>> uri.manifestation_uri()
         '/za-jhb/act/by-law/2003/public-health/eng:2015-01-01/main/part/A.xml'
 
+    :ivar prefix: optional `akn` prefix
     :ivar country: two letter country code
     :ivar locality: locality within the country, may be None
     :ivar doctype: type of document (eg. ``act``)
@@ -92,7 +98,8 @@ class FrbrUri(object):
 
     def __init__(self, country, locality, doctype, subtype, actor, date, number,
                  work_component=None, language=None, expression_date=None, expression_component=None,
-                 expression_subcomponent=None, format=None):
+                 expression_subcomponent=None, format=None, prefix="akn"):
+        self.prefix = prefix
         self.country = country
         self.locality = locality
         self.doctype = doctype
@@ -110,6 +117,7 @@ class FrbrUri(object):
 
     def clone(self):
         return FrbrUri(
+            prefix=self.prefix,
             country=self.country,
             locality=self.locality,
             doctype=self.doctype,
@@ -132,10 +140,14 @@ class FrbrUri(object):
     def work_uri(self, work_component=True):
         """ String form of the work URI. """
         country = self.country
+        parts = ['']
         if self.locality:
             country = country + "-" + self.locality
 
-        parts = ['', country, self.doctype]
+        if self.prefix:
+            parts.append(self.prefix)
+
+        parts += [country, self.doctype]
 
         if self.subtype:
             parts.append(self.subtype)
@@ -145,7 +157,7 @@ class FrbrUri(object):
         parts += [self.date, self.number]
 
         if work_component and self.work_component:
-            parts += [self.work_component]
+            parts += ['!' + self.work_component]
 
         return '/'.join(parts)
 
@@ -158,13 +170,13 @@ class FrbrUri(object):
 
         # expression component is preferred over a work component
         if self.expression_component:
-            uri = uri + "/" + self.expression_component
+            uri = uri + "/!" + self.expression_component
             if self.expression_subcomponent:
                 uri = uri + "/" + self.expression_subcomponent
 
         # if we have a work component, use it
         elif work_component and self.work_component:
-            uri = uri + "/" + self.work_component
+            uri = uri + "/!" + self.work_component
 
         return uri
 
@@ -186,3 +198,14 @@ class FrbrUri(object):
             return cls(**match.groupdict())
         else:
             raise ValueError("Invalid FRBR URI: %s" % s)
+
+    @property
+    def year(self):
+        """ The year, derived from :data:`date`. Read-only. """
+        return self.date.split("-", 1)[0]
+
+    @property
+    def place(self):
+        if self.locality:
+            return self.country + "-" + self.locality
+        return self.country

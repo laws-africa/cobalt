@@ -27,11 +27,15 @@ Use it like this::
     >>> from cobalt import Act
     >>> act = Act()
     >>> act.title = "Act 10 of 1980"
-    >>> act.frbr_uri = "/za/act/1980/10"
-    >>> act.year
+    >>> act.frbr_uri = "/za/act/1980-05-03/10"
+    >>> act.frbr_uri.year
     '1980'
-    >>> act.number
+    >>> act.frbr_uri.date
+    '1980-05-03'
+    >>> act.frbr_uri.number
     '10'
+    >>> act.frbr_uri.doctype
+    'act'
     >>> print act.to_xml()
     [ lots of xml ]
 
@@ -78,6 +82,14 @@ Cobalt is Copyright 2015-2017 AfricanLII.
 
 Change Log
 ----------
+
+4.0.0
+.....
+
+- Support AKN2 and AKN3 namespaces
+- Produce URIs with ``akn`` prefix by default (backwards compatibility maintained)
+- Support all Akoma Ntoso document types
+- Start FRBR URI work component with ``!`` (eg. ``!main``)
 
 3.1.1
 .....
