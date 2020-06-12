@@ -346,7 +346,7 @@ class StructuredDocument(AkomaNtosoDocument):
 
             ident.FRBRWork.FRBRuri.set('value', uri.uri())
             ident.FRBRWork.FRBRthis.set('value', uri.work_uri())
-            ident.FRBRWork.FRBRcountry.set('value', uri.country)
+            ident.FRBRWork.FRBRcountry.set('value', uri.place)
             if uri.subtype:
                 self.ensure_element('FRBRsubtype', at=ident.FRBRWork, after=ident.FRBRWork.FRBRcountry).set('value', uri.subtype)
             else:

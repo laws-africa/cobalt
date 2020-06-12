@@ -90,6 +90,7 @@ Change Log
 - Produce URIs with ``akn`` prefix by default (backwards compatibility maintained)
 - Support all Akoma Ntoso document types
 - Start FRBR URI work component with ``!`` (eg. ``!main``)
+- FRBRcountry uses full country code from the FRBR URI
 
 3.1.1
 .....
