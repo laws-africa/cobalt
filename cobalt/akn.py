@@ -186,7 +186,7 @@ class StructuredDocument(AkomaNtosoDocument):
                             E.FRBRthis(value=frbr_uri.work_uri()),
                             E.FRBRdate(date=today, name="Generation"),
                             E.FRBRauthor(href=""),
-                            E.FRBRcountry(value=frbr_uri.country),
+                            E.FRBRcountry(value=frbr_uri.place),
                         ),
                         E.FRBRExpression(
                             E.FRBRuri(value=frbr_uri.expression_uri(work_component=False)),
