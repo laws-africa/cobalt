@@ -349,6 +349,7 @@ class ActTestCase(TestCase):
           <FRBRdate date="TODAY" name="Generation"/>
           <FRBRauthor href=""/>
           <FRBRcountry value="za"/>
+          <FRBRnumber value="1"/>
         </FRBRWork>
         <FRBRExpression>
           <FRBRuri value="/akn/za/act/1900/1/eng@TODAY"/>
@@ -397,6 +398,7 @@ class ActTestCase(TestCase):
           <FRBRdate date="TODAY" name="Generation"/>
           <FRBRauthor href=""/>
           <FRBRcountry value="za"/>
+          <FRBRnumber value="1"/>
         </FRBRWork>
         <FRBRExpression>
           <FRBRuri value="/akn/za/act/1900/1/eng@TODAY"/>
@@ -456,6 +458,7 @@ class ActTestCase(TestCase):
           <FRBRdate date="TODAY" name="Generation"/>
           <FRBRauthor href=""/>
           <FRBRcountry value="za"/>
+          <FRBRnumber value="1"/>
         </FRBRWork>
         <FRBRExpression>
           <FRBRuri value="/akn/za/act/1900/1/eng@TODAY"/>
