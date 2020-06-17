@@ -30,6 +30,16 @@ class StructuredDocumentTestCase(TestCase):
                      '/zm/act/2007/01/eng@2012-01-01/!main')
         assert_equal(a.meta.identification.FRBRManifestation.FRBRuri.get('value'), '/zm/act/2007/01/eng@2012-01-01')
 
+    def test_frbr_country(self):
+        a = Act()
+        a.expression_date = '2012-01-01'
+        a.frbr_uri = '/zm/act/2007/01'
+
+        assert_equal(a.meta.identification.FRBRWork.FRBRcountry.get('value'), 'zm')
+
+        a.frbr_uri = '/zm-abc123/act/2007/01'
+        assert_equal(a.meta.identification.FRBRWork.FRBRcountry.get('value'), 'zm-abc123')
+
     def test_title(self):
         a = Act()
         a.title = "a title"
