@@ -4,6 +4,7 @@ from datetime import date
 import lxml.etree as etree
 
 from cobalt import Act, AmendmentEvent, RepealEvent, Judgment, datestring
+from tests import assertValidates
 
 
 class StructuredDocumentTestCase(TestCase):
@@ -29,6 +30,8 @@ class StructuredDocumentTestCase(TestCase):
         assert_equal(a.meta.identification.FRBRManifestation.FRBRthis.get('value'),
                      '/zm/act/2007/01/eng@2012-01-01/!main')
         assert_equal(a.meta.identification.FRBRManifestation.FRBRuri.get('value'), '/zm/act/2007/01/eng@2012-01-01')
+
+        assertValidates(a)
 
     def test_frbr_country(self):
         a = Act()
@@ -169,13 +172,13 @@ class StructuredDocumentTestCase(TestCase):
     def test_components(self):
         a = Act(xml="""<?xml version="1.0" encoding="UTF-8"?>
 <akomaNtoso xmlns="http://docs.oasis-open.org/legaldocml/ns/akn/3.0" xsi:schemaLocation="http://docs.oasis-open.org/legaldocml/akn-core/v1.0/os/part2-specs/schemas/akomantoso30.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <act contains="singleVersion">
+  <act contains="singleVersion" name="act">
     <meta>
       <identification source="#slaw">
         <FRBRWork>
           <FRBRthis value="/na/act/1977/25/!main"/>
           <FRBRuri value="/na/act/1977/25"/>
-          <FRBRalias value="Livestock Improvement Act, 1977"/>
+          <FRBRalias value="Livestock Improvement Act, 1977" name="title"/>
           <FRBRdate date="1977-03-23" name="Generation"/>
           <FRBRauthor href="#council"/>
           <FRBRcountry value="na"/>
@@ -197,21 +200,22 @@ class StructuredDocumentTestCase(TestCase):
       <publication number="5462" name="South African Government Gazette" showAs="South African Government Gazette" date="1977-03-23"/>
     </meta>
     <body>
-      <section id="section-20">
+      <section eId="section_1">
         <content>
           <p></p>
         </content>
       </section>
     </body>
     <attachments>
-      <attachment id="att_1">
+      <attachment eId="att_1">
+        <heading>Schedule</heading>
         <doc name="schedule">
           <meta>
             <identification source="#slaw">
               <FRBRWork>
                 <FRBRthis value="/na/act/1977/25/!schedule-A"/>
                 <FRBRuri value="/na/act/1977/25"/>
-                <FRBRalias value="Schedule"/>
+                <FRBRalias value="Schedule" name="title"/>
                 <FRBRdate date="1980-01-01" name="Generation"/>
                 <FRBRauthor href="#council"/>
                 <FRBRcountry value="na"/>
@@ -232,27 +236,25 @@ class StructuredDocumentTestCase(TestCase):
             </identification>
           </meta>
           <mainBody>
-            <hcontainer id="schedule" name="schedule">
-              <heading>Schedule</heading>
-              <paragraph id="schedule.paragraph0">
-                <content>
-                  <p>This is the content of the Schedule!</p>
-                </content>
-              </paragraph>
-            </hcontainer>
+            <paragraph eId="paragraph_1">
+              <content>
+                <p>This is the content of the Schedule!</p>
+              </content>
+            </paragraph>
           </mainBody>
         </doc>
       </attachment>
     </attachments>
     <components>
-      <component id="comp_1">
+      <component eId="comp_1">
+        <heading>Schedule</heading>
         <doc name="schedule">
           <meta>
             <identification source="#slaw">
               <FRBRWork>
                 <FRBRthis value="/na/act/1977/25/!schedule-XXX"/>
                 <FRBRuri value="/na/act/1977/25"/>
-                <FRBRalias value="Schedule"/>
+                <FRBRalias value="Schedule" name="title" />
                 <FRBRdate date="1980-01-01" name="Generation"/>
                 <FRBRauthor href="#council"/>
                 <FRBRcountry value="na"/>
@@ -273,14 +275,11 @@ class StructuredDocumentTestCase(TestCase):
             </identification>
            </meta>
           <mainBody>
-            <hcontainer id="schedule" name="schedule">
-              <heading>Schedule</heading>
-              <paragraph id="schedule.paragraph0">
-                <content>
-                  <p>This is the content of the Schedule!</p>
-                </content>
-              </paragraph>
-            </hcontainer>
+            <paragraph eId="paragraph_2">
+              <content>
+                <p>This is the content of the Schedule!</p>
+              </content>
+            </paragraph>
           </mainBody>
         </doc>
       </component>
@@ -291,7 +290,8 @@ class StructuredDocumentTestCase(TestCase):
         components = a.components()
         self.assertEqual(['main', 'schedule-A', 'schedule-XXX'], sorted(components.keys()))
         self.assertEqual('This is the content of the Schedule!',
-                         components['schedule-XXX'].mainBody.hcontainer.paragraph.content.p)
+                         components['schedule-XXX'].mainBody.paragraph.content.p)
+        assertValidates(a)
 
 
 class ActTestCase(TestCase):
@@ -302,6 +302,8 @@ class ActTestCase(TestCase):
         assert_equal(a.title, "Untitled")
         assert_is_not_none(a.meta)
         assert_is_not_none(a.body)
+
+        assertValidates(a)
 
     def test_empty_body(self):
         a = Act()
@@ -343,24 +345,24 @@ class ActTestCase(TestCase):
     <meta>
       <identification source="#cobalt">
         <FRBRWork>
+          <FRBRthis value="/akn/za/act/1900/1/!main"/>
           <FRBRuri value="/akn/za/act/1900/1"/>
           <FRBRalias value="Untitled" name="title"/>
-          <FRBRthis value="/akn/za/act/1900/1/!main"/>
           <FRBRdate date="TODAY" name="Generation"/>
           <FRBRauthor href=""/>
           <FRBRcountry value="za"/>
           <FRBRnumber value="1"/>
         </FRBRWork>
         <FRBRExpression>
-          <FRBRuri value="/akn/za/act/1900/1/eng@TODAY"/>
           <FRBRthis value="/akn/za/act/1900/1/eng@TODAY/!main"/>
+          <FRBRuri value="/akn/za/act/1900/1/eng@TODAY"/>
           <FRBRdate date="TODAY" name="Generation"/>
           <FRBRauthor href=""/>
           <FRBRlanguage language="eng"/>
         </FRBRExpression>
         <FRBRManifestation>
-          <FRBRuri value="/akn/za/act/1900/1/eng@TODAY"/>
           <FRBRthis value="/akn/za/act/1900/1/eng@TODAY/!main"/>
+          <FRBRuri value="/akn/za/act/1900/1/eng@TODAY"/>
           <FRBRdate date="TODAY" name="Generation"/>
           <FRBRauthor href=""/>
         </FRBRManifestation>
@@ -368,12 +370,18 @@ class ActTestCase(TestCase):
       <lifecycle source="#cobalt">
         <eventRef eId="amendment-2012-02-01" date="2012-02-01" type="amendment" source="#amendment-0-source"/>
       </lifecycle>
-      <references>
+      <references source="#cobalt">
         <TLCOrganization eId="cobalt" href="https://github.com/laws-africa/cobalt" showAs="cobalt"/>
         <passiveRef eId="amendment-0-source" href="/za/act/1980/10" showAs="Foo"/>
       </references>
     </meta>
-    <body/>
+    <body>
+      <section eId="section_1">
+        <content>
+          <p/>
+        </content>
+      </section>
+    </body>
   </act>
 </akomaNtoso>
 """, xml)
@@ -392,24 +400,24 @@ class ActTestCase(TestCase):
     <meta>
       <identification source="#cobalt">
         <FRBRWork>
+          <FRBRthis value="/akn/za/act/1900/1/!main"/>
           <FRBRuri value="/akn/za/act/1900/1"/>
           <FRBRalias value="Untitled" name="title"/>
-          <FRBRthis value="/akn/za/act/1900/1/!main"/>
           <FRBRdate date="TODAY" name="Generation"/>
           <FRBRauthor href=""/>
           <FRBRcountry value="za"/>
           <FRBRnumber value="1"/>
         </FRBRWork>
         <FRBRExpression>
-          <FRBRuri value="/akn/za/act/1900/1/eng@TODAY"/>
           <FRBRthis value="/akn/za/act/1900/1/eng@TODAY/!main"/>
+          <FRBRuri value="/akn/za/act/1900/1/eng@TODAY"/>
           <FRBRdate date="TODAY" name="Generation"/>
           <FRBRauthor href=""/>
           <FRBRlanguage language="eng"/>
         </FRBRExpression>
         <FRBRManifestation>
-          <FRBRuri value="/akn/za/act/1900/1/eng@TODAY"/>
           <FRBRthis value="/akn/za/act/1900/1/eng@TODAY/!main"/>
+          <FRBRuri value="/akn/za/act/1900/1/eng@TODAY"/>
           <FRBRdate date="TODAY" name="Generation"/>
           <FRBRauthor href=""/>
         </FRBRManifestation>
@@ -418,13 +426,19 @@ class ActTestCase(TestCase):
         <eventRef eId="amendment-2012-02-01" date="2012-02-01" type="amendment" source="#amendment-0-source"/>
         <eventRef eId="amendment-2013-03-03" date="2013-03-03" type="amendment" source="#amendment-1-source"/>
       </lifecycle>
-      <references>
+      <references source="#cobalt">
         <TLCOrganization eId="cobalt" href="https://github.com/laws-africa/cobalt" showAs="cobalt"/>
         <passiveRef eId="amendment-0-source" href="/za/act/1980/22" showAs="Corrected"/>
         <passiveRef eId="amendment-1-source" href="/za/act/1990/5" showAs="Bar"/>
       </references>
     </meta>
-    <body/>
+    <body>
+      <section eId="section_1">
+        <content>
+          <p/>
+        </content>
+      </section>
+    </body>
   </act>
 </akomaNtoso>
 """, xml)
@@ -439,6 +453,8 @@ class ActTestCase(TestCase):
         assert_equal(amendment.amending_uri, '/za/act/1990/5')
         assert_equal(amendment.amending_title, 'Bar')
 
+        assertValidates(a)
+
     def test_set_repeal(self):
         a = Act()
         a.frbr_uri = "/akn/za/act/1900/1"
@@ -452,24 +468,24 @@ class ActTestCase(TestCase):
     <meta>
       <identification source="#cobalt">
         <FRBRWork>
+          <FRBRthis value="/akn/za/act/1900/1/!main"/>
           <FRBRuri value="/akn/za/act/1900/1"/>
           <FRBRalias value="Untitled" name="title"/>
-          <FRBRthis value="/akn/za/act/1900/1/!main"/>
           <FRBRdate date="TODAY" name="Generation"/>
           <FRBRauthor href=""/>
           <FRBRcountry value="za"/>
           <FRBRnumber value="1"/>
         </FRBRWork>
         <FRBRExpression>
-          <FRBRuri value="/akn/za/act/1900/1/eng@TODAY"/>
           <FRBRthis value="/akn/za/act/1900/1/eng@TODAY/!main"/>
+          <FRBRuri value="/akn/za/act/1900/1/eng@TODAY"/>
           <FRBRdate date="TODAY" name="Generation"/>
           <FRBRauthor href=""/>
           <FRBRlanguage language="eng"/>
         </FRBRExpression>
         <FRBRManifestation>
-          <FRBRuri value="/akn/za/act/1900/1/eng@TODAY"/>
           <FRBRthis value="/akn/za/act/1900/1/eng@TODAY/!main"/>
+          <FRBRuri value="/akn/za/act/1900/1/eng@TODAY"/>
           <FRBRdate date="TODAY" name="Generation"/>
           <FRBRauthor href=""/>
         </FRBRManifestation>
@@ -477,12 +493,18 @@ class ActTestCase(TestCase):
       <lifecycle source="#cobalt">
         <eventRef eId="repeal-2012-02-01" date="2012-02-01" type="repeal" source="#repeal-source"/>
       </lifecycle>
-      <references>
+      <references source="#cobalt">
         <TLCOrganization eId="cobalt" href="https://github.com/laws-africa/cobalt" showAs="cobalt"/>
         <passiveRef eId="repeal-source" href="/za/act/1980/10" showAs="Foo"/>
       </references>
     </meta>
-    <body/>
+    <body>
+      <section eId="section_1">
+        <content>
+          <p/>
+        </content>
+      </section>
+    </body>
   </act>
 </akomaNtoso>
 """, xml)
@@ -491,9 +513,13 @@ class ActTestCase(TestCase):
         assert_equal(a.repeal.repealing_title, 'Foo')
         assert_equal(datestring(a.repeal.date), '2012-02-01')
 
+        assertValidates(a)
+
         # check that clearing it works
         a.repeal = None
         assert_is_none(a.repeal)
+
+        assertValidates(a)
 
     def test_main(self):
         a = Act()

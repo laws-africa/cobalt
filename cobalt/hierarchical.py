@@ -25,6 +25,21 @@ class Act(HierarchicalStructure):
     """
     document_type = "act"
 
+    @classmethod
+    def empty_document_content(cls, E):
+        return E('body',
+                 E('section',
+                   E('content',
+                     E('p')),
+                   eId="section_1")
+                 )
+
+    @classmethod
+    def empty_document_attrs(cls):
+        attrs = super().empty_document_attrs()
+        attrs['contains'] = 'originalVersion'
+        return attrs
+
     @property
     def publication_name(self):
         """ Name of the publication in which this act was published """
@@ -166,6 +181,13 @@ class Act(HierarchicalStructure):
             node.set('href', value.repealing_uri)
             node.set('showAs', value.repealing_title)
             references.append(node)
+        else:
+            try:
+                if len(list(self.meta.lifecycle.iterchildren())) == 0:
+                    # remove empty lifecycle
+                    self.meta.remove(self.meta.lifecycle)
+            except AttributeError:
+                pass
 
 
 class AmendmentEvent(object):
