@@ -205,7 +205,7 @@ class StructuredDocument(AkomaNtosoDocument):
                         source="#cobalt"
                     ),
                     E.references(
-                        E.TLCOrganization(id="cobalt", href="https://github.com/laws-africa/cobalt", showAs="cobalt"),
+                        E.TLCOrganization(eId="cobalt", href="https://github.com/laws-africa/cobalt", showAs="cobalt"),
                     )
                 ),
                 E(cls.main_content_tag),
@@ -405,10 +405,10 @@ class StructuredDocument(AkomaNtosoDocument):
     def _ensure_reference(self, elem, name, id, href):
         references = self.ensure_element('meta.references', after=self._ensure_lifecycle())
 
-        ref = references.find(f'./{{{self.namespace}}}{elem}[@id="{id}"]')
+        ref = references.find(f'./{{{self.namespace}}}{elem}[@eId="{id}"]')
         if ref is None:
             ref = self.make_element(elem)
-            ref.set('id', id)
+            ref.set('eId', id)
             ref.set('href', href)
             ref.set('showAs', name)
             references.insert(0, ref)
