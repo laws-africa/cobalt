@@ -5,7 +5,10 @@ from lxml import etree
 
 _schema = None
 
-def assertValidates(akn_doc):
+
+def assert_validates(akn_doc):
+    """ Assert that this akn document validates against the AKN schema.
+    """
     global _schema
 
     if not _schema:

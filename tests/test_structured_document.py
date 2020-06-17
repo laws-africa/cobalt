@@ -4,7 +4,7 @@ from datetime import date
 import lxml.etree as etree
 
 from cobalt import Act, AmendmentEvent, RepealEvent, Judgment, datestring
-from tests import assertValidates
+from tests import assert_validates
 
 
 class StructuredDocumentTestCase(TestCase):
@@ -31,7 +31,7 @@ class StructuredDocumentTestCase(TestCase):
                      '/zm/act/2007/01/eng@2012-01-01/!main')
         assert_equal(a.meta.identification.FRBRManifestation.FRBRuri.get('value'), '/zm/act/2007/01/eng@2012-01-01')
 
-        assertValidates(a)
+        assert_validates(a)
 
     def test_frbr_country(self):
         a = Act()
@@ -291,7 +291,7 @@ class StructuredDocumentTestCase(TestCase):
         self.assertEqual(['main', 'schedule-A', 'schedule-XXX'], sorted(components.keys()))
         self.assertEqual('This is the content of the Schedule!',
                          components['schedule-XXX'].mainBody.paragraph.content.p)
-        assertValidates(a)
+        assert_validates(a)
 
 
 class ActTestCase(TestCase):
@@ -303,7 +303,7 @@ class ActTestCase(TestCase):
         assert_is_not_none(a.meta)
         assert_is_not_none(a.body)
 
-        assertValidates(a)
+        assert_validates(a)
 
     def test_empty_body(self):
         a = Act()
@@ -453,7 +453,7 @@ class ActTestCase(TestCase):
         assert_equal(amendment.amending_uri, '/za/act/1990/5')
         assert_equal(amendment.amending_title, 'Bar')
 
-        assertValidates(a)
+        assert_validates(a)
 
     def test_set_repeal(self):
         a = Act()
@@ -513,13 +513,13 @@ class ActTestCase(TestCase):
         assert_equal(a.repeal.repealing_title, 'Foo')
         assert_equal(datestring(a.repeal.date), '2012-02-01')
 
-        assertValidates(a)
+        assert_validates(a)
 
         # check that clearing it works
         a.repeal = None
         assert_is_none(a.repeal)
 
-        assertValidates(a)
+        assert_validates(a)
 
     def test_main(self):
         a = Act()
