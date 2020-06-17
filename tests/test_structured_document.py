@@ -275,7 +275,7 @@ class StructuredDocumentTestCase(TestCase):
             </identification>
            </meta>
           <mainBody>
-            <paragraph eId="paragraph_2">
+            <paragraph eId="paragraph_1">
               <content>
                 <p>This is the content of the Schedule!</p>
               </content>
