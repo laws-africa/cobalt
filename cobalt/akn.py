@@ -137,10 +137,6 @@ class StructuredDocument(AkomaNtosoDocument):
     """ The name of the document type, corresponding to the primary document XML element.
     """
 
-    empty_document = None
-    """ The xml of an empty document of the type self.document
-    """
-
     @classmethod
     def for_document_type(cls, document_type):
         """ Return the subclass for this document type.
@@ -176,43 +172,54 @@ class StructuredDocument(AkomaNtosoDocument):
         )
 
         E = ElementMaker(nsmap={None: AKN_NAMESPACES[version]})
+        content = cls.empty_document_content(E)
+        attrs = cls.empty_document_attrs()
+
         doc = E.akomaNtoso(
             E(cls.document_type,
                 E.meta(
                     E.identification(
                         E.FRBRWork(
+                            E.FRBRthis(value=frbr_uri.work_uri()),
                             E.FRBRuri(value=frbr_uri.work_uri(work_component=False)),
                             E.FRBRalias(value="Untitled", name="title"),
-                            E.FRBRthis(value=frbr_uri.work_uri()),
                             E.FRBRdate(date=today, name="Generation"),
                             E.FRBRauthor(href=""),
                             E.FRBRcountry(value=frbr_uri.place),
                             E.FRBRnumber(value=frbr_uri.number),
                         ),
                         E.FRBRExpression(
-                            E.FRBRuri(value=frbr_uri.expression_uri(work_component=False)),
                             E.FRBRthis(value=frbr_uri.expression_uri()),
+                            E.FRBRuri(value=frbr_uri.expression_uri(work_component=False)),
                             E.FRBRdate(date=today, name="Generation"),
                             E.FRBRauthor(href=""),
                             E.FRBRlanguage(language=frbr_uri.language),
                         ),
                         E.FRBRManifestation(
-                            E.FRBRuri(value=frbr_uri.manifestation_uri(work_component=False)),
                             E.FRBRthis(value=frbr_uri.manifestation_uri()),
+                            E.FRBRuri(value=frbr_uri.manifestation_uri(work_component=False)),
                             E.FRBRdate(date=today, name="Generation"),
                             E.FRBRauthor(href=""),
                         ),
                         source="#cobalt"
                     ),
                     E.references(
-                        E.TLCOrganization(id="cobalt", href="https://github.com/laws-africa/cobalt", showAs="cobalt"),
+                        E.TLCOrganization(eId="cobalt", href="https://github.com/laws-africa/cobalt", showAs="cobalt"),
+                        source="#cobalt"
                     )
                 ),
-                E(cls.main_content_tag),
-                name=cls.document_type.lower(),
-                contains='originalVersion')
+                content,
+                **attrs)
         )
         return etree.tostring(doc, encoding='unicode')
+
+    @classmethod
+    def empty_document_content(cls, E):
+        return E(cls.main_content_tag)
+
+    @classmethod
+    def empty_document_attrs(cls):
+        return {'name': cls.document_type.lower()}
 
     def __init__(self, xml=None):
         """ Setup a new instance with the string in `xml`, or an empty document if the XML is not given.
@@ -405,10 +412,10 @@ class StructuredDocument(AkomaNtosoDocument):
     def _ensure_reference(self, elem, name, id, href):
         references = self.ensure_element('meta.references', after=self._ensure_lifecycle())
 
-        ref = references.find(f'./{{{self.namespace}}}{elem}[@id="{id}"]')
+        ref = references.find(f'./{{{self.namespace}}}{elem}[@eId="{id}"]')
         if ref is None:
             ref = self.make_element(elem)
-            ref.set('id', id)
+            ref.set('eId', id)
             ref.set('href', href)
             ref.set('showAs', name)
             references.insert(0, ref)
