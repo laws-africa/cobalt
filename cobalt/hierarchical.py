@@ -114,6 +114,8 @@ class Act(HierarchicalStructure):
             self.act.set('contains', 'singleVersion')
             lifecycle = self._ensure_lifecycle()
             references = self.ensure_element('meta.references', after=lifecycle)
+            if not references.get('source'):
+                references.set('source', '#' + self.source[1])
 
             for i, event in enumerate(value):
                 date = datestring(event.date)

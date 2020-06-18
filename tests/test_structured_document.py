@@ -1,10 +1,9 @@
 from unittest import TestCase
 from nose.tools import *  # noqa
 from datetime import date
-import lxml.etree as etree
 
 from cobalt import Act, AmendmentEvent, RepealEvent, Judgment, datestring
-from tests import assert_validates
+from cobalt.schemas import assert_validates
 
 
 class StructuredDocumentTestCase(TestCase):
@@ -18,11 +17,11 @@ class StructuredDocumentTestCase(TestCase):
         a.frbr_uri = '/zm/act/2007/01'
 
         assert_equal(a.frbr_uri.work_uri(), '/zm/act/2007/01')
-        assert_equal(a.frbr_uri.number, '01')
 
         assert_equal(a.meta.identification.FRBRWork.FRBRthis.get('value'), '/zm/act/2007/01/!main')
         assert_equal(a.meta.identification.FRBRWork.FRBRuri.get('value'), '/zm/act/2007/01')
         assert_equal(a.meta.identification.FRBRWork.FRBRcountry.get('value'), 'zm')
+        assert_equal(a.meta.identification.FRBRWork.FRBRnumber.get('value'), '01')
 
         assert_equal(a.meta.identification.FRBRExpression.FRBRthis.get('value'), '/zm/act/2007/01/eng@2012-01-01/!main')
         assert_equal(a.meta.identification.FRBRExpression.FRBRuri.get('value'), '/zm/act/2007/01/eng@2012-01-01')
@@ -52,10 +51,14 @@ class StructuredDocumentTestCase(TestCase):
         a = Act()
         a.frbr_uri = '/akn/za/act/by-law/2009/1'
         self.assertEqual(a.meta.identification.FRBRWork.FRBRsubtype.get('value'), 'by-law')
+        assert_validates(a)
 
+        # clear it
         a.frbr_uri = '/akn/za/act/2009/1'
         with self.assertRaises(AttributeError):
             a.meta.identification.FRBRWork.FRBRsubtype
+
+        assert_validates(a)
 
     def test_work_date(self):
         a = Act()
@@ -275,7 +278,7 @@ class StructuredDocumentTestCase(TestCase):
             </identification>
            </meta>
           <mainBody>
-            <paragraph eId="paragraph_2">
+            <paragraph eId="paragraph_1">
               <content>
                 <p>This is the content of the Schedule!</p>
               </content>
@@ -291,6 +294,54 @@ class StructuredDocumentTestCase(TestCase):
         self.assertEqual(['main', 'schedule-A', 'schedule-XXX'], sorted(components.keys()))
         self.assertEqual('This is the content of the Schedule!',
                          components['schedule-XXX'].mainBody.paragraph.content.p)
+        assert_validates(a)
+
+    def test_add_number(self):
+        """ When adding an FRBRnumber element to a document that doesn't already have one, it
+        must come after subtype.
+        """
+        a = Act(xml="""
+<akomaNtoso xmlns="http://docs.oasis-open.org/legaldocml/ns/akn/3.0" xsi:schemaLocation="http://docs.oasis-open.org/legaldocml/akn-core/v1.0/os/part2-specs/schemas/akomantoso30.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <act contains="singleVersion" name="act">
+    <meta>
+      <identification source="#slaw">
+        <FRBRWork>
+          <FRBRthis value="/na/act/p/1977/25/!main"/>
+          <FRBRuri value="/na/act/p/1977/25"/>
+          <FRBRalias value="Livestock Improvement Act, 1977" name="title"/>
+          <FRBRdate date="1977-03-23" name="Generation"/>
+          <FRBRauthor href="#council"/>
+          <FRBRcountry value="na"/>
+          <FRBRsubtype value="p"/>
+        </FRBRWork>
+        <FRBRExpression>
+          <FRBRthis value="/na/act/p/1977/25/eng@1993-12-02/!main"/>
+          <FRBRuri value="/na/act/p/1977/25/eng@1993-12-02"/>
+          <FRBRdate date="1993-12-02" name="Generation"/>
+          <FRBRauthor href="#council"/>
+          <FRBRlanguage language="eng"/>
+        </FRBRExpression>
+        <FRBRManifestation>
+          <FRBRthis value="/na/act/p/1977/25/eng@1993-12-02/!main"/>
+          <FRBRuri value="/na/act/p/1977/25/eng@1993-12-02"/>
+          <FRBRdate date="2020-03-25" name="Generation"/>
+          <FRBRauthor href="#slaw"/>
+        </FRBRManifestation>
+      </identification>
+      <publication number="5462" name="South African Government Gazette" showAs="South African Government Gazette" date="1977-03-23"/>
+    </meta>
+    <body>
+      <section eId="section_1">
+        <content>
+          <p></p>
+        </content>
+      </section>
+    </body>
+  </act>
+</akomaNtoso>
+""")
+        a.frbr_uri = '/na/act/p/1997/25/'
+
         assert_validates(a)
 
 

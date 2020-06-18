@@ -355,16 +355,20 @@ class StructuredDocument(AkomaNtosoDocument):
             ident.FRBRWork.FRBRuri.set('value', uri.uri())
             ident.FRBRWork.FRBRthis.set('value', uri.work_uri())
             ident.FRBRWork.FRBRcountry.set('value', uri.place)
-            self.ensure_element('FRBRnumber', at=ident.FRBRWork, after=ident.FRBRWork.FRBRcountry).set('value', uri.number)
 
             if uri.subtype:
                 self.ensure_element('FRBRsubtype', at=ident.FRBRWork, after=ident.FRBRWork.FRBRcountry).set('value', uri.subtype)
+                after = ident.FRBRWork.FRBRsubtype
             else:
+                after = ident.FRBRWork.FRBRcountry
                 try:
                     # remove existing subtype
                     ident.FRBRWork.remove(ident.FRBRWork.FRBRsubtype)
                 except AttributeError:
                     pass
+
+            # this must come after subtype if it exists, otherwise country
+            self.ensure_element('FRBRnumber', at=ident.FRBRWork, after=after).set('value', uri.number)
 
             ident.FRBRExpression.FRBRuri.set('value', uri.expression_uri(False))
             ident.FRBRExpression.FRBRthis.set('value', uri.expression_uri())
