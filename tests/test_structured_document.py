@@ -1,10 +1,9 @@
 from unittest import TestCase
 from nose.tools import *  # noqa
 from datetime import date
-import lxml.etree as etree
 
 from cobalt import Act, AmendmentEvent, RepealEvent, Judgment, datestring
-from tests import assert_validates
+from cobalt.schemas import assert_validates
 
 
 class StructuredDocumentTestCase(TestCase):
@@ -18,11 +17,11 @@ class StructuredDocumentTestCase(TestCase):
         a.frbr_uri = '/zm/act/2007/01'
 
         assert_equal(a.frbr_uri.work_uri(), '/zm/act/2007/01')
-        assert_equal(a.frbr_uri.number, '01')
 
         assert_equal(a.meta.identification.FRBRWork.FRBRthis.get('value'), '/zm/act/2007/01/!main')
         assert_equal(a.meta.identification.FRBRWork.FRBRuri.get('value'), '/zm/act/2007/01')
         assert_equal(a.meta.identification.FRBRWork.FRBRcountry.get('value'), 'zm')
+        assert_equal(a.meta.identification.FRBRWork.FRBRnumber.get('value'), '01')
 
         assert_equal(a.meta.identification.FRBRExpression.FRBRthis.get('value'), '/zm/act/2007/01/eng@2012-01-01/!main')
         assert_equal(a.meta.identification.FRBRExpression.FRBRuri.get('value'), '/zm/act/2007/01/eng@2012-01-01')
@@ -52,10 +51,14 @@ class StructuredDocumentTestCase(TestCase):
         a = Act()
         a.frbr_uri = '/akn/za/act/by-law/2009/1'
         self.assertEqual(a.meta.identification.FRBRWork.FRBRsubtype.get('value'), 'by-law')
+        assert_validates(a)
 
+        # clear it
         a.frbr_uri = '/akn/za/act/2009/1'
         with self.assertRaises(AttributeError):
             a.meta.identification.FRBRWork.FRBRsubtype
+
+        assert_validates(a)
 
     def test_work_date(self):
         a = Act()

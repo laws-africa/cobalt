@@ -43,3 +43,11 @@ def get_schema(namespace, strict):
             _schemas[namespace] = etree.XMLSchema(etree.parse(f))
 
     return _schemas[namespace]
+
+
+def assert_validates(akn_doc, strict=False):
+    """ Assert that this AKN document validates against the AKN schema.
+    Raises `lxml.etree.DocumentInvalid' if validation fails.
+    """
+    schema = get_schema(akn_doc.namespace, strict)
+    schema.assertValid(akn_doc.root)
