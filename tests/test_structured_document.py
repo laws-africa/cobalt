@@ -296,6 +296,54 @@ class StructuredDocumentTestCase(TestCase):
                          components['schedule-XXX'].mainBody.paragraph.content.p)
         assert_validates(a)
 
+    def test_add_number(self):
+        """ When adding an FRBRnumber element to a document that doesn't already have one, it
+        must come after subtype.
+        """
+        a = Act(xml="""
+<akomaNtoso xmlns="http://docs.oasis-open.org/legaldocml/ns/akn/3.0" xsi:schemaLocation="http://docs.oasis-open.org/legaldocml/akn-core/v1.0/os/part2-specs/schemas/akomantoso30.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <act contains="singleVersion" name="act">
+    <meta>
+      <identification source="#slaw">
+        <FRBRWork>
+          <FRBRthis value="/na/act/p/1977/25/!main"/>
+          <FRBRuri value="/na/act/p/1977/25"/>
+          <FRBRalias value="Livestock Improvement Act, 1977" name="title"/>
+          <FRBRdate date="1977-03-23" name="Generation"/>
+          <FRBRauthor href="#council"/>
+          <FRBRcountry value="na"/>
+          <FRBRsubtype value="p"/>
+        </FRBRWork>
+        <FRBRExpression>
+          <FRBRthis value="/na/act/p/1977/25/eng@1993-12-02/!main"/>
+          <FRBRuri value="/na/act/p/1977/25/eng@1993-12-02"/>
+          <FRBRdate date="1993-12-02" name="Generation"/>
+          <FRBRauthor href="#council"/>
+          <FRBRlanguage language="eng"/>
+        </FRBRExpression>
+        <FRBRManifestation>
+          <FRBRthis value="/na/act/p/1977/25/eng@1993-12-02/!main"/>
+          <FRBRuri value="/na/act/p/1977/25/eng@1993-12-02"/>
+          <FRBRdate date="2020-03-25" name="Generation"/>
+          <FRBRauthor href="#slaw"/>
+        </FRBRManifestation>
+      </identification>
+      <publication number="5462" name="South African Government Gazette" showAs="South African Government Gazette" date="1977-03-23"/>
+    </meta>
+    <body>
+      <section eId="section_1">
+        <content>
+          <p></p>
+        </content>
+      </section>
+    </body>
+  </act>
+</akomaNtoso>
+""")
+        a.frbr_uri = '/na/act/p/1997/25/'
+
+        assert_validates(a)
+
 
 class ActTestCase(TestCase):
     maxDiff = None
