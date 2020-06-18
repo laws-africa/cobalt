@@ -86,12 +86,13 @@ Change Log
 4.0.0
 .....
 
-- Support AKN2 and AKN3 namespaces
+- Support AKN 3.0 namespaces
 - Produce URIs with ``akn`` prefix by default (backwards compatibility maintained)
 - Support all Akoma Ntoso document types
 - Start FRBR URI work component with ``!`` (eg. ``!main``)
 - FRBRcountry uses full country code from the FRBR URI
 - FRBRnumber uses number portion from FRBR URI
+- Include AKN 3.0 schema and support for validating against the schema
 
 3.1.1
 .....
