@@ -92,6 +92,7 @@ Change Log
 - Start FRBR URI work component with ``!`` (eg. ``!main``)
 - FRBRcountry uses full country code from the FRBR URI
 - FRBRnumber uses number portion from FRBR URI
+- FRBRdate for FRBRWork contains the date portion of the FRBR URI
 - Include AKN 3.0 schema and support for validating against the schema
 
 3.1.1
