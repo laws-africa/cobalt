@@ -15,6 +15,7 @@ class StructuredDocumentTestCase(TestCase):
         a = Act()
         a.expression_date = '2012-01-01'
         a.frbr_uri = '/zm/act/2007/01'
+        today = datestring(date.today())
 
         assert_equal(a.frbr_uri.work_uri(), '/zm/act/2007/01')
 
@@ -22,13 +23,16 @@ class StructuredDocumentTestCase(TestCase):
         assert_equal(a.meta.identification.FRBRWork.FRBRuri.get('value'), '/zm/act/2007/01')
         assert_equal(a.meta.identification.FRBRWork.FRBRcountry.get('value'), 'zm')
         assert_equal(a.meta.identification.FRBRWork.FRBRnumber.get('value'), '01')
+        assert_equal(a.meta.identification.FRBRWork.FRBRdate.get('date'), '2007')
 
         assert_equal(a.meta.identification.FRBRExpression.FRBRthis.get('value'), '/zm/act/2007/01/eng@2012-01-01/!main')
         assert_equal(a.meta.identification.FRBRExpression.FRBRuri.get('value'), '/zm/act/2007/01/eng@2012-01-01')
+        assert_equal(a.meta.identification.FRBRExpression.FRBRdate.get('date'), '2012-01-01')
 
         assert_equal(a.meta.identification.FRBRManifestation.FRBRthis.get('value'),
                      '/zm/act/2007/01/eng@2012-01-01/!main')
         assert_equal(a.meta.identification.FRBRManifestation.FRBRuri.get('value'), '/zm/act/2007/01/eng@2012-01-01')
+        assert_equal(a.meta.identification.FRBRManifestation.FRBRdate.get('date'), today)
 
         assert_validates(a)
 
@@ -399,7 +403,7 @@ class ActTestCase(TestCase):
           <FRBRthis value="/akn/za/act/1900/1/!main"/>
           <FRBRuri value="/akn/za/act/1900/1"/>
           <FRBRalias value="Untitled" name="title"/>
-          <FRBRdate date="TODAY" name="Generation"/>
+          <FRBRdate date="1900" name="Generation"/>
           <FRBRauthor href=""/>
           <FRBRcountry value="za"/>
           <FRBRnumber value="1"/>
@@ -454,7 +458,7 @@ class ActTestCase(TestCase):
           <FRBRthis value="/akn/za/act/1900/1/!main"/>
           <FRBRuri value="/akn/za/act/1900/1"/>
           <FRBRalias value="Untitled" name="title"/>
-          <FRBRdate date="TODAY" name="Generation"/>
+          <FRBRdate date="1900" name="Generation"/>
           <FRBRauthor href=""/>
           <FRBRcountry value="za"/>
           <FRBRnumber value="1"/>
@@ -522,7 +526,7 @@ class ActTestCase(TestCase):
           <FRBRthis value="/akn/za/act/1900/1/!main"/>
           <FRBRuri value="/akn/za/act/1900/1"/>
           <FRBRalias value="Untitled" name="title"/>
-          <FRBRdate date="TODAY" name="Generation"/>
+          <FRBRdate date="1900" name="Generation"/>
           <FRBRauthor href=""/>
           <FRBRcountry value="za"/>
           <FRBRnumber value="1"/>

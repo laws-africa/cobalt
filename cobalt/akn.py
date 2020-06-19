@@ -183,7 +183,7 @@ class StructuredDocument(AkomaNtosoDocument):
                             E.FRBRthis(value=frbr_uri.work_uri()),
                             E.FRBRuri(value=frbr_uri.work_uri(work_component=False)),
                             E.FRBRalias(value="Untitled", name="title"),
-                            E.FRBRdate(date=today, name="Generation"),
+                            E.FRBRdate(date=frbr_uri.date, name="Generation"),
                             E.FRBRauthor(href=""),
                             E.FRBRcountry(value=frbr_uri.place),
                             E.FRBRnumber(value=frbr_uri.number),
@@ -355,6 +355,7 @@ class StructuredDocument(AkomaNtosoDocument):
             ident.FRBRWork.FRBRuri.set('value', uri.uri())
             ident.FRBRWork.FRBRthis.set('value', uri.work_uri())
             ident.FRBRWork.FRBRcountry.set('value', uri.place)
+            ident.FRBRWork.FRBRdate.set('date', uri.date)
 
             if uri.subtype:
                 self.ensure_element('FRBRsubtype', at=ident.FRBRWork, after=ident.FRBRWork.FRBRcountry).set('value', uri.subtype)
