@@ -65,9 +65,15 @@ class StructuredDocumentTestCase(TestCase):
         assert_validates(a)
 
     def test_work_date(self):
+        """ Work date must be the FRBR date.
+        """
         a = Act()
-        a.work_date = '2012-01-02'
+        a.frbr_uri = '/akn/za/act/2012-01-02/5'
         assert_equal(datestring(a.work_date), '2012-01-02')
+        assert_is_instance(a.work_date, date)
+
+        a.frbr_uri = '/akn/za/act/2009/5'
+        assert_equal(datestring(a.work_date), '2009-01-01')
         assert_is_instance(a.work_date, date)
 
     def test_expression_date(self):

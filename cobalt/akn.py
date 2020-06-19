@@ -291,12 +291,12 @@ class StructuredDocument(AkomaNtosoDocument):
 
     @property
     def work_date(self):
-        """ Date from the FRBRWork element """
+        """ Date from the FRBRWork element. Normally, this date must match the date portion of the work's FRBR URI.
+        However, since that may be a partial date (such as just a year), this return value may be different to the
+        date string stored in the FRBRdate element. In particular, if the date is just a year, the month and day
+        both default to 1.
+        """
         return parse_date(self.meta.identification.FRBRWork.FRBRdate.get('date')).date()
-
-    @work_date.setter
-    def work_date(self, value):
-        self.meta.identification.FRBRWork.FRBRdate.set('date', datestring(value))
 
     @property
     def expression_date(self):
