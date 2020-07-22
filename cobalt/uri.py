@@ -182,7 +182,7 @@ class FrbrUri(object):
 
     def manifestation_uri(self, work_component=True):
         """ String form of the manifestation URI. """
-        uri = self.expression_uri()
+        uri = self.expression_uri(work_component)
         if self.format:
             uri = uri + "." + self.format
         return uri
