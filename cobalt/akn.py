@@ -40,6 +40,10 @@ objectify_parser = etree.XMLParser()
 objectify_parser.set_element_class_lookup(objectify.ObjectifyElementClassLookup())
 
 
+def get_maker(version=DEFAULT_VERSION):
+    return ElementMaker(nsmap={None: AKN_NAMESPACES[version]})
+
+
 class AkomaNtosoDocument:
     """ Base class for Akoma Ntoso documents.
     """
@@ -171,51 +175,59 @@ class StructuredDocument(AkomaNtosoDocument):
             prefix=('' if version == '2.0' else 'akn'),
         )
 
-        E = ElementMaker(nsmap={None: AKN_NAMESPACES[version]})
-        content = cls.empty_document_content(E)
+        maker = get_maker(version)
+        content = cls.empty_document_content(maker)
         attrs = cls.empty_document_attrs()
 
-        doc = E.akomaNtoso(
-            E(cls.document_type,
-                E.meta(
-                    E.identification(
-                        E.FRBRWork(
-                            E.FRBRthis(value=frbr_uri.work_uri()),
-                            E.FRBRuri(value=frbr_uri.work_uri(work_component=False)),
-                            E.FRBRalias(value="Untitled", name="title"),
-                            E.FRBRdate(date=frbr_uri.date, name="Generation"),
-                            E.FRBRauthor(href=""),
-                            E.FRBRcountry(value=frbr_uri.place),
-                            E.FRBRnumber(value=frbr_uri.number),
-                        ),
-                        E.FRBRExpression(
-                            E.FRBRthis(value=frbr_uri.expression_uri()),
-                            E.FRBRuri(value=frbr_uri.expression_uri(work_component=False)),
-                            E.FRBRdate(date=today, name="Generation"),
-                            E.FRBRauthor(href=""),
-                            E.FRBRlanguage(language=frbr_uri.language),
-                        ),
-                        E.FRBRManifestation(
-                            E.FRBRthis(value=frbr_uri.manifestation_uri()),
-                            E.FRBRuri(value=frbr_uri.manifestation_uri(work_component=False)),
-                            E.FRBRdate(date=today, name="Generation"),
-                            E.FRBRauthor(href=""),
-                        ),
-                        source="#cobalt"
-                    ),
-                    E.references(
-                        E.TLCOrganization(eId="cobalt", href="https://github.com/laws-africa/cobalt", showAs="cobalt"),
-                        source="#cobalt"
-                    )
-                ),
+        doc = maker.akomaNtoso(
+            maker(cls.document_type,
+                cls.empty_meta(frbr_uri, maker=maker),
                 content,
                 **attrs)
         )
         return etree.tostring(doc, encoding='unicode')
 
     @classmethod
-    def empty_document_content(cls, E):
-        return E(cls.main_content_tag)
+    def empty_meta(cls, frbr_uri, version=DEFAULT_VERSION, maker=None):
+        """ Create a meta element for an frbr_uri, using the provided version or element maker.
+        """
+        today = datestring(date.today())
+        maker = maker or get_maker(version)
+        return maker.meta(
+            maker.identification(
+                maker.FRBRWork(
+                    maker.FRBRthis(value=frbr_uri.work_uri()),
+                    maker.FRBRuri(value=frbr_uri.work_uri(work_component=False)),
+                    maker.FRBRalias(value="Untitled", name="title"),
+                    maker.FRBRdate(date=frbr_uri.date, name="Generation"),
+                    maker.FRBRauthor(href=""),
+                    maker.FRBRcountry(value=frbr_uri.place),
+                    maker.FRBRnumber(value=frbr_uri.number),
+                ),
+                maker.FRBRExpression(
+                    maker.FRBRthis(value=frbr_uri.expression_uri()),
+                    maker.FRBRuri(value=frbr_uri.expression_uri(work_component=False)),
+                    maker.FRBRdate(date=today, name="Generation"),
+                    maker.FRBRauthor(href=""),
+                    maker.FRBRlanguage(language=frbr_uri.language),
+                ),
+                maker.FRBRManifestation(
+                    maker.FRBRthis(value=frbr_uri.manifestation_uri()),
+                    maker.FRBRuri(value=frbr_uri.manifestation_uri(work_component=False)),
+                    maker.FRBRdate(date=today, name="Generation"),
+                    maker.FRBRauthor(href=""),
+                ),
+                source="#cobalt"
+            ),
+            maker.references(
+                maker.TLCOrganization(eId="cobalt", href="https://github.com/laws-africa/cobalt", showAs="cobalt"),
+                source="#cobalt"
+            )
+        )
+
+    @classmethod
+    def empty_document_content(cls, maker):
+        return maker(cls.main_content_tag)
 
     @classmethod
     def empty_document_attrs(cls):
