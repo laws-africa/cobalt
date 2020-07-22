@@ -181,9 +181,9 @@ class StructuredDocument(AkomaNtosoDocument):
 
         doc = maker.akomaNtoso(
             maker(cls.document_type,
-                cls.empty_meta(frbr_uri, maker=maker),
-                content,
-                **attrs)
+                  cls.empty_meta(frbr_uri, maker=maker),
+                  content,
+                  **attrs)
         )
         return etree.tostring(doc, encoding='unicode')
 
