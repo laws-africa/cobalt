@@ -13,7 +13,7 @@ It makes it easy to work with Akoma Ntoso metadata, FRBR URIs and generate Table
 It is lightweight because most operations are done on the XML document directly without intermediate
 objects. You still need to understand how Akoma Ntoso works.
 
-Read the `full documentation at cobalt.readthedocs.org <http://cobalt.readthedocs.org/en/latest/>`_.
+Read the `full documentation at cobalt.readthedocs.io <http://cobalt.readthedocs.io/en/latest/>`_.
 
 Quickstart
 ----------

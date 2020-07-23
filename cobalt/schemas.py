@@ -1,3 +1,10 @@
+"""
+Cobalt can validate Akoma Ntoso documents against the Akoma Ntoso schema. Two schemas are provided:
+
+1. Strict: the `official AKN schema <http://docs.oasis-open.org/legaldocml/akn-core/v1.0/os/part2-specs/schemas/akomantoso30.xsd>`_
+2. Lenient: a slightly modified version of the official schema. Duplicate eId attributes are allowed, and FRBRdate
+   elements are allowed to have year-only @date values.
+"""
 import os
 
 from lxml import etree
@@ -47,7 +54,7 @@ def get_schema(namespace, strict):
 
 def assert_validates(akn_doc, strict=False):
     """ Assert that this AKN document validates against the AKN schema.
-    Raises `lxml.etree.DocumentInvalid' if validation fails.
+    Raises `lxml.etree.DocumentInvalid` if validation fails.
     """
     schema = get_schema(akn_doc.namespace, strict)
     schema.assertValid(akn_doc.root)

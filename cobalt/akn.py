@@ -46,6 +46,9 @@ def get_maker(version=DEFAULT_VERSION):
 
 class AkomaNtosoDocument:
     """ Base class for Akoma Ntoso documents.
+
+    :ivar root: :class:`lxml.objectify.ObjectifiedElement` root of the XML document
+    :ivar namespace: primary XML namespace
     """
     _parser = objectify_parser
 
@@ -264,7 +267,7 @@ class StructuredDocument(AkomaNtosoDocument):
 
     @property
     def main(self):
-        """ Get the root document element.
+        """ Get the main document element (normally the first child of the root element).
         """
         return getattr(self.root, self.document_type)
 
@@ -332,7 +335,8 @@ class StructuredDocument(AkomaNtosoDocument):
 
     @property
     def language(self):
-        """ The 3-letter ISO-639-2 language code of this document """
+        """ The 3-letter ISO-639-2 language code of this document.
+        """
         return self.meta.identification.FRBRExpression.FRBRlanguage.get('language', 'eng')
 
     @language.setter
@@ -343,7 +347,8 @@ class StructuredDocument(AkomaNtosoDocument):
 
     @property
     def frbr_uri(self):
-        """ The FRBR Manifestation URI as a :class:`FrbrUri` instance that uniquely identifies this document universally. """
+        """ The FRBR Manifestation URI as a :class:`cobalt.uri.FrbrUri` instance that uniquely identifies this document universally.
+        """
         uri = self.meta.identification.FRBRManifestation.FRBRuri.get('value')
         if uri:
             return FrbrUri.parse(uri)
@@ -390,7 +395,9 @@ class StructuredDocument(AkomaNtosoDocument):
             ident.FRBRManifestation.FRBRthis.set('value', uri.expression_uri())
 
     def expression_frbr_uri(self):
-        """ The FRBR Expression URI as a :class:`FrbrUri` instance that uniquely identifies this document universally. """
+        """ The FRBR Expression URI as a :class:`cobalt.uri.FrbrUri` instance that uniquely identifies this document
+        universally.
+        """
         uri = self.meta.identification.FRBRExpression.FRBRuri.get('value')
         if uri:
             return FrbrUri.parse(uri)

@@ -1,13 +1,13 @@
 Cobalt
 ======
 
-Cobalt is a lightweight Python library for working with `Akoma Ntoso <http://www.akomantoso.org/>`_ Act documents.
-It makes it easy to work with Akoma Ntoso metadata, FRBR URIs and generate Tables of Contents for a document.
+Cobalt is a lightweight Python library for working with `Akoma Ntoso <http://www.akomantoso.org/>`_ documents.
+It makes it easy to work with Akoma Ntoso metadata and FRBR URIs.
 
-It is lightweight because most operations are done on the XML document directly without intermediate
+Cobalt is lightweight because most operations are done on the XML document directly without intermediate
 objects. You still need to understand how Akoma Ntoso works.
 
-Contribute to Cobalt on GitHub at `github.com/Code4SA/cobalt <https://github.com/Code4SA/cobalt>`_.
+Contribute to Cobalt on GitHub at `github.com/laws-africa/cobalt <https://github.com/laws-africa/cobalt>`_.
 
 Quickstart
 ----------
@@ -32,21 +32,6 @@ Use it like this::
     'act'
     >>> print act.to_xml()
     [ lots of xml ]
-
-Contributing
-------------
-
-1. Clone the repo
-2. Install development dependencies::
-
-    pip install -e .[dev]
-
-3. Make your changes
-4. Run tests::
-
-    nosetests && flake8
-
-5. Send a pull request
 
 Contents
 --------

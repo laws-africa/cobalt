@@ -1,46 +1,75 @@
-``cobalt``
-=============
+Cobalt API
+==========
 
-.. automodule:: cobalt
+Cobalt has classes for each Akoma Ntoso document type.
 
-    Acts
-    ----
+Base classes
+............
 
-    .. automodule:: cobalt
+.. automodule:: cobalt.akn
+    :members:
 
-        .. autoclass:: Act
-            :members:
+Amendment
+.........
 
-            .. automethod:: __init__
+.. automodule:: cobalt.amendment
+    :members:
+    :show-inheritance:
 
-    .. automodule:: cobalt.toc
+Collection
+..........
 
-        .. autoclass:: TOCBuilder
-            :members:
+.. automodule:: cobalt.collection
+    :members:
+    :show-inheritance:
 
-            .. automethod:: __init__
+Debate
+......
 
-        .. autoclass:: TOCElement
-            :members:
+.. automodule:: cobalt.debate
+    :members:
+    :show-inheritance:
 
-            .. automethod:: __init__
+Hierarchical structure
+......................
 
-    FRBR URIs
-    ---------
+.. automodule:: cobalt.hierarchical
+    :members:
+    :show-inheritance:
 
-    .. automodule:: cobalt.uri
+Judgment
+........
 
-        .. autoclass:: FrbrUri
-            :members:
+.. automodule:: cobalt.judgment
+    :members:
+    :show-inheritance:
 
-            .. automethod:: __init__
+Open structure
+..............
 
-    Rendering
-    ---------
+.. automodule:: cobalt.openstructure
+    :members:
+    :show-inheritance:
 
-    .. automodule:: cobalt.render
+Portion
+..............
 
-        .. autoclass:: HTMLRenderer
-            :members:
+.. automodule:: cobalt.portion
+    :members:
+    :show-inheritance:
 
-            .. automethod:: __init__
+FRBR URIs
+---------
+
+.. automodule:: cobalt.uri
+
+    .. autoclass:: FrbrUri
+        :members:
+
+Schemas and validation
+----------------------
+
+.. automodule:: cobalt.schemas
+
+    .. autofunction:: validate
+    .. autofunction:: assert_validates
