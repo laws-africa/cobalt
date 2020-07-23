@@ -27,8 +27,8 @@ FRBR_URI_RE = re.compile(r"""^(/(?P<prefix>akn))?            # optional 'akn' pr
 
 class FrbrUri(object):
     """
-    An FRBR URI parser which understands Akoma Ntoso 3.0 FRBR URIs (IRIs) for works
-    and expressions.
+    An object for working with
+    `Akoma Ntoso 3.0 FRBR URIs <https://docs.oasis-open.org/legaldocml/akn-nc/v1.0/os/akn-nc-v1.0-os.html>`_ (IRIs).
 
     URIs can be parsed from a plain string using :meth:`parse` or they can be
     constructed directly. URIs can be manipulated in-place once constructed,
@@ -87,11 +87,6 @@ class FrbrUri(object):
     :ivar expression_component: name of the expression component, may be None
     :ivar expression_subcomponent: name of the expression subcomponent, may be None
     :ivar format: format extension, may be None
-
-    .. seealso::
-
-       http://akresolver.cs.unibo.it/admin/documentation.html
-       http://www.akomantoso.org/release-notes/akoma-ntoso-3.0-schema/naming-conventions-1/bungenihelpcenterreferencemanualpage.2008-01-09.1484954524
     """
 
     default_language = 'eng'
@@ -116,6 +111,8 @@ class FrbrUri(object):
         self.format = format
 
     def clone(self):
+        """ Return a copy of this FrbrUri object.
+        """
         return FrbrUri(
             prefix=self.prefix,
             country=self.country,
@@ -192,6 +189,10 @@ class FrbrUri(object):
 
     @classmethod
     def parse(cls, s):
+        """ Parse a string into an FrbrUri instance.
+
+        :raises ValueError: if parsing fails
+        """
         s = s.rstrip('/')
         match = FRBR_URI_RE.match(s)
         if match:
@@ -206,6 +207,8 @@ class FrbrUri(object):
 
     @property
     def place(self):
+        """ Full place code, including both country and locality (if present).
+        """
         if self.locality:
             return self.country + "-" + self.locality
         return self.country

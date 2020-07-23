@@ -10,18 +10,7 @@ class HierarchicalStructure(StructuredDocument):
 
 class Act(HierarchicalStructure):
     """
-    An act is a lightweight wrapper around an `Akoma Ntoso 2.0 XML <http://www.akomantoso.org/>`_ act document.
-    It provides methods to help access and manipulate the underlying XML directly, in particular
-    the metadata for the document.
-
-    The Act object provides quick access to certain sections of the document:
-
-    :ivar root: :class:`lxml.objectify.ObjectifiedElement` root of the XML document
-    :ivar meta: :class:`lxml.objectify.ObjectifiedElement` meta element
-    :ivar body: :class:`lxml.objectify.ObjectifiedElement` body element
-
-    .. seealso::
-        http://www.akomantoso.org/docs/akoma-ntoso-user-documentation/metadata-describes-the-content
+    An Akoma Ntoso Act document.
     """
     document_type = "act"
 
@@ -42,7 +31,8 @@ class Act(HierarchicalStructure):
 
     @property
     def publication_name(self):
-        """ Name of the publication in which this act was published """
+        """ Name of the publication in which this act was published.
+        """
         pub = self.get_element('meta.publication')
         return pub.get('name') if pub is not None else None
 
@@ -55,7 +45,8 @@ class Act(HierarchicalStructure):
 
     @property
     def publication_date(self):
-        """ Date of the publication """
+        """ Date of publication as a `datetime.date` object.
+        """
         pub = self.get_element('meta.publication')
         if pub is not None and pub.get('date'):
             return parse_date(pub.get('date')).date()
@@ -68,7 +59,8 @@ class Act(HierarchicalStructure):
 
     @property
     def publication_number(self):
-        """ Sequence number of the publication """
+        """ Sequence number of the publication.
+        """
         pub = self.get_element('meta.publication')
         return pub.get('number') if pub is not None else None
 
@@ -219,4 +211,7 @@ class RepealEvent(object):
 
 
 class Bill(HierarchicalStructure):
+    """
+    An Akoma Ntoso Bill document.
+    """
     document_type = "bill"
