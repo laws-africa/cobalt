@@ -1,46 +1,44 @@
-``cobalt``
-=============
+Cobalt API
+==========
 
-.. automodule:: cobalt
+Documents
+---------
 
-    Acts
-    ----
+.. automodule:: cobalt.amendment
+    :members:
 
-    .. automodule:: cobalt
+.. automodule:: cobalt.collection
+    :members:
 
-        .. autoclass:: Act
-            :members:
+.. automodule:: cobalt.debate
+    :members:
 
-            .. automethod:: __init__
+.. automodule:: cobalt.hierarchical
+    :members:
 
-    .. automodule:: cobalt.toc
+.. automodule:: cobalt.judgment
+    :members:
 
-        .. autoclass:: TOCBuilder
-            :members:
+.. automodule:: cobalt.openstructure
+    :members:
 
-            .. automethod:: __init__
+.. automodule:: cobalt.portion
+    :members:
 
-        .. autoclass:: TOCElement
-            :members:
+FRBR URIs
+---------
 
-            .. automethod:: __init__
+.. automodule:: cobalt.uri
 
-    FRBR URIs
-    ---------
+    .. autoclass:: FrbrUri
+        :members:
 
-    .. automodule:: cobalt.uri
+        .. automethod:: __init__
 
-        .. autoclass:: FrbrUri
-            :members:
+Schemas and validation
+----------------------
 
-            .. automethod:: __init__
+.. automodule:: cobalt.schemas
 
-    Rendering
-    ---------
-
-    .. automodule:: cobalt.render
-
-        .. autoclass:: HTMLRenderer
-            :members:
-
-            .. automethod:: __init__
+    .. autofunction:: validate
+    .. autofunction:: assert_validates
