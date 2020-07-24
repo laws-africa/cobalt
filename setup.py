@@ -77,5 +77,6 @@ setup(
     extras_require={
         'dev': ['nose', 'flake8'],
         'test': ['nose', 'flake8'],
+        'docs': ['Sphinx>=3'],
     },
 )
