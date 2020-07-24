@@ -52,14 +52,14 @@ Open structure
     :show-inheritance:
 
 Portion
-..............
+.......
 
 .. automodule:: cobalt.portion
     :members:
     :show-inheritance:
 
 FRBR URIs
----------
+.........
 
 .. automodule:: cobalt.uri
 
@@ -67,7 +67,7 @@ FRBR URIs
         :members:
 
 Schemas and validation
-----------------------
+......................
 
 .. automodule:: cobalt.schemas
 

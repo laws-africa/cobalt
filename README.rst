@@ -78,7 +78,7 @@ License and Copyright
 
 Cobalt is licensed under the LPGL 3.0 license.
 
-Cobalt is Copyright 2015-2017 AfricanLII.
+Cobalt is Copyright 2015-2020 AfricanLII.
 
 Change Log
 ----------

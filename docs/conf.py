@@ -34,7 +34,7 @@ templates_path = ['_templates']
 
 # General information about the project.
 project = u'Cobalt'
-copyright = u'2015-2020, Laws.Africa'
+copyright = u'2015-2020, AfricanLII'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
