@@ -185,7 +185,14 @@ class FrbrUri(object):
         return uri
 
     def __str__(self):
+        if self.format:
+            return self.manifestation_uri()
+        if self.expression_date or self.expression_component:
+            return self.expression_uri()
         return self.work_uri()
+
+    def __repr__(self):
+        return f'<FrbrUri({self})>'
 
     @classmethod
     def parse(cls, s):
