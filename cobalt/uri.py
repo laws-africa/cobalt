@@ -160,7 +160,7 @@ class FrbrUri(object):
 
     def expression_uri(self, work_component=True):
         """ String form of the expression URI. """
-        uri = self.work_uri(work_component=False) + "/" + self.language
+        uri = self.work_uri(work_component=False) + "/" + (self.language or '')
 
         if self.expression_date is not None:
             uri = uri + self.expression_date

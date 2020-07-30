@@ -169,6 +169,12 @@ class FrbrUriTestCase(TestCase):
         assert_equal(uri.number, '1013')
         assert_is_none(uri.subtype)
 
+    def test_expression_string_no_language(self):
+        uri = FrbrUri.parse("/gh/act/2020/1013/")
+        assert_equal(uri.language, "eng")
+        uri.language = None
+        assert_equal("/gh/act/2020/1013/", uri.expression_uri())
+
     def test_parse_expression(self):
         uri = FrbrUri.parse("/za/act/1980/02/afr@")
         assert_equal(uri.language, "afr")
