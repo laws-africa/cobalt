@@ -160,6 +160,9 @@ class FrbrUri(object):
 
     def expression_uri(self, work_component=True):
         """ String form of the expression URI. """
+        if not self.language:
+            raise ValueError("Expression URI requires a language.")
+
         uri = self.work_uri(work_component=False) + "/" + self.language
 
         if self.expression_date is not None:

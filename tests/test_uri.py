@@ -3,6 +3,7 @@ from nose.tools import *
 
 from cobalt.uri import FrbrUri
 
+
 class FrbrUriTestCase(TestCase):
     def test_bad_value(self):
         assert_raises(ValueError, FrbrUri.parse, "/badness")
@@ -168,6 +169,15 @@ class FrbrUriTestCase(TestCase):
         assert_equal(uri.expression_date, '@2020-04-03')
         assert_equal(uri.number, '1013')
         assert_is_none(uri.subtype)
+
+    def test_expression_string_no_language(self):
+        uri = FrbrUri.parse("/gh/act/2020/1013/")
+        assert_equal(uri.language, "eng")
+        uri.language = None
+        with self.assertRaises(ValueError) as e:
+            uri.expression_uri()
+        err = e.exception
+        assert_equal(str(err), "Expression URI requires a language.")
 
     def test_parse_expression(self):
         uri = FrbrUri.parse("/za/act/1980/02/afr@")
