@@ -412,8 +412,8 @@ class StructuredDocument(AkomaNtosoDocument):
         frbr_uri = FrbrUri.parse(self.meta.identification.FRBRWork.FRBRthis.get('value'))
         components[frbr_uri.work_component] = self.main
 
-        xpath = './a:attachments/a:attachment/a:*/a:meta | ./a:components/a:component/a:*/a:meta'
-        for meta in self.main.xpath(xpath, namespaces={'a': self.namespace}):
+        xpath = f'a:{self.document_type}/a:attachments/a:attachment/a:*/a:meta | ./a:components/a:component/a:*/a:meta'
+        for meta in self.root.xpath(xpath, namespaces={'a': self.namespace}):
             frbr_uri = FrbrUri.parse(meta.identification.FRBRWork.FRBRthis.get('value'))
             name = frbr_uri.work_component
             components[name] = meta.getparent()
