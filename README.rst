@@ -94,6 +94,7 @@ Change Log
 - FRBRnumber uses number portion from FRBR URI
 - FRBRdate for FRBRWork contains the date portion of the FRBR URI
 - Include AKN 3.0 schema and support for validating against the schema
+- The elements returned by ``components()`` are now ``attachment`` or ``component`` elements, not the inner ``doc``
 
 3.1.1
 .....

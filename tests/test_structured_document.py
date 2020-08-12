@@ -303,7 +303,7 @@ class StructuredDocumentTestCase(TestCase):
         components = a.components()
         self.assertEqual(['main', 'schedule-A', 'schedule-XXX'], sorted(components.keys()))
         self.assertEqual('This is the content of the Schedule!',
-                         components['schedule-XXX'].mainBody.paragraph.content.p)
+                         components['schedule-XXX'].doc.mainBody.paragraph.content.p)
         assert_validates(a)
 
     def test_add_number(self):
