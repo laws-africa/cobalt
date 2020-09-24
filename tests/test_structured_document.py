@@ -2,6 +2,8 @@ from unittest import TestCase
 from nose.tools import *  # noqa
 from datetime import date
 
+from lxml.etree import LxmlSyntaxError
+
 from cobalt import Act, AmendmentEvent, RepealEvent, Judgment, datestring
 from cobalt.schemas import assert_validates
 
@@ -585,6 +587,16 @@ class ActTestCase(TestCase):
     def test_main(self):
         a = Act()
         self.assertEqual(a.main, a.act)
+
+    def test_bad_xml(self):
+        with self.assertRaises(LxmlSyntaxError):
+            Act('badness')
+
+        with self.assertRaises(ValueError):
+            Act('<root>no namespace</root>')
+
+        with self.assertRaises(ValueError):
+            Act('<akomaNtoso>no namespace</akomaNtoso>')
 
 
 class JudgmentTestCase(TestCase):
