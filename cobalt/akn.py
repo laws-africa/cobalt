@@ -74,7 +74,7 @@ class AkomaNtosoDocument:
         root = objectify.fromstring(xml, parser=self._parser)
 
         # ensure the root element is correct
-        name = root.tag.split('}', 1)[1]
+        name = root.tag.split('}', 1)[-1]
         if name != 'akomaNtoso':
             raise ValueError(f"XML root element must be akomaNtoso, but got {name} instead")
 
