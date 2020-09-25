@@ -259,7 +259,7 @@ class StructuredDocument(AkomaNtosoDocument):
         if root.countchildren() < 1:
             raise ValueError("XML root element must have at least one child")
 
-        name = root.getchildren()[0].tag.split('}', 1)[1]
+        name = root.getchildren()[0].tag.split('}', 1)[-1]
         if name != self.document_type:
             raise ValueError(f"Expected {self.document_type} as first child of root element, but got {name} instead")
 

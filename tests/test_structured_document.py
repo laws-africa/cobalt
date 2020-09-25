@@ -596,7 +596,10 @@ class ActTestCase(TestCase):
             Act('<root>no namespace</root>')
 
         with self.assertRaises(ValueError):
-            Act('<akomaNtoso>no namespace</akomaNtoso>')
+            Act('<akomaNtoso>no first child</akomaNtoso>')
+
+        with self.assertRaises(ValueError):
+            Act('<akomaNtoso><child>no namespace</child></akomaNtoso>')
 
 
 class JudgmentTestCase(TestCase):

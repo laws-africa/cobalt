@@ -83,10 +83,15 @@ Cobalt is Copyright 2015-2020 AfricanLII.
 Change Log
 ----------
 
-4.0.1
+4.0.2
 .....
 
 - Better error handling when parsing malformed XML.
+
+4.0.1
+.....
+
+(replaced by 4.0.2)
 
 4.0.0
 .....
