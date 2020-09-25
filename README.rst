@@ -7,8 +7,8 @@ Cobalt
 .. image:: https://travis-ci.org/laws-africa/cobalt.svg
     :target: http://travis-ci.org/laws-africa/cobalt
 
-Cobalt is a lightweight Python library for working with `Akoma Ntoso <http://www.akomantoso.org/>`_ Act documents.
-It makes it easy to work with Akoma Ntoso metadata, FRBR URIs and generate Tables of Contents for a document.
+Cobalt is a lightweight Python library for working with `Akoma Ntoso <http://www.akomantoso.org/>`_ documents.
+It makes it easy to work with Akoma Ntoso documents, metadata and FRBR URIs.
 
 It is lightweight because most operations are done on the XML document directly without intermediate
 objects. You still need to understand how Akoma Ntoso works.
