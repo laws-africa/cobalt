@@ -83,6 +83,11 @@ Cobalt is Copyright 2015-2020 AfricanLII.
 Change Log
 ----------
 
+4.1.0
+.....
+
+- Allow setting of missing component names
+
 4.0.2
 .....
 
