@@ -308,6 +308,61 @@ class StructuredDocumentTestCase(TestCase):
                          components['schedule-XXX'].doc.mainBody.paragraph.content.p)
         assert_validates(a)
 
+        # this won't change any component names, because the existing names are used by default
+        frbr_uri = a.frbr_uri
+        frbr_uri.work_component = 'blah'
+        a.frbr_uri = frbr_uri
+        self.assertEqual(['main', 'schedule-A', 'schedule-XXX'], sorted(a.components().keys()))
+
+    def test_set_missing_component(self):
+        a = Act(xml="""<?xml version="1.0" encoding="UTF-8"?>
+        <akomaNtoso xmlns="http://docs.oasis-open.org/legaldocml/ns/akn/3.0" xsi:schemaLocation="http://docs.oasis-open.org/legaldocml/akn-core/v1.0/os/part2-specs/schemas/akomantoso30.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+          <act contains="singleVersion" name="act">
+            <meta>
+              <identification source="#slaw">
+                <FRBRWork>
+                  <FRBRthis value="/na/act/1977/25"/>
+                  <FRBRuri value="/na/act/1977/25"/>
+                  <FRBRalias value="Livestock Improvement Act, 1977" name="title"/>
+                  <FRBRdate date="1977-03-23" name="Generation"/>
+                  <FRBRauthor href="#council"/>
+                  <FRBRcountry value="na"/>
+                </FRBRWork>
+                <FRBRExpression>
+                  <FRBRthis value="/na/act/1977/25/eng@1993-12-02"/>
+                  <FRBRuri value="/na/act/1977/25/eng@1993-12-02"/>
+                  <FRBRdate date="1993-12-02" name="Generation"/>
+                  <FRBRauthor href="#council"/>
+                  <FRBRlanguage language="eng"/>
+                </FRBRExpression>
+                <FRBRManifestation>
+                  <FRBRthis value="/na/act/1977/25/eng@1993-12-02"/>
+                  <FRBRuri value="/na/act/1977/25/eng@1993-12-02"/>
+                  <FRBRdate date="2020-03-25" name="Generation"/>
+                  <FRBRauthor href="#slaw"/>
+                </FRBRManifestation>
+              </identification>
+              <publication number="5462" name="South African Government Gazette" showAs="South African Government Gazette" date="1977-03-23"/>
+            </meta>
+            <body>
+              <section eId="section_1">
+                <content>
+                  <p></p>
+                </content>
+              </section>
+            </body>
+          </act>
+        </akomaNtoso>
+                """)
+        self.assertEqual([None], sorted(a.components().keys()))
+        assert_validates(a)
+
+        # change the main component name
+        frbr_uri = a.frbr_uri
+        frbr_uri.work_component = 'main'
+        a.frbr_uri = frbr_uri
+        self.assertEqual(['main'], sorted(a.components().keys()))
+
     def test_add_number(self):
         """ When adding an FRBRnumber element to a document that doesn't already have one, it
         must come after subtype.

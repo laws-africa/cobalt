@@ -360,13 +360,11 @@ class StructuredDocument(AkomaNtosoDocument):
 
         uri.language = self.meta.identification.FRBRExpression.FRBRlanguage.get('language', 'eng')
         uri.expression_date = '@' + datestring(self.expression_date)
-
-        if uri.work_component is None:
-            uri.work_component = 'main'
+        work_component = uri.work_component or 'main'
 
         # set URIs of the main document and components
         for component, element in self.components().items():
-            uri.work_component = component
+            uri.work_component = component or work_component
             ident = element.find(f'.//{{{self.namespace}}}meta/{{{self.namespace}}}identification')
 
             ident.FRBRWork.FRBRuri.set('value', uri.uri())
