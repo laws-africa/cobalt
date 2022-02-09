@@ -83,6 +83,11 @@ Cobalt is Copyright 2015-2020 AfricanLII.
 Change Log
 ----------
 
+4.1.1
+.....
+
+- Change eIds of content produced by empty_document_content()
+
 4.1.0
 .....
 
