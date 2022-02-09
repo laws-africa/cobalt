@@ -19,8 +19,8 @@ class Act(HierarchicalStructure):
         return E('body',
                  E('section',
                    E('content',
-                     E('p')),
-                   eId="section_1")
+                     E('p', eId="section_nn_1__p_1")),
+                   eId="section_nn_1")
                  )
 
     @classmethod
