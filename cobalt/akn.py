@@ -41,7 +41,8 @@ objectify_parser.set_element_class_lookup(objectify.ObjectifyElementClassLookup(
 
 
 def get_maker(version=DEFAULT_VERSION):
-    return ElementMaker(nsmap={None: AKN_NAMESPACES[version]})
+    ns = AKN_NAMESPACES[version]
+    return ElementMaker(nsmap={None: ns}, namespace=ns)
 
 
 class AkomaNtosoDocument:
