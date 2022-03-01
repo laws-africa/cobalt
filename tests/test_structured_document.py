@@ -544,9 +544,9 @@ class ActTestCase(TestCase):
       </references>
     </meta>
     <body>
-      <section eId="section_1">
+      <section eId="sec_nn_1">
         <content>
-          <p/>
+          <p eId="sec_nn_1__p_1"/>
         </content>
       </section>
     </body>
@@ -601,9 +601,9 @@ class ActTestCase(TestCase):
       </references>
     </meta>
     <body>
-      <section eId="section_1">
+      <section eId="sec_nn_1">
         <content>
-          <p/>
+          <p eId="sec_nn_1__p_1"/>
         </content>
       </section>
     </body>
@@ -667,9 +667,9 @@ class ActTestCase(TestCase):
       </references>
     </meta>
     <body>
-      <section eId="section_1">
+      <section eId="sec_nn_1">
         <content>
-          <p/>
+          <p eId="sec_nn_1__p_1"/>
         </content>
       </section>
     </body>
