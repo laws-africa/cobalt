@@ -185,18 +185,28 @@ class StructuredDocument(AkomaNtosoDocument):
 
         doc = maker.akomaNtoso(
             maker(cls.document_type,
-                  cls.empty_meta(frbr_uri, maker=maker),
+                  cls.empty_meta(frbr_uri, maker=maker, for_root=True),
                   content,
                   **attrs)
         )
         return etree.tostring(doc, encoding='unicode')
 
     @classmethod
-    def empty_meta(cls, frbr_uri, version=DEFAULT_VERSION, maker=None):
+    def empty_meta(cls, frbr_uri, version=DEFAULT_VERSION, maker=None, for_root=True):
         """ Create a meta element for an frbr_uri, using the provided version or element maker.
         """
         today = datestring(date.today())
         maker = maker or get_maker(version)
+
+        if for_root:
+            # only generate top-level references if this is the root document
+            refs = [maker.references(
+                maker.TLCOrganization(eId="cobalt", href="https://github.com/laws-africa/cobalt", showAs="cobalt"),
+                source="#cobalt"
+            )]
+        else:
+            refs = []
+
         return maker.meta(
             maker.identification(
                 maker.FRBRWork(
@@ -223,10 +233,7 @@ class StructuredDocument(AkomaNtosoDocument):
                 ),
                 source="#cobalt"
             ),
-            maker.references(
-                maker.TLCOrganization(eId="cobalt", href="https://github.com/laws-africa/cobalt", showAs="cobalt"),
-                source="#cobalt"
-            )
+            *refs
         )
 
     @classmethod
