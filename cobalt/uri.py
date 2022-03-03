@@ -21,7 +21,7 @@ FRBR_URI_RE = re.compile(r"""^(/(?P<prefix>akn))?            # optional 'akn' pr
                                   )?                                        #
                                   (\.(?P<format>[a-z0-9]+))?                # format (eg. .xml, .akn, .html, .pdf)
                                 )|                                          #
-                                !?(?P<work_component>[^/]+)     # work component
+                                !?(?P<work_component>.+)     # work component
                               ))?$""", re.X)
 
 

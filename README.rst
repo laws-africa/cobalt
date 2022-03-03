@@ -83,6 +83,11 @@ Cobalt is Copyright 2015-2020 AfricanLII.
 Change Log
 ----------
 
+4.2.0
+-----
+
+- Allow slashes in FRBR URI work component names
+
 4.1.1
 .....
 
