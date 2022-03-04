@@ -322,6 +322,10 @@ class StructuredDocument(AkomaNtosoDocument):
     @expression_date.setter
     def expression_date(self, value):
         self.meta.identification.FRBRExpression.FRBRdate.set('date', datestring(value))
+        # set expression date of the components
+        for component, element in list(self.components().items())[1:]:
+            element.doc.meta.identification.FRBRExpression.FRBRdate.set('date', datestring(value))
+
         # update the URI
         self.frbr_uri = self.frbr_uri
 
@@ -333,6 +337,9 @@ class StructuredDocument(AkomaNtosoDocument):
     @manifestation_date.setter
     def manifestation_date(self, value):
         self.meta.identification.FRBRManifestation.FRBRdate.set('date', datestring(value))
+        # set expression date of the components
+        for component, element in list(self.components().items())[1:]:
+            element.doc.meta.identification.FRBRManifestation.FRBRdate.set('date', datestring(value))
 
     @property
     def language(self):
