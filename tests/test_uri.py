@@ -109,6 +109,10 @@ class FrbrUriTestCase(TestCase):
         assert_equal("/za/act/1980/2/!schedule1", uri.work_uri())
         assert_equal("/za/act/1980/2/eng/!schedule1", uri.expression_uri())
 
+    def test_with_nested_work_components(self):
+        uri = FrbrUri.parse("/za/act/1980/2/!schedule1/schedule2/schedule3")
+        assert_equal(uri.work_component, "schedule1/schedule2/schedule3")
+
     def test_with_work_component_legacy(self):
         uri = FrbrUri.parse("/za/act/1980/2/schedule1")
         assert_equal(uri.country, "za")
