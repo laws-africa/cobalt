@@ -87,6 +87,7 @@ Change Log
 -----
 
 - Allow slashes in FRBR URI work component names
+- Setting expression and manifestation dates updates attachments and other components
 
 4.1.1
 .....
