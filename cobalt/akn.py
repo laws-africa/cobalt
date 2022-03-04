@@ -52,6 +52,9 @@ class AkomaNtosoDocument:
     :ivar namespace: primary XML namespace
     """
     _parser = objectify_parser
+    # the "source" attribute used on some elements where it is required.
+    # contains: name, id, url
+    source = ["cobalt", "cobalt", "https://github.com/laws-africa/cobalt"]
 
     def __init__(self, xml=None):
         # TODO: we can do this better
@@ -65,9 +68,6 @@ class AkomaNtosoDocument:
         self.namespace = self.get_namespace()
 
         self.maker = objectify.ElementMaker(annotate=False, namespace=self.namespace, nsmap=self.root.nsmap)
-        # the "source" attribute used on some elements where it is required.
-        # contains: name, id, url
-        self.source = ["cobalt", "cobalt", "https://github.com/laws-africa/cobalt"]
 
     def parse(self, xml, document_type=None):
         """ Parse XML and ensure it's Akoma Ntoso. Raises ValueError on error. Returns the root element.
@@ -201,8 +201,8 @@ class StructuredDocument(AkomaNtosoDocument):
         if for_root:
             # only generate top-level references if this is the root document
             refs = [maker.references(
-                maker.TLCOrganization(eId="cobalt", href="https://github.com/laws-africa/cobalt", showAs="cobalt"),
-                source="#cobalt"
+                maker.TLCOrganization(eId=cls.source[1], href=cls.source[2], showAs=cls.source[0]),
+                source=f"#{cls.source[1]}"
             )]
         else:
             refs = []
@@ -231,7 +231,7 @@ class StructuredDocument(AkomaNtosoDocument):
                     maker.FRBRdate(date=today, name="Generation"),
                     maker.FRBRauthor(href=""),
                 ),
-                source="#cobalt"
+                source=f"#{cls.source[1]}"
             ),
             *refs
         )
