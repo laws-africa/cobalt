@@ -403,6 +403,7 @@ class StructuredDocument(AkomaNtosoDocument):
 
             ident.FRBRExpression.FRBRuri.set('value', uri.expression_uri(False))
             ident.FRBRExpression.FRBRthis.set('value', uri.expression_uri())
+            ident.FRBRExpression.FRBRlanguage.set('language', uri.language)
 
             ident.FRBRManifestation.FRBRuri.set('value', uri.expression_uri(False))
             ident.FRBRManifestation.FRBRthis.set('value', uri.expression_uri())
