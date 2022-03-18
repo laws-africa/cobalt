@@ -83,6 +83,12 @@ Cobalt is Copyright 2015-2020 AfricanLII.
 Change Log
 ----------
 
+5.1.0
+-----
+
+- Cascade changes to FRBRlanguage into attachments
+- Don't hardcode source
+
 5.0.0
 -----
 
