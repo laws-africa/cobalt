@@ -83,18 +83,14 @@ Cobalt is Copyright 2015-2020 AfricanLII.
 Change Log
 ----------
 
-5.1.0
------
-
-- Cascade changes to FRBRlanguage into attachments
-- Don't hardcode source
-
 5.0.0
 -----
 
 - Allow slashes in FRBR URI work component names
 - Setting expression and manifestation dates updates attachments and other components
 - Don't include Cobalt-specific ``<references>`` element in attachments
+- Cascade changes to FRBRlanguage into attachments
+- Don't hardcode source
 
 4.1.1
 .....
