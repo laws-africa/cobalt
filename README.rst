@@ -89,6 +89,8 @@ Change Log
 - Allow slashes in FRBR URI work component names
 - Setting expression and manifestation dates updates attachments and other components
 - Don't include Cobalt-specific ``<references>`` element in attachments
+- Cascade changes to FRBRlanguage into attachments
+- Don't hardcode source
 
 4.1.1
 .....

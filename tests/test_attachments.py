@@ -363,3 +363,62 @@ class AttachmentsTestCase(TestCase):
               </FRBRManifestation>
             </identification>
           </meta>''', self.tostring(components[2].doc.meta))
+
+    def test_component_language(self):
+        self.a.language = 'swa'
+
+        components = list(self.a.components().values())
+
+        self.assertEqual('''<meta xmlns="http://docs.oasis-open.org/legaldocml/ns/akn/3.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <identification source="#cobalt">
+              <FRBRWork>
+                <FRBRthis value="/na/act/1977/25/!schedule-A"/>
+                <FRBRuri value="/na/act/1977/25"/>
+                <FRBRalias value="Schedule" name="title"/>
+                <FRBRdate date="1977" name="Generation"/>
+                <FRBRauthor href=""/>
+                <FRBRcountry value="na"/>
+                <FRBRnumber value="25"/>
+              </FRBRWork>
+              <FRBRExpression>
+                <FRBRthis value="/na/act/1977/25/swa@1993-12-02/!schedule-A"/>
+                <FRBRuri value="/na/act/1977/25/swa@1993-12-02"/>
+                <FRBRdate date="1993-12-02" name="Generation"/>
+                <FRBRauthor href=""/>
+                <FRBRlanguage language="swa"/>
+              </FRBRExpression>
+              <FRBRManifestation>
+                <FRBRthis value="/na/act/1977/25/swa@1993-12-02/!schedule-A"/>
+                <FRBRuri value="/na/act/1977/25/swa@1993-12-02"/>
+                <FRBRdate date="2020-03-25" name="Generation"/>
+                <FRBRauthor href=""/>
+              </FRBRManifestation>
+            </identification>
+          </meta>''', self.tostring(components[1].doc.meta))
+
+        self.assertEqual('''<meta xmlns="http://docs.oasis-open.org/legaldocml/ns/akn/3.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <identification source="#cobalt">
+              <FRBRWork>
+                <FRBRthis value="/na/act/1977/25/!schedule-XXX"/>
+                <FRBRuri value="/na/act/1977/25"/>
+                <FRBRalias value="Schedule" name="title"/>
+                <FRBRdate date="1977" name="Generation"/>
+                <FRBRauthor href=""/>
+                <FRBRcountry value="na"/>
+                <FRBRnumber value="25"/>
+              </FRBRWork>
+              <FRBRExpression>
+                <FRBRthis value="/na/act/1977/25/swa@1993-12-02/!schedule-XXX"/>
+                <FRBRuri value="/na/act/1977/25/swa@1993-12-02"/>
+                <FRBRdate date="1980-01-01" name="Generation"/>
+                <FRBRauthor href=""/>
+                <FRBRlanguage language="swa"/>
+              </FRBRExpression>
+              <FRBRManifestation>
+                <FRBRthis value="/na/act/1977/25/swa@1993-12-02/!schedule-XXX"/>
+                <FRBRuri value="/na/act/1977/25/swa@1993-12-02"/>
+                <FRBRdate date="2020-03-25" name="Generation"/>
+                <FRBRauthor href=""/>
+              </FRBRManifestation>
+            </identification>
+          </meta>''', self.tostring(components[2].doc.meta))
