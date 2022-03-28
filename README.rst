@@ -91,6 +91,7 @@ Change Log
 - Don't include Cobalt-specific ``<references>`` element in attachments
 - Cascade changes to FRBRlanguage into attachments
 - Don't hardcode source
+- Don't set ``contains="originalVersion"`` since it is the default value for that attribute.
 
 4.1.1
 .....
