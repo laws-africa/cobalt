@@ -169,6 +169,54 @@ class ActTestCase(TestCase):
 
         assert_validates(a)
 
+        # clear them
+        a.amendments = []
+        xml = a.to_xml(encoding='unicode', pretty_print=True)
+        xml = xml.replace(datestring(date.today()), 'TODAY')
+
+        self.assertMultiLineEqual(
+            """<akomaNtoso xmlns="http://docs.oasis-open.org/legaldocml/ns/akn/3.0">
+  <act name="act">
+    <meta>
+      <identification source="#cobalt">
+        <FRBRWork>
+          <FRBRthis value="/akn/za/act/1900/1/!main"/>
+          <FRBRuri value="/akn/za/act/1900/1"/>
+          <FRBRalias value="Untitled" name="title"/>
+          <FRBRdate date="1900" name="Generation"/>
+          <FRBRauthor href=""/>
+          <FRBRcountry value="za"/>
+          <FRBRnumber value="1"/>
+        </FRBRWork>
+        <FRBRExpression>
+          <FRBRthis value="/akn/za/act/1900/1/eng@TODAY/!main"/>
+          <FRBRuri value="/akn/za/act/1900/1/eng@TODAY"/>
+          <FRBRdate date="TODAY" name="Generation"/>
+          <FRBRauthor href=""/>
+          <FRBRlanguage language="eng"/>
+        </FRBRExpression>
+        <FRBRManifestation>
+          <FRBRthis value="/akn/za/act/1900/1/eng@TODAY/!main"/>
+          <FRBRuri value="/akn/za/act/1900/1/eng@TODAY"/>
+          <FRBRdate date="TODAY" name="Generation"/>
+          <FRBRauthor href=""/>
+        </FRBRManifestation>
+      </identification>
+      <references source="#cobalt">
+        <TLCOrganization eId="cobalt" href="https://github.com/laws-africa/cobalt" showAs="cobalt"/>
+      </references>
+    </meta>
+    <body>
+      <section eId="sec_nn_1">
+        <content>
+          <p eId="sec_nn_1__p_1"/>
+        </content>
+      </section>
+    </body>
+  </act>
+</akomaNtoso>
+""", xml)
+
     def test_set_repeal(self):
         a = Act()
         a.frbr_uri = "/akn/za/act/1900/1"
@@ -178,7 +226,7 @@ class ActTestCase(TestCase):
 
         self.assertMultiLineEqual(
             """<akomaNtoso xmlns="http://docs.oasis-open.org/legaldocml/ns/akn/3.0">
-  <act name="act" contains="originalVersion">
+  <act name="act">
     <meta>
       <identification source="#cobalt">
         <FRBRWork>

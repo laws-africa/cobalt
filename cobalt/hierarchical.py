@@ -23,12 +23,6 @@ class Act(HierarchicalStructure):
                    eId="sec_nn_1")
                  )
 
-    @classmethod
-    def empty_document_attrs(cls):
-        attrs = super().empty_document_attrs()
-        attrs['contains'] = 'originalVersion'
-        return attrs
-
     @property
     def publication_name(self):
         """ Name of the publication in which this act was published.
@@ -90,18 +84,24 @@ class Act(HierarchicalStructure):
     @amendments.setter
     def amendments(self, value):
         # delete existing entries
-        for e in self.meta.iterfind(f'.//{{{self.namespace}}}lifecycle/{{{self.namespace}}}eventRef[@type="amendment"]'):
-            # delete the passive ref elements
-            eid = e.get('source')[1:]
-            for node in self.meta.iterfind(f'.//{{{self.namespace}}}references/{{{self.namespace}}}passiveRef[@eId="{eid}"]'):
-                node.getparent().remove(node)
-
-            # delete the event
-            e.getparent().remove(e)
+        lifecycle = self.meta.find(f'{{{self.namespace}}}lifecycle')
+        if lifecycle is not None:
+            for e in lifecycle.findall(f'./{{{self.namespace}}}eventRef[@type="amendment"]'):
+                # delete the passive ref elements
+                eid = e.get('source')[1:]
+                for node in self.meta.iterfind(f'.//{{{self.namespace}}}references/{{{self.namespace}}}passiveRef[@eId="{eid}"]'):
+                    node.getparent().remove(node)
+                # delete the event
+                lifecycle.remove(e)
 
         if not value:
-            # no amendments
-            self.act.set('contains', 'originalVersion')
+            # no amendments, default is originalVersion so it doesn't need to be set explicitly
+            if 'contains' in self.act.attrib:
+                del self.act.attrib['contains']
+            # lifecycle cannot be empty§
+            if lifecycle is not None and not lifecycle.getchildren():
+                lifecycle.getparent().remove(lifecycle)
+
         else:
             self.act.set('contains', 'singleVersion')
             lifecycle = self._ensure_lifecycle()
