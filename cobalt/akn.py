@@ -64,22 +64,20 @@ class AkomaNtosoDocument:
             # change to bytes
             xml = xml.encode('utf-8')
 
-        self.root = self.parse(xml)
-        self.namespace = self.get_namespace()
-
+        self.parse(xml)
         self.maker = objectify.ElementMaker(annotate=False, namespace=self.namespace, nsmap=self.root.nsmap)
 
     def parse(self, xml, document_type=None):
-        """ Parse XML and ensure it's Akoma Ntoso. Raises ValueError on error. Returns the root element.
+        """ Parse XML and ensure it's Akoma Ntoso with a known namespace. Raises ValueError on error.
         """
-        root = objectify.fromstring(xml, parser=self._parser)
+        self.root = objectify.fromstring(xml, parser=self._parser)
 
         # ensure the root element is correct
-        name = root.tag.split('}', 1)[-1]
+        name = self.root.tag.split('}', 1)[-1]
         if name != 'akomaNtoso':
             raise ValueError(f"XML root element must be akomaNtoso, but got {name} instead")
 
-        return root
+        self.namespace = self.get_namespace()
 
     def to_xml(self, *args, encoding='utf-8', **kwargs):
         return etree.tostring(self.root, *args, encoding=encoding, **kwargs)
@@ -262,16 +260,11 @@ class StructuredDocument(AkomaNtosoDocument):
         """ Parse XML and ensure it's Akoma Ntoso.
         Raises ValueError on error. Returns the root element.
         """
-        root = super().parse(xml, document_type)
+        super().parse(xml, document_type)
 
-        if root.countchildren() < 1:
-            raise ValueError("XML root element must have at least one child")
-
-        name = root.getchildren()[0].tag.split('}', 1)[-1]
-        if name != self.document_type:
-            raise ValueError(f"Expected {self.document_type} as first child of root element, but got {name} instead")
-
-        return root
+        doc_root = self.root.find(f'./{{{self.namespace}}}{self.document_type}')
+        if doc_root is None:
+            raise ValueError(f"Expected {self.document_type} as a child of root element")
 
     @property
     def main(self):
