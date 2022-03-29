@@ -105,6 +105,10 @@ class StructuredDocumentTestCase(TestCase):
     <meta/>
     <foo:body/>
   </foo:act>
+  <bar:act>
+    <meta/>
+    <bar:body/>
+  </bar:act>
 </foo:akomaNtoso>""")
         assert_equal(a.namespace, 'http://docs.oasis-open.org/legaldocml/ns/akn/3.0')
 
@@ -170,7 +174,7 @@ class StructuredDocumentTestCase(TestCase):
             a.parse("""<?xml version="1.0"?>
 <akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://docs.oasis-open.org/legaldocml/ns/akn/3.0" xsi:schemaLocation="http://docs.oasis-open.org/legaldocml/akn-core/v1.0/os/part2-specs/schemas/akomantoso30.xsd">
 </akomaNtoso>""", a.document_type)
-        assert_in("XML root element must have at least one child", raised.exception.args)
+        assert_in("Expected act as a child of root element", raised.exception.args)
 
         # error if `act` isn't first child
         with assert_raises(ValueError) as raised:
@@ -179,8 +183,16 @@ class StructuredDocumentTestCase(TestCase):
   <somethingElse>
   </somethingElse>
 </akomaNtoso>""", a.document_type)
-        assert_in("Expected act as first child of root element, but got somethingElse instead",
-                  raised.exception.args)
+        assert_in("Expected act as a child of root element", raised.exception.args)
+
+        # allow comments at the top level
+        a.parse("""<akomaNtoso xmlns="http://docs.oasis-open.org/legaldocml/ns/akn/3.0">
+  <!-- a comment -->
+  <act>
+    <meta/>
+    <body/>
+  </act>
+</akomaNtoso>""", a.document_type)
 
     def test_add_number(self):
         """ When adding an FRBRnumber element to a document that doesn't already have one, it
@@ -188,6 +200,7 @@ class StructuredDocumentTestCase(TestCase):
         """
         a = Act(xml="""
 <akomaNtoso xmlns="http://docs.oasis-open.org/legaldocml/ns/akn/3.0" xsi:schemaLocation="http://docs.oasis-open.org/legaldocml/akn-core/v1.0/os/part2-specs/schemas/akomantoso30.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- a comment -->
   <act contains="singleVersion" name="act">
     <meta>
       <identification source="#slaw">
