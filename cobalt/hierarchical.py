@@ -1,6 +1,4 @@
-from iso8601 import parse_date
-
-from .akn import StructuredDocument, datestring
+from .akn import StructuredDocument, datestring, NULL_DATE, parsedate
 
 
 class HierarchicalStructure(StructuredDocument):
@@ -33,7 +31,7 @@ class Act(HierarchicalStructure):
     @publication_name.setter
     def publication_name(self, value):
         value = value or ""
-        pub = self.ensure_element('meta.publication', after=self.meta.identification)
+        pub = self.ensure_publication()
         pub.set('name', value)
         pub.set('showAs', value)
 
@@ -43,13 +41,12 @@ class Act(HierarchicalStructure):
         """
         pub = self.get_element('meta.publication')
         if pub is not None and pub.get('date'):
-            return parse_date(pub.get('date')).date()
+            return parsedate(pub.get('date'))
         return None
 
     @publication_date.setter
     def publication_date(self, value):
-        self.ensure_element('meta.publication', after=self.meta.identification)\
-            .set('date', datestring(value))
+        self.ensure_publication().set('date', datestring(value))
 
     @property
     def publication_number(self):
@@ -60,15 +57,14 @@ class Act(HierarchicalStructure):
 
     @publication_number.setter
     def publication_number(self, value):
-        self.ensure_element('meta.publication', after=self.meta.identification)\
-            .set('number', value or "")
+        self.ensure_publication().set('number', value or "")
 
     @property
     def amendments(self):
         amendments = []
 
         for e in self.meta.iterfind(f'.//{{{self.namespace}}}lifecycle/{{{self.namespace}}}eventRef[@type="amendment"]'):
-            date = parse_date(e.get('date')).date()
+            date = parsedate(e.get('date'))
             event = AmendmentEvent(date=date)
             amendments.append(event)
 
@@ -132,7 +128,7 @@ class Act(HierarchicalStructure):
     def repeal(self):
         e = self.meta.find(f'.//{{{self.namespace}}}lifecycle/{{{self.namespace}}}eventRef[@type="repeal"]')
         if e is not None:
-            date = parse_date(e.get('date')).date()
+            date = parsedate(e.get('date'))
             event = RepealEvent(date=date)
 
             id = e.get('source')[1:]
@@ -182,6 +178,10 @@ class Act(HierarchicalStructure):
                     self.meta.remove(self.meta.lifecycle)
             except AttributeError:
                 pass
+
+    def ensure_publication(self):
+        return self.ensure_element('meta.publication', after=self.meta.identification,
+                                   attribs={'showAs': '', 'name': '', 'date': NULL_DATE})
 
 
 class AmendmentEvent(object):

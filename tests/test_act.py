@@ -22,14 +22,21 @@ class ActTestCase(TestCase):
     def test_empty_body(self):
         a = Act()
         assert_not_equal(a.body.text, '')
+        assert_validates(a)
 
     def test_publication_date(self):
         a = Act()
         assert_is_none(a.publication_date)
+        assert_validates(a)
 
         a.publication_date = '2012-01-02'
         assert_equal(datestring(a.publication_date), '2012-01-02')
         assert_is_instance(a.publication_date, date)
+        assert_validates(a)
+
+        a.publication_date = None
+        assert_is_none(a.publication_date)
+        assert_validates(a)
 
     def test_publication_number(self):
         a = Act()
@@ -37,6 +44,7 @@ class ActTestCase(TestCase):
 
         a.publication_number = '1234'
         assert_equal(a.publication_number, '1234')
+        assert_validates(a)
 
     def test_publication_name(self):
         a = Act()
@@ -44,11 +52,13 @@ class ActTestCase(TestCase):
 
         a.publication_name = 'Publication'
         assert_equal(a.publication_name, 'Publication')
+        assert_validates(a)
 
     def test_set_amendments(self):
         a = Act()
         a.frbr_uri = "/akn/za/act/1900/1"
         a.amendments = [AmendmentEvent(date='2012-02-01', amending_uri='/za/act/1980/10', amending_title="Foo")]
+        assert_validates(a)
 
         xml = a.to_xml(encoding='unicode', pretty_print=True)
         xml = xml.replace(datestring(date.today()), 'TODAY')
@@ -104,6 +114,7 @@ class ActTestCase(TestCase):
             AmendmentEvent(date='2012-02-01', amending_uri='/za/act/1980/22', amending_title="Corrected"),
             AmendmentEvent(date='2013-03-03', amending_uri='/za/act/1990/5', amending_title="Bar"),
         ]
+        assert_validates(a)
 
         xml = a.to_xml(encoding='unicode', pretty_print=True)
         xml = xml.replace(datestring(date.today()), 'TODAY')
@@ -171,6 +182,7 @@ class ActTestCase(TestCase):
 
         # clear them
         a.amendments = []
+        assert_validates(a)
         xml = a.to_xml(encoding='unicode', pretty_print=True)
         xml = xml.replace(datestring(date.today()), 'TODAY')
 

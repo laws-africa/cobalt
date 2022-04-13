@@ -92,6 +92,7 @@ Change Log
 - Cascade changes to FRBRlanguage into attachments
 - Don't hardcode source
 - Don't set ``contains="originalVersion"`` since it is the default value for that attribute.
+- Use ``0001-01-01`` as a placeholder date for publication, amendment and repeal events with null dates
 
 4.1.1
 .....
