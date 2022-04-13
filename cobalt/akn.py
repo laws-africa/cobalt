@@ -25,14 +25,27 @@ AKN_NAMESPACES = {
 }
 DEFAULT_VERSION = '3.0'
 
+# a placeholder date that indicates a null date, used in the XML where a date is required by may not be known
+NULL_DATE = '0001-01-01'
+
 
 def datestring(value):
+    """ Format a date as an XML-suitable string. If the date is None, uses NULL_DATE.
+    """
     if value is None:
-        return ""
+        return NULL_DATE
     elif isinstance(value, str):
         return value
     else:
         return "%04d-%02d-%02d" % (value.year, value.month, value.day)
+
+
+def parsedate(value):
+    """ Parse an XML date string into a real date. If the value is the NULL_DATE, returns None.
+    """
+    if value == NULL_DATE:
+        return None
+    return parse_date(value).date()
 
 
 # Create a new objectify parser that doesn't remove blank text nodes
@@ -91,7 +104,7 @@ class AkomaNtosoDocument:
 
         raise ValueError(f"Expected to find one of the following Akoma Ntoso XML namespaces: {', '.join(akn_namespaces)}. Only these namespaces were found: {', '.join(namespaces)}")
 
-    def ensure_element(self, name, after, at=None):
+    def ensure_element(self, name, after, at=None, attribs=None):
         """ Helper to get an element if it exists, or create it if it doesn't.
 
         :param name: dotted path from `self` or `at`
@@ -101,7 +114,7 @@ class AkomaNtosoDocument:
         node = self.get_element(name, root=at)
         if node is None:
             # TODO: what if nodes in the path don't exist?
-            node = self.make_element(name.split('.')[-1])
+            node = self.make_element(name.split('.')[-1], attribs)
             after.addnext(node)
 
         return node
@@ -123,8 +136,9 @@ class AkomaNtosoDocument:
                 return None
         return node
 
-    def make_element(self, elem):
-        return getattr(self.maker, elem)()
+    def make_element(self, elem, attribs=None):
+        attribs = attribs or {}
+        return getattr(self.maker, elem)(**attribs)
 
 
 class StructuredDocument(AkomaNtosoDocument):
