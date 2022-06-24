@@ -8,21 +8,16 @@ FRBR_URI_RE = re.compile(r"""^(/(?P<prefix>akn))?            # optional 'akn' pr
                               (/(?P<actor>[^0-9][^/]*))?     # actor (optional), cannot start with a number
                               /(?P<date>[0-9]{4}(-[0-9]{2}(-[0-9]{2})?)?)  # date
                               /(?P<number>[^/]+)             # number
-                              (/
-                               (                             # either a work component or expression details
-                                (                              # optional expression details
+                              (/                             # optional expression language and date
                                   (?P<language>[a-z]{3})                    # language (eg. eng)
                                   (?P<expression_date>[@:][^/]*)?           # expression date (eg. @ or @2012-12-22 or :2012-12-22)
-                                  (/!?                                      # optional expression component
-                                                                            # the ! is optional for backwards compatibility but won't be optional
-                                                                            # in a future version
-                                    (?P<expression_component>[^/]+?)?       # expression component (eg. !main or !schedule1)
-                                    (/(?P<expression_subcomponent>[^.]+))?  # expression subcomponent (eg. chapter/1 or section/20)
-                                  )?                                        #
-                                  (\.(?P<format>[a-z0-9]+))?                # format (eg. .xml, .akn, .html, .pdf)
-                                )|                                          #
-                                !?(?P<work_component>.+)     # work component
-                              ))?$""", re.X)
+                              )?
+                              (/
+                                  (!(?P<work_component>[^~.]+?))?           # optional component (eg. !main or !schedule1)
+                                  (~(?P<portion>[^.]+))?                    # optional portion
+                              )?
+                              (\.(?P<format>[a-z0-9]+))?     # optional format (eg. .xml, .akn, .html, .pdf)
+                              $""", re.X)
 
 
 class FrbrUri(object):
@@ -41,7 +36,7 @@ class FrbrUri(object):
 
     Example::
 
-        >>> uri = FrbrUri.parse('/akn/za-jhb/act/by-law/2003/public-health/eng:2015-01-01/!main/part/A.xml')
+        >>> uri = FrbrUri.parse('/akn/za-jhb/act/by-law/2003/public-health/eng:2015-01-01/!main~part_1.xml')
         >>> uri.prefix
         'akn'
         >>> uri.country
@@ -60,18 +55,18 @@ class FrbrUri(object):
         'eng'
         >>> uri.expression_date
         ':2015-01-01'
-        >>> uri.expression_component
+        >>> uri.work_component
         'main'
-        >>> uri.expression_subcomponent
-        'part/A'
+        >>> uri.portion
+        'part_1'
         >>> uri.format
         'xml'
         >>> uri.work_uri()
         '/za-jhb/act/by-law/2003/public-health'
         >>> uri.expression_uri()
-        '/za-jhb/act/by-law/2003/public-health/eng:2015-01-01/main/part/A'
+        '/za-jhb/act/by-law/2003/public-health/eng:2015-01-01/!main~part_1'
         >>> uri.manifestation_uri()
-        '/za-jhb/act/by-law/2003/public-health/eng:2015-01-01/main/part/A.xml'
+        '/za-jhb/act/by-law/2003/public-health/eng:2015-01-01/!main~part_1.xml'
 
     :ivar prefix: optional `akn` prefix
     :ivar country: two letter country code
@@ -84,16 +79,13 @@ class FrbrUri(object):
     :ivar work_component: name of the work component, may be None
     :ivar language: three-letter expression language code, may be None
     :ivar expression_date: expression date (str), [@:]YYYY[-MM[-DD]], may be None
-    :ivar expression_component: name of the expression component, may be None
-    :ivar expression_subcomponent: name of the expression subcomponent, may be None
     :ivar format: format extension, may be None
     """
 
     default_language = 'eng'
 
-    def __init__(self, country, locality, doctype, subtype, actor, date, number,
-                 work_component=None, language=None, expression_date=None, expression_component=None,
-                 expression_subcomponent=None, format=None, prefix="akn"):
+    def __init__(self, country, locality, doctype, subtype, actor, date, number, work_component=None, language=None,
+                 expression_date=None, format=None, portion=None, prefix="akn"):
         self.prefix = prefix
         self.country = country
         self.locality = locality
@@ -103,11 +95,10 @@ class FrbrUri(object):
         self.date = date
         self.number = number
         self.work_component = work_component
+        self.portion = portion
 
         self.language = language or self.default_language
         self.expression_date = expression_date
-        self.expression_component = expression_component
-        self.expression_subcomponent = expression_subcomponent
         self.format = format
 
     def clone(self):
@@ -125,8 +116,7 @@ class FrbrUri(object):
             work_component=self.work_component,
             language=self.language,
             expression_date=self.expression_date,
-            expression_component=self.expression_component,
-            expression_subcomponent=self.expression_subcomponent,
+            portion=self.portion,
             format=self.format,
         )
 
@@ -168,15 +158,16 @@ class FrbrUri(object):
         if self.expression_date is not None:
             uri = uri + self.expression_date
 
-        # expression component is preferred over a work component
-        if self.expression_component:
-            uri = uri + "/!" + self.expression_component
-            if self.expression_subcomponent:
-                uri = uri + "/" + self.expression_subcomponent
-
         # if we have a work component, use it
-        elif work_component and self.work_component:
+        slashed = False
+        if work_component and self.work_component:
+            slashed = True
             uri = uri + "/!" + self.work_component
+
+        if self.portion:
+            if not slashed:
+                uri = uri + "/"
+            uri = uri + "~" + self.portion
 
         return uri
 
@@ -190,7 +181,7 @@ class FrbrUri(object):
     def __str__(self):
         if self.format:
             return self.manifestation_uri()
-        if self.expression_date or self.expression_component:
+        if self.expression_date or self.work_component:
             return self.expression_uri()
         return self.work_uri()
 
