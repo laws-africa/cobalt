@@ -157,6 +157,11 @@ class StructuredDocument(AkomaNtosoDocument):
     """ The name of the document type, corresponding to the primary document XML element.
     """
 
+    non_eid_portions = "arguments background conclusions decision header introduction motivation preamble" \
+                       " preface remedies".split()
+    """ Portion names that are valid portions, but don't have eids, for use with get_portion_element.
+    """
+
     @classmethod
     def for_document_type(cls, document_type):
         """ Return the subclass for this document type.
@@ -440,6 +445,26 @@ class StructuredDocument(AkomaNtosoDocument):
             components[name] = meta.getparent().getparent()
 
         return components
+
+    def get_portion_element(self, portion, component=None):
+        """ Get a single portion of this document. The `portion` is usually an eId, as specified by
+        https://docs.oasis-open.org/legaldocml/akn-nc/v1.0/os/akn-nc-v1.0-os.html#_Toc531692279.
+
+        The optional `component` is the ancestor element within which to look for the portion.
+
+        Range portions (eg. `chp_1->chp_3`) are not supported by this function.
+        """
+        root = component or self.root
+
+        if portion in self.non_eid_portions:
+            # these are valid portions that don't have eids
+            xpath = f'.//a:{portion}'
+        else:
+            portion = portion.replace('"', '')
+            xpath = f'.//a:*[@eId="{portion}"]'
+
+        for x in root.xpath(xpath, namespaces={'a': self.namespace}):
+            return x
 
     def _ensure_lifecycle(self):
         try:

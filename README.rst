@@ -83,6 +83,13 @@ Cobalt is Copyright 2015-2020 AfricanLII.
 Change Log
 ----------
 
+6.0.0
+-----
+
+- Add support for portions, such as ``~chp_2``
+- Remove non-standard support for expression component and subcomponent
+- Remove non-standard legacy support for work components without ``!``
+
 5.0.0
 -----
 
