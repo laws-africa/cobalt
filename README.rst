@@ -83,6 +83,11 @@ Cobalt is Copyright 2015-2020 AfricanLII.
 Change Log
 ----------
 
+6.1.0
+-----
+
+- Add new schemas.AkomaNtoso30 class with basic schema information
+
 6.0.0
 -----
 
