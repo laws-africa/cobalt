@@ -58,3 +58,15 @@ def assert_validates(akn_doc, strict=False):
     """
     schema = get_schema(akn_doc.namespace, strict)
     schema.assertValid(akn_doc.root)
+
+
+class AkomaNtoso30:
+    """ Information on various elements of the Akoma Ntoso 3.0 schema.
+    """
+
+    hier_elements = [
+        'alinea', 'article', 'book', 'chapter', 'clause', 'division', 'indent', 'level', 'list', 'paragraph', 'part',
+        'point', 'proviso', 'rule', 'section', 'subchapter', 'subclause', 'subdivision', 'sublist', 'subparagraph',
+        'subpart', 'subrule', 'subsection', 'subtitle', 'title', 'tome', 'transitional'
+    ]
+    """ Hierarchical elements """
