@@ -82,6 +82,11 @@ Cobalt is Copyright 2015-2020 AfricanLII.
 Change Log
 ----------
 
+7.0.0
+-----
+
+- Rename ``DebateReport`` to ``Debate``
+
 6.1.0
 -----
 
