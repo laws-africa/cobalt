@@ -194,6 +194,42 @@ class StructuredDocumentTestCase(TestCase):
   </act>
 </akomaNtoso>""", a.document_type)
 
+    def test_unicode(self):
+        # string, no encoding
+        a = Act("""<akomaNtoso xmlns="http://docs.oasis-open.org/legaldocml/ns/akn/3.0">
+          <act>
+            <meta/>
+            <body>😀</body>
+          </act>
+        </akomaNtoso>""")
+        self.assertEqual(a.root.xpath("//a:body", namespaces={'a': a.namespace})[0].text, "😀")
+
+        # bytes, no encoding
+        a = Act("""<akomaNtoso xmlns="http://docs.oasis-open.org/legaldocml/ns/akn/3.0">
+          <act>
+            <meta/>
+            <body>😀</body>
+          </act>
+        </akomaNtoso>""".encode('utf-8'))
+        self.assertEqual(a.root.xpath("//a:body", namespaces={'a': a.namespace})[0].text, "😀")
+
+        # with encoding attribute, bytes
+        a = Act("""<?xml version="1.0" encoding="utf-8"?><akomaNtoso xmlns="http://docs.oasis-open.org/legaldocml/ns/akn/3.0">
+          <act>
+            <meta/>
+            <body>😀</body>
+          </act>
+        </akomaNtoso>""".encode('utf-8'))
+        self.assertEqual(a.root.xpath("//a:body", namespaces={'a': a.namespace})[0].text, "😀")
+
+        # with encoding string
+        Act("""<?xml version="1.0" encoding="utf-8"?><akomaNtoso xmlns="http://docs.oasis-open.org/legaldocml/ns/akn/3.0">
+          <act>
+            <meta/>
+            <body>😀</body>
+          </act>
+        </akomaNtoso>""")
+
     def test_add_number(self):
         """ When adding an FRBRnumber element to a document that doesn't already have one, it
         must come after subtype.

@@ -70,13 +70,8 @@ class AkomaNtosoDocument:
     source = ["cobalt", "cobalt", "https://github.com/laws-africa/cobalt"]
 
     def __init__(self, xml=None):
-        # TODO: we can do this better
-        encoding = ENCODING_RE.search(xml, 0, 200)
-        if encoding:
-            # lxml doesn't like unicode strings with an encoding element, so
-            # change to bytes
+        if isinstance(xml, str):
             xml = xml.encode('utf-8')
-
         self.parse(xml)
         self.maker = objectify.ElementMaker(annotate=False, namespace=self.namespace, nsmap=self.root.nsmap)
 
