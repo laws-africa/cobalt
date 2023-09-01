@@ -82,11 +82,15 @@ Cobalt is Copyright 2015-2020 AfricanLII.
 Change Log
 ----------
 
+8.0.0
+-----
+
+- Parser now accepts both strings and bytes, and will encode strings to bytes using UTF-8
+
 7.0.0
 -----
 
 - Rename ``DebateReport`` to ``Debate``
-- Parser now accepts both strings and bytes, and will encode strings to bytes using UTF-8
 
 6.1.0
 -----
