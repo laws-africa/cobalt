@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools", "setuptools_scm[toml]>=6.2", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cobalt"
+description = "A lightweight library for working with Akoma Ntoso Act documents"
+authors = [
+  { name="Laws.Africa", email="info@laws.africa" },
+]
+license = {text = "LGPLv3+"}
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Topic :: Text Processing",
+    "Topic :: Text Processing :: Markup :: XML",
+    "Intended Audience :: Legal Industry",
+    "License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+]
+dependencies = [
+    "iso8601 >= 0.1",
+    "lxml>=3.4.1",
+]
+dynamic = ["version"]
+
+[project.urls]
+"Homepage" = "https://github.com/laws-africa/cobalt"
+"Bug Tracker" = "https://github.com/laws-africa/cobalt/issues"
+
+[project.optional-dependencies]
+test = ["nose", "flake8"]
+
+[tool.setuptools.packages.find]
+include = ["cobalt"]  # package names should match these glob patterns (["*"] by default)
+exclude = ["tests*"]  # exclude packages matching these glob patterns (empty by default)
+namespaces = false
+
+[tool.setuptools.dynamic]
+version = {attr = "cobalt.__version__"}
+
