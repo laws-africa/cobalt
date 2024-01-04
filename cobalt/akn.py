@@ -449,7 +449,7 @@ class StructuredDocument(AkomaNtosoDocument):
 
         Range portions (eg. `chp_1->chp_3`) are not supported by this function.
         """
-        root = component or self.root
+        root = component if component is not None else self.root
 
         if portion in self.non_eid_portions:
             # these are valid portions that don't have eids
