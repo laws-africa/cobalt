@@ -16,8 +16,9 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
+
     - name: Install dependencies
-      run: |
-        pip install -e '.[test]'
-    - name: Test with nosetests
-      run: nosetests
+      run: pip install -e '.[test]'
+
+    - name: Run tests
+      run: python -m unittest

@@ -1,5 +1,4 @@
 from unittest import TestCase
-from nose.tools import *  # noqa
 from datetime import date
 
 from cobalt import Act, datestring
@@ -17,22 +16,22 @@ class StructuredDocumentTestCase(TestCase):
         a.frbr_uri = '/zm/act/2007/01'
         today = datestring(date.today())
 
-        assert_equal(a.frbr_uri.work_uri(), '/zm/act/2007/01')
+        self.assertEqual(a.frbr_uri.work_uri(), '/zm/act/2007/01')
 
-        assert_equal(a.meta.identification.FRBRWork.FRBRthis.get('value'), '/zm/act/2007/01/!main')
-        assert_equal(a.meta.identification.FRBRWork.FRBRuri.get('value'), '/zm/act/2007/01')
-        assert_equal(a.meta.identification.FRBRWork.FRBRcountry.get('value'), 'zm')
-        assert_equal(a.meta.identification.FRBRWork.FRBRnumber.get('value'), '01')
-        assert_equal(a.meta.identification.FRBRWork.FRBRdate.get('date'), '2007')
+        self.assertEqual(a.meta.identification.FRBRWork.FRBRthis.get('value'), '/zm/act/2007/01/!main')
+        self.assertEqual(a.meta.identification.FRBRWork.FRBRuri.get('value'), '/zm/act/2007/01')
+        self.assertEqual(a.meta.identification.FRBRWork.FRBRcountry.get('value'), 'zm')
+        self.assertEqual(a.meta.identification.FRBRWork.FRBRnumber.get('value'), '01')
+        self.assertEqual(a.meta.identification.FRBRWork.FRBRdate.get('date'), '2007')
 
-        assert_equal(a.meta.identification.FRBRExpression.FRBRthis.get('value'), '/zm/act/2007/01/eng@2012-01-01/!main')
-        assert_equal(a.meta.identification.FRBRExpression.FRBRuri.get('value'), '/zm/act/2007/01/eng@2012-01-01')
-        assert_equal(a.meta.identification.FRBRExpression.FRBRdate.get('date'), '2012-01-01')
+        self.assertEqual(a.meta.identification.FRBRExpression.FRBRthis.get('value'), '/zm/act/2007/01/eng@2012-01-01/!main')
+        self.assertEqual(a.meta.identification.FRBRExpression.FRBRuri.get('value'), '/zm/act/2007/01/eng@2012-01-01')
+        self.assertEqual(a.meta.identification.FRBRExpression.FRBRdate.get('date'), '2012-01-01')
 
-        assert_equal(a.meta.identification.FRBRManifestation.FRBRthis.get('value'),
+        self.assertEqual(a.meta.identification.FRBRManifestation.FRBRthis.get('value'),
                      '/zm/act/2007/01/eng@2012-01-01/!main')
-        assert_equal(a.meta.identification.FRBRManifestation.FRBRuri.get('value'), '/zm/act/2007/01/eng@2012-01-01')
-        assert_equal(a.meta.identification.FRBRManifestation.FRBRdate.get('date'), today)
+        self.assertEqual(a.meta.identification.FRBRManifestation.FRBRuri.get('value'), '/zm/act/2007/01/eng@2012-01-01')
+        self.assertEqual(a.meta.identification.FRBRManifestation.FRBRdate.get('date'), today)
 
         assert_validates(a)
 
@@ -41,10 +40,10 @@ class StructuredDocumentTestCase(TestCase):
         a.expression_date = '2012-01-01'
         a.frbr_uri = '/zm/act/2007/01'
 
-        assert_equal(a.meta.identification.FRBRWork.FRBRcountry.get('value'), 'zm')
+        self.assertEqual(a.meta.identification.FRBRWork.FRBRcountry.get('value'), 'zm')
 
         a.frbr_uri = '/zm-abc123/act/2007/01'
-        assert_equal(a.meta.identification.FRBRWork.FRBRcountry.get('value'), 'zm-abc123')
+        self.assertEqual(a.meta.identification.FRBRWork.FRBRcountry.get('value'), 'zm-abc123')
 
     def test_title(self):
         a = Act()
@@ -69,34 +68,34 @@ class StructuredDocumentTestCase(TestCase):
         """
         a = Act()
         a.frbr_uri = '/akn/za/act/2012-01-02/5'
-        assert_equal(datestring(a.work_date), '2012-01-02')
-        assert_is_instance(a.work_date, date)
+        self.assertEqual(datestring(a.work_date), '2012-01-02')
+        self.assertIsInstance(a.work_date, date)
 
         a.frbr_uri = '/akn/za/act/2009/5'
-        assert_equal(datestring(a.work_date), '2009-01-01')
-        assert_is_instance(a.work_date, date)
+        self.assertEqual(datestring(a.work_date), '2009-01-01')
+        self.assertIsInstance(a.work_date, date)
 
     def test_expression_date(self):
         a = Act()
         a.expression_date = '2012-01-02'
-        assert_equal(datestring(a.expression_date), '2012-01-02')
-        assert_is_instance(a.expression_date, date)
+        self.assertEqual(datestring(a.expression_date), '2012-01-02')
+        self.assertIsInstance(a.expression_date, date)
 
     def test_manifestation_date(self):
         a = Act()
         a.manifestation_date = '2012-01-02'
-        assert_equal(datestring(a.manifestation_date), '2012-01-02')
-        assert_is_instance(a.manifestation_date, date)
+        self.assertEqual(datestring(a.manifestation_date), '2012-01-02')
+        self.assertIsInstance(a.manifestation_date, date)
 
     def test_language(self):
         a = Act()
         a.language = 'fre'
-        assert_equal(a.language, 'fre')
+        self.assertEqual(a.language, 'fre')
 
     def test_namespaces(self):
         # default is now AKN3
         a = Act()
-        assert_equal(a.namespace, 'http://docs.oasis-open.org/legaldocml/ns/akn/3.0')
+        self.assertEqual(a.namespace, 'http://docs.oasis-open.org/legaldocml/ns/akn/3.0')
 
         # prefer AKN3 when both 2 and 3 are listed as namespaces
         a = Act(xml="""<?xml version="1.0"?>
@@ -110,7 +109,7 @@ class StructuredDocumentTestCase(TestCase):
     <bar:body/>
   </bar:act>
 </foo:akomaNtoso>""")
-        assert_equal(a.namespace, 'http://docs.oasis-open.org/legaldocml/ns/akn/3.0')
+        self.assertEqual(a.namespace, 'http://docs.oasis-open.org/legaldocml/ns/akn/3.0')
 
         # prefer AKN2 when 2 and something else are listed as namespaces
         a = Act(xml="""<?xml version="1.0"?>
@@ -120,10 +119,10 @@ class StructuredDocumentTestCase(TestCase):
     <foo:body/>
   </foo:act>
 </foo:akomaNtoso>""")
-        assert_equal(a.namespace, 'http://www.akomantoso.org/2.0')
+        self.assertEqual(a.namespace, 'http://www.akomantoso.org/2.0')
 
         # throw error if neither of AKN2 and AKN3 are listed as namespaces
-        with assert_raises(ValueError) as raised:
+        with self.assertRaises(ValueError) as raised:
             Act(xml="""<?xml version="1.0"?>
                 <foo:akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:foo="http://www.akomantoso.org/4.0" xmlns:bar="http://docs.oasis-open.org/legaldocml/ns/akn/5.0" xsi:schemaLocation="http://www.akomantoso.org/2.0 akomantoso20.xsd">
   <foo:act>
@@ -131,7 +130,7 @@ class StructuredDocumentTestCase(TestCase):
     <body/>
   </foo:act>
 </foo:akomaNtoso>""")
-        assert_in(
+        self.assertIn(
             "Expected to find one of the following Akoma Ntoso XML namespaces: http://docs.oasis-open.org/legaldocml/ns/akn/3.0, http://www.akomantoso.org/2.0. Only these namespaces were found: http://www.w3.org/2001/XMLSchema-instance, http://www.akomantoso.org/4.0, http://docs.oasis-open.org/legaldocml/ns/akn/5.0",
             raised.exception.args)
 
@@ -151,7 +150,7 @@ class StructuredDocumentTestCase(TestCase):
     </bar:body>
   </bar:act>
 </bar:akomaNtoso>""")
-        assert_equal(a.namespace, 'http://docs.oasis-open.org/legaldocml/ns/akn/3.0')
+        self.assertEqual(a.namespace, 'http://docs.oasis-open.org/legaldocml/ns/akn/3.0')
         self.assertEqual("This content should NOT be ignored as it's using the AKN3 namespace.", a.body.section.content.p)
         self.assertNotIn("This content SHOULD be ignored as it's not using the AKN3 namespace.", a.body.section.content.p)
         self.assertNotIn("This content should ALSO be ignored as it's using the AKN2 namespace.", a.body.section.content.p)
@@ -162,28 +161,28 @@ class StructuredDocumentTestCase(TestCase):
         a.parse(a.to_xml(), a.document_type)
 
         # error if root isn't `akomaNtoso`
-        with assert_raises(ValueError) as raised:
+        with self.assertRaises(ValueError) as raised:
             a.parse("""<?xml version="1.0"?>
 <myBlog xmlns="http://www.akomantoso.org/2.0">
   <p>Whaddup, fam!</p>
 </myBlog>""", a.document_type)
-        assert_in("XML root element must be akomaNtoso, but got myBlog instead", raised.exception.args)
+        self.assertIn("XML root element must be akomaNtoso, but got myBlog instead", raised.exception.args)
 
         # error if root as no children
-        with assert_raises(ValueError) as raised:
+        with self.assertRaises(ValueError) as raised:
             a.parse("""<?xml version="1.0"?>
 <akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://docs.oasis-open.org/legaldocml/ns/akn/3.0" xsi:schemaLocation="http://docs.oasis-open.org/legaldocml/akn-core/v1.0/os/part2-specs/schemas/akomantoso30.xsd">
 </akomaNtoso>""", a.document_type)
-        assert_in("Expected act as a child of root element", raised.exception.args)
+        self.assertIn("Expected act as a child of root element", raised.exception.args)
 
         # error if `act` isn't first child
-        with assert_raises(ValueError) as raised:
+        with self.assertRaises(ValueError) as raised:
             a.parse("""<?xml version="1.0"?>
 <akomaNtoso xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://docs.oasis-open.org/legaldocml/ns/akn/3.0" xsi:schemaLocation="http://docs.oasis-open.org/legaldocml/akn-core/v1.0/os/part2-specs/schemas/akomantoso30.xsd">
   <somethingElse>
   </somethingElse>
 </akomaNtoso>""", a.document_type)
-        assert_in("Expected act as a child of root element", raised.exception.args)
+        self.assertIn("Expected act as a child of root element", raised.exception.args)
 
         # allow comments at the top level
         a.parse("""<akomaNtoso xmlns="http://docs.oasis-open.org/legaldocml/ns/akn/3.0">

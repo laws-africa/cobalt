@@ -1,5 +1,4 @@
 from unittest import TestCase
-from nose.tools import *  # noqa
 
 from cobalt import Judgment
 
@@ -9,13 +8,13 @@ class JudgmentTestCase(TestCase):
 
     def test_empty_judgment(self):
         j = Judgment()
-        assert_equal(j.title, "Untitled")
-        assert_is_not_none(j.meta)
-        assert_is_not_none(j.judgmentBody)
+        self.assertEqual(j.title, "Untitled")
+        self.assertIsNotNone(j.meta)
+        self.assertIsNotNone(j.judgmentBody)
 
     def test_empty_body(self):
         j = Judgment()
-        assert_not_equal(j.judgmentBody.text, '')
+        self.assertNotEqual(j.judgmentBody.text, '')
 
     def test_main(self):
         j = Judgment()

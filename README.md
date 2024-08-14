@@ -51,7 +51,7 @@ Use it like this:
 
 ## Releasing a new version
 
-1. Run the tests with `nosetests`
+1. Run the tests with `python -m unittest`
 2. Update the version by changing the `__version__` variable in [`cobalt/__init__.py`](cobalt/__init__.py)
 3. Commit your changes and push to the master branch on GitHub
 4. Create a release in GitHub and it will automatically be pushed to PyPi

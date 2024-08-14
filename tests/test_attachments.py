@@ -1,10 +1,10 @@
 from unittest import TestCase
-from nose.tools import *  # noqa
 
 from lxml import etree
 
 from cobalt import Act
 from cobalt.schemas import assert_validates
+
 
 class AttachmentsTestCase(TestCase):
     maxDiff = None
