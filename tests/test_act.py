@@ -1,5 +1,4 @@
 from unittest import TestCase
-from nose.tools import *  # noqa
 from datetime import date
 
 from lxml.etree import LxmlSyntaxError
@@ -13,45 +12,45 @@ class ActTestCase(TestCase):
 
     def test_empty_act(self):
         a = Act()
-        assert_equal(a.title, "Untitled")
-        assert_is_not_none(a.meta)
-        assert_is_not_none(a.body)
+        self.assertEqual(a.title, "Untitled")
+        self.assertIsNotNone(a.meta)
+        self.assertIsNotNone(a.body)
 
         assert_validates(a)
 
     def test_empty_body(self):
         a = Act()
-        assert_not_equal(a.body.text, '')
+        self.assertNotEqual(a.body.text, '')
         assert_validates(a)
 
     def test_publication_date(self):
         a = Act()
-        assert_is_none(a.publication_date)
+        self.assertIsNone(a.publication_date)
         assert_validates(a)
 
         a.publication_date = '2012-01-02'
-        assert_equal(datestring(a.publication_date), '2012-01-02')
-        assert_is_instance(a.publication_date, date)
+        self.assertEqual(datestring(a.publication_date), '2012-01-02')
+        self.assertIsInstance(a.publication_date, date)
         assert_validates(a)
 
         a.publication_date = None
-        assert_is_none(a.publication_date)
+        self.assertIsNone(a.publication_date)
         assert_validates(a)
 
     def test_publication_number(self):
         a = Act()
-        assert_is_none(a.publication_number)
+        self.assertIsNone(a.publication_number)
 
         a.publication_number = '1234'
-        assert_equal(a.publication_number, '1234')
+        self.assertEqual(a.publication_number, '1234')
         assert_validates(a)
 
     def test_publication_name(self):
         a = Act()
-        assert_is_none(a.publication_name)
+        self.assertIsNone(a.publication_name)
 
         a.publication_name = 'Publication'
-        assert_equal(a.publication_name, 'Publication')
+        self.assertEqual(a.publication_name, 'Publication')
         assert_validates(a)
 
     def test_set_amendments(self):
@@ -169,14 +168,14 @@ class ActTestCase(TestCase):
 """, xml)
 
         amendment = a.amendments[0]
-        assert_equal(datestring(amendment.date), '2012-02-01')
-        assert_equal(amendment.amending_uri, '/za/act/1980/22')
-        assert_equal(amendment.amending_title, 'Corrected')
+        self.assertEqual(datestring(amendment.date), '2012-02-01')
+        self.assertEqual(amendment.amending_uri, '/za/act/1980/22')
+        self.assertEqual(amendment.amending_title, 'Corrected')
 
         amendment = a.amendments[1]
-        assert_equal(datestring(amendment.date), '2013-03-03')
-        assert_equal(amendment.amending_uri, '/za/act/1990/5')
-        assert_equal(amendment.amending_title, 'Bar')
+        self.assertEqual(datestring(amendment.date), '2013-03-03')
+        self.assertEqual(amendment.amending_uri, '/za/act/1990/5')
+        self.assertEqual(amendment.amending_title, 'Bar')
 
         assert_validates(a)
 
@@ -283,15 +282,15 @@ class ActTestCase(TestCase):
 </akomaNtoso>
 """, xml)
 
-        assert_equal(a.repeal.repealing_uri, '/za/act/1980/10')
-        assert_equal(a.repeal.repealing_title, 'Foo')
-        assert_equal(datestring(a.repeal.date), '2012-02-01')
+        self.assertEqual(a.repeal.repealing_uri, '/za/act/1980/10')
+        self.assertEqual(a.repeal.repealing_title, 'Foo')
+        self.assertEqual(datestring(a.repeal.date), '2012-02-01')
 
         assert_validates(a)
 
         # check that clearing it works
         a.repeal = None
-        assert_is_none(a.repeal)
+        self.assertIsNone(a.repeal)
 
         assert_validates(a)
 

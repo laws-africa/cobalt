@@ -1,5 +1,9 @@
 # Change Log
 
+## 9.0.0
+
+-   Dropped support for Python < 3.10 (no other changes)
+
 ## 8.0.0
 
 -   Parser now accepts both strings and bytes, and will encode strings to bytes using UTF-8

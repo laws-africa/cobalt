@@ -10,7 +10,7 @@ authors = [
 ]
 license = {text = "LGPLv3+"}
 readme = "README.md"
-requires-python = ">=3.7"
+requires-python = ">=3.9"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
@@ -32,7 +32,7 @@ dynamic = ["version"]
 "Bug Tracker" = "https://github.com/laws-africa/cobalt/issues"
 
 [project.optional-dependencies]
-test = ["nose", "flake8"]
+test = ["flake8"]
 
 [tool.setuptools.packages.find]
 include = ["cobalt"]  # package names should match these glob patterns (["*"] by default)
