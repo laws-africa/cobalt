@@ -168,8 +168,8 @@ class Act(HierarchicalStructure):
             # create the passive ref
             node = self.make_element('passiveRef')
             node.set('eId', ref)
-            node.set('href', value.repealing_uri)
-            node.set('showAs', value.repealing_title)
+            node.set('href', value.repealing_uri or '')
+            node.set('showAs', value.repealing_title or 'No repealing work')
             references.append(node)
         else:
             try:
