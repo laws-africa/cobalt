@@ -8,7 +8,7 @@ from .openstructure import OpenStructure, DebateReport, Document, Statement
 from .portion import PortionStructure, Portion
 from .uri import FrbrUri
 
-__version__ = '9.0.1'
+__version__ = '9.0.2'
 
 __all__ = [
     'Act', 'AkomaNtosoDocument', 'Amendment', 'AmendmentEvent', 'AmendmentList', 'AmendmentStructure',

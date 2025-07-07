@@ -23,7 +23,7 @@ classifiers = [
 ]
 dependencies = [
     "iso8601 >= 0.1",
-    "lxml>=3.4.1",
+    "lxml>=3.4.1,<6.0.0",
 ]
 dynamic = ["version"]
 
