@@ -4,7 +4,7 @@
 
 [![image](https://badge.fury.io/py/cobalt.svg)](http://badge.fury.io/py/cobalt)
 
-Cobalt is a lightweight Python library for working with [Akoma Ntoso](http://www.akomantoso.org/) documents. It makes it
+Cobalt is a lightweight Python library for working with [Akoma Ntoso](http://www.akomantoso.info/) documents. It makes it
 easy to work with Akoma Ntoso documents, metadata and FRBR URIs.
 
 It is lightweight because most operations are done on the XML document directly without intermediate objects. You still
